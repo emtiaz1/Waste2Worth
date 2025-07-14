@@ -50,3 +50,21 @@ button:hover {
   margin-top: 20px;
   color: #155724;
 }
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: #28a745;
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.container:hover {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+h1:hover {
+  color: #218838;
+  transition: color 0.2s ease;
+}
+
