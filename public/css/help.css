@@ -1,0 +1,67 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f4f8fb;
+    margin: 0;
+    padding: 0;
+    color: #222;
+}
+header {
+    background: #2e7d32;
+    color: #fff;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+header h1 {
+    margin: 0;
+    font-size: 2rem;
+    letter-spacing: 2px;
+}
+nav a {
+    color: #fff;
+    text-decoration: none;
+    margin-left: 1.5rem;
+    font-weight: 500;
+    transition: border-bottom 0.2s;
+    border-bottom: 2px solid transparent;
+}
+nav a.active, nav a:hover {
+    border-bottom: 2px solid #fff;
+}
+main {
+    max-width: 700px;
+    margin: 2rem auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(46,125,50,0.08);
+    padding: 2rem 2.5rem;
+}
+.help-container h2 {
+    color: #2e7d32;
+    margin-top: 0;
+}
+.faq-list {
+    list-style: none;
+    padding: 0;
+}
+.faq-list li {
+    margin-bottom: 1.5rem;
+    background: #e8f5e9;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(46,125,50,0.04);
+}
+.faq-list strong {
+    display: block;
+    color: #1b5e20;
+    margin-bottom: 0.5rem;
+}
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    background: #2e7d32;
+    color: #fff;
+    margin-top: 2rem;
+    border-radius: 0 0 12px 12px;
+}

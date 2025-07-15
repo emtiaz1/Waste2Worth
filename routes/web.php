@@ -18,3 +18,7 @@ Route::get('register', function () {
 Route::get('event', function () {
     return view('event');
 })->name('event');
+
+Route::get('/help', function () {
+    return view('help');
+})->name('help');

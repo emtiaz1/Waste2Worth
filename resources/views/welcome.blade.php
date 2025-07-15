@@ -47,7 +47,7 @@
                     <h2>SUPPORT</h2>
                     <ul>
                         <li><a href="/frontend/reporting.html">🚩 Report</a></li>
-                        <li><a href="/frontend/help.html">❓ Help</a></li>
+                        <li><a href="{{ route('help') }}">❓ Help</a></li>
                     </ul>
                 </div>
             </nav>
@@ -110,6 +110,7 @@
             </div>
         </aside>
     </div>
+
 
     <script src="{{ asset('js/script.js') }}"></script>
 </body>
