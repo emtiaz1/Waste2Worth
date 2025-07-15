@@ -38,7 +38,7 @@
                     <ul>
                         <li><a href="{{ route('event') }}"> Event</a></li>
                         <li><a href="{{ route('community') }}">👥 Community</a></li>
-                        <li><a href="/frontend/report_waste.html">🗑️ Waste Report</a></li>
+                        <li><a href="{{ route('reportWaste') }}">🗑️ Waste Report</a></li>
                         <li><a href="/frontend/reward_system.html">🏆 Reward</a></li>
                     </ul>
                 </div>
@@ -79,7 +79,7 @@
                         <h2>Found Waste Report?</h2>
                         <p>Reporting waste</p>
                     </div>
-                    <a href="/frontend/report.html" class="btn-report">REPORT WASTE</a>
+                    <a href="/reportWaste" class="btn btn-primary">Waste Report</a>
                 </div>
             </section>
         <section class="section-box">

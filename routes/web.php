@@ -22,3 +22,7 @@ Route::get('event', function () {
 Route::get('/help', function () {
     return view('help');
 })->name('help');
+
+Route::get('/reportWaste', function () {
+    return view('reportWaste');
+})->name('reportWaste');
