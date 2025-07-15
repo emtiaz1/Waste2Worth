@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Waste2Worth</title>
-    <link rel="shortcut icon" href="{{ asset('frontend/image/logo.png') }}" type="image/x-icon" />
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 
@@ -14,7 +13,7 @@
     <header class="header">
         <div class="header-left">
             <img src="{{ asset('frontend/image/logo.png') }}" alt="Logo" class="logo">
-            <h1>Waste2Worth</h1>
+            <h2>Waste2Worth</h1>
         </div>
         <div class="header-right">
             <span>Hi, User!</span>
@@ -30,14 +29,15 @@
                     <ul>
                         <li><a href="/frontend/leaderboard.html">🏠 Leaderboard</a></li>
                         <li><a href="/frontend/profile.html">👤 Profile</a></li>
-                        <li><a href="/frontend/volunteer.html">❤️ Volunteer</a></li>
+                        <li><a href="{{ route('register') }}">❤️ Volunteer</a></li>
                     </ul>
                 </div>
 
                 <div class="section">
                     <h2>MAIN</h2>
                     <ul>
-                        <li><a href="/frontend/community.html">👥 Community</a></li>
+                        <li><a href="{{ route('event') }}"> Event</a></li>
+                        <li><a href="{{ route('community') }}">👥 Community</a></li>
                         <li><a href="/frontend/report_waste.html">🗑️ Waste Report</a></li>
                         <li><a href="/frontend/reward_system.html">🏆 Reward</a></li>
                     </ul>
@@ -59,15 +59,15 @@
                 <h2>Ongoing Events</h2>
                 <div class="event-grid">
                     <div class="event">
-                        <img src="{{ asset('frontend/dashboard1.png') }}" alt="Event 1">
+                        <img src="{{ asset('frontend/image/dashboard1.png') }}" alt="Event 1">
                         <div class="date-badge">20-June-2025</div>
                     </div>
                     <div class="event">
-                        <img src="{{ asset('frontend/dashboard2.png.jpg') }}" alt="Event 2">
+                        <img src="{{ asset('frontend/image/dashboard2.png.jpg') }}" alt="Event 2">
                         <div class="date-badge">25-June-2025</div>
                     </div>
                     <div class="event">
-                        <img src="{{ asset('frontend/dashboard3.jpg') }}" alt="Event 3">
+                        <img src="{{ asset('frontend/image/dashboard3.jpg') }}" alt="Event 3">
                         <div class="date-badge">15-July-2025</div>
                     </div>
                 </div>
@@ -82,17 +82,17 @@
                     <a href="/frontend/report.html" class="btn-report">REPORT WASTE</a>
                 </div>
             </section>
+        <section class="section-box">
+            <h2>Our Communities</h2>
+            <div class="community-grid">
+                @for ($i = 1; $i <= 6; $i++)
+                    <div class="community-card">
+                        <img src="{{ asset('frontend/image/communities' . $i . '.jpg') }}" alt="Community {{ $i }}">
+                    </div>
+                @endfor
+            </div>
+        </section>
 
-            <section class="section-box">
-                <h2>Our Communities</h2>
-                <div class="scrolling-wrapper">
-                    @for ($i = 1; $i <= 6; $i++)
-                        <div class="community-card">
-                            <img src="{{ asset('frontend/communities' . $i . '.jpg') }}" alt="Community {{ $i }}">
-                        </div>
-                    @endfor
-                </div>
-            </section>
         </main>
 
         <!-- News Sidebar -->
@@ -100,7 +100,7 @@
             <h2>News Archive</h2>
             <div id="newsContainer">
                 <div class="news-card">
-                    <img src="{{ asset('frontend/communities7.jpg') }}" alt="News">
+                    <img src="{{ asset('frontend/image/communities7.jpg') }}" alt="News">
                     <div class="news-content">
                         <h3>Recycle Games</h3>
                         <p>Let's reduce plastic waste using games and.....</p>

@@ -5,3 +5,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('community', function () {
+    return view('community');
+})->name('community');
+
+
+Route::get('register', function () {
+    return view('register');
+})->name('register');
+
+Route::get('event', function () {
+    return view('event');
+})->name('event');
