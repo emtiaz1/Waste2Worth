@@ -160,7 +160,102 @@
         </aside>
     </div>
 
-    
+    <!-- JavaScript -->
+    <script>
+        const form = document.getElementById("wasteForm");
+        const recentReports = document.getElementById("recentReports");
+        const totalWasteDisplay = document.getElementById("totalWaste");
+        const mostTypeDisplay = document.getElementById("mostType");
+        const cleanupBar = document.getElementById("cleanupBar");
+        const cleanupText = document.getElementById("cleanupText");
+
+        let totalWaste = 0;
+        let wasteTypes = {};
+        let cleanedPercent = 0;
+        let reports = [];
+
+        // ---- Load from localStorage ----
+        function loadData() {
+            const savedWaste = localStorage.getItem("totalWaste");
+            const savedTypes = localStorage.getItem("wasteTypes");
+            const savedReports = localStorage.getItem("reports");
+
+            if (savedWaste) totalWaste = parseFloat(savedWaste);
+            if (savedTypes) wasteTypes = JSON.parse(savedTypes);
+            if (savedReports) reports = JSON.parse(savedReports);
+
+            updateUI();
+        }
+
+        // ---- Save to localStorage ----
+        function saveData() {
+            localStorage.setItem("totalWaste", totalWaste);
+            localStorage.setItem("wasteTypes", JSON.stringify(wasteTypes));
+            localStorage.setItem("reports", JSON.stringify(reports));
+        }
+
+        // ---- Update UI with current data ----
+        function updateUI() {
+            // Total waste
+            totalWasteDisplay.textContent = `${totalWaste.toFixed(2)} kg`;
+
+            // Most reported type
+            const mostType = Object.entries(wasteTypes).sort((a, b) => b[1] - a[1])[0];
+            mostTypeDisplay.textContent = mostType ? mostType[0] : "None";
+
+            // Cleanup progress
+            cleanedPercent = Math.min(100, (totalWaste * 0.7));
+            cleanupBar.style.width = `${cleanedPercent}%`;
+            cleanupText.textContent = `${Math.round(cleanedPercent)}% of reported waste cleaned`;
+
+            // Recent reports
+            recentReports.innerHTML = '';
+            for (let r of reports.reverse()) {
+                const reportHTML = `
+          <div class="border-b pb-4">
+            <div class="flex justify-between items-start mb-2">
+              <h4 class="font-semibold text-lg">${r.type} Waste at ${r.location}</h4>
+              <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">Pending</span>
+            </div>
+            <p class="text-gray-600 mb-2">${r.description}</p>
+            ${r.imageURL ? `<img src="${r.imageURL}" class="w-full h-40 object-cover mb-2 rounded">` : ''}
+            <div class="text-sm text-gray-500">Reported earlier</div>
+          </div>`;
+                recentReports.insertAdjacentHTML("beforeend", reportHTML);
+            }
+        }
+
+        // ---- Form Submission ----
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const type = document.getElementById("wasteType").value;
+            const amount = parseFloat(document.getElementById("wasteAmount").value) || 0;
+            const unit = document.getElementById("wasteUnit").value;
+            const location = document.getElementById("wasteLocation").value;
+            const description = document.getElementById("wasteDescription").value;
+            const imageFile = document.getElementById("wasteImage").files[0];
+
+            totalWaste += amount;
+            wasteTypes[type] = (wasteTypes[type] || 0) + 1;
+
+            let imageURL = "";
+            if (imageFile) {
+                imageURL = URL.createObjectURL(imageFile);
+            }
+
+            const newReport = { type, amount, unit, location, description, imageURL };
+            reports.unshift(newReport); // Add to front
+
+            saveData();
+            updateUI();
+
+            form.reset();
+        });
+
+        // ---- Initialize on page load ----
+        loadData();
+    </script>
 </body>
 
 </html>
