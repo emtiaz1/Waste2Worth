@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Zero Waste - Report Waste</title>
+    <title>Waste2Worth - Report Waste</title>
     <link rel="shortcut icon" href="/frontend/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="css/reportWaste.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -14,7 +14,7 @@
     <header class="header">
         <div class="header-left">
             <img src="{{ asset('frontend/image/logo.png') }}" alt="Logo" class="logo">
-            <h1>ZeroWaste</h1>
+            <h1>Waste2Worth</h1>
         </div>
         <div class="header-right">
             <span>Hi, User!</span>

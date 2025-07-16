@@ -169,7 +169,7 @@
     </div>
   </footer>
 
-  <script src="welcome.js"></script>
+  <script src="js/welcome.js"></script>
 </body>
 
 </html>
