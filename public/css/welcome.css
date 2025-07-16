@@ -25,6 +25,8 @@ body {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
+
+
 .header-container {
   display: flex;
   justify-content: space-between;
@@ -281,4 +283,23 @@ form button:hover {
 
 .socials a:hover {
   color: #00ffcc;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+.hero-text h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  color: #ffffff;
+  animation: float 3s ease-in-out infinite;
+  letter-spacing: 1px;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }

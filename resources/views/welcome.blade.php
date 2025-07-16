@@ -7,6 +7,8 @@
   <title>Waste2Worth - Community-Led Environmental Action Network</title>
   <link rel="stylesheet" href="css/welcome.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
@@ -34,7 +36,7 @@
   <section class="hero">
     <div class="container hero-container">
       <div class="hero-text">
-        <h2>Join the Movement for a Cleaner Environment</h2>
+        <h1>Join the Movement for a Cleaner Environment</h1>
         <p>Waste2Worth empowers communities to take action against waste and pollution. Report, volunteer, and make a difference today.</p>
         <a href="#login" class="cta"><i class="fas fa-play-circle"></i> Get Started</a>
       </div>
@@ -69,21 +71,21 @@
   </section>
 
   <!-- How It Works Section -->
-  <section id="how-it-works" class="how-it-works">
+  <section id="features" class="features">
     <div class="container">
       <h2>How It Works</h2>
-      <div class="steps">
-        <div class="step">
+      <div class="features-grid">
+        <div class="feature-item">
           <i class="fas fa-user-plus fa-2x icon"></i>
           <h3>1. Sign Up</h3>
           <p>Create an account to access all features.</p>
         </div>
-        <div class="step">
+        <div class="feature-item">
           <i class="fas fa-hand-holding-heart fa-2x icon"></i>
           <h3>2. Take Action</h3>
           <p>Report issues, join events, or start your own campaigns.</p>
         </div>
-        <div class="step">
+        <div class="feature-item">
           <i class="fas fa-award fa-2x icon"></i>
           <h3>3. Earn Rewards</h3>
           <p>Gain recognition and earn badges for your contributions.</p>
