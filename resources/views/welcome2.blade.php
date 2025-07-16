@@ -112,7 +112,7 @@
     </div>
 
 
-    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="{{ asset('resources/js/welcome.js') }}"></script>
 </body>
 
 </html>

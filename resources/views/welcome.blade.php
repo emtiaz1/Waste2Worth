@@ -5,7 +5,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Waste2Worth - Community-Led Environmental Action Network</title>
-  <link rel="stylesheet" href="welcome.css">
   <link rel="stylesheet" href="css/welcome.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
@@ -16,7 +15,7 @@
     <div class="container header-container">
       <div class="logo-section">
         <img src="{{ asset('frontend/image/logo.png') }}" alt="Waste2Worth Logo" class="logo">
-        <h1 class="logo-text"><i class="fas fa-recycle"></i> Waste2Worth</h1>
+        <h1 class="logo-text"><i></i> Waste2Worth</h1>
       </div>
       <nav class="nav">
         <a href="#features">Features</a>
@@ -166,7 +165,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2024 Waste2Worth. All rights reserved.</p>
+      <p>&copy; 2025 Waste2Worth. All rights reserved.</p>
     </div>
   </footer>
 
