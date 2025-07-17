@@ -304,3 +304,56 @@ form button:hover {
     transform: translateY(-10px);
   }
 }
+
+/* Gallery */
+.gallery {
+  padding: 60px 0;
+  background: #f1f8e9;
+  text-align: center;
+}
+
+.gallery h2 {
+  color: #388e3c;
+  margin-bottom: 32px;
+  font-size: 2em;
+  font-weight: 700;
+}
+
+.gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  justify-content: center;
+}
+
+.gallery-item {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(56, 142, 60, 0.10);
+  overflow: hidden;
+  width: 260px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 170px;
+  object-fit: cover;
+  border-bottom: 1px solid #e8f5e9;
+}
+
+.gallery-item p {
+  padding: 12px 10px;
+  color: #388e3c;
+  font-size: 1.08em;
+  font-weight: 500;
+  margin: 0;
+}
+
+.gallery-item:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 8px 24px rgba(56, 142, 60, 0.16);
+}

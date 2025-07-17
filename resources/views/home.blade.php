@@ -54,7 +54,7 @@
                 <p>Thank you for making a difference with Waste2Worth. Here’s what you can do next:</p>
                 <div class="card-grid">
                     <div class="card action-card">
-                        <img src="{{ asset('frontend/image/cleanup.jpg') }}" alt="Cleanup" class="card-img">
+                        <img src="{{ asset('frontend/image/Cleanup4.jpg') }}" alt="Cleanup" class="card-img">
                         <h3>Join a Clean-up</h3>
                         <p>Participate in local clean-up events and help restore your community.</p>
                         <a href="{{ url('/event') }}" class="btn">View Events</a>
@@ -66,7 +66,7 @@
                         <a href="{{ url('/reportWaste') }}" class="btn">Report Now</a>
                     </div>
                     <div class="card action-card">
-                        <img src="{{ asset('frontend/image/community.jpg') }}" alt="Community" class="card-img">
+                        <img src="{{ asset('frontend/image/Communities.jpg') }}" alt="Community" class="card-img">
                         <h3>Connect with Community</h3>
                         <p>Share your impact, join discussions, and inspire others to take action.</p>
                         <a href="{{ url('/community') }}" class="btn">Join Community</a>

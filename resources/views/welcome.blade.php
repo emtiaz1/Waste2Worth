@@ -133,6 +133,40 @@
     </div>
   </section>
 
+  <!-- Gallery Section -->
+  <section id="gallery" class="gallery">
+    <div class="container">
+      <h2>See Our Work in Action</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <img src="{{ asset('frontend/image/clean1.jpg') }}" alt="Community Cleanup">
+          <p>Community Cleanup Drive</p>
+        </div>
+        <div class="gallery-item">
+          <img src="{{ asset('frontend/image/clean2.png') }}" alt="Plastic Collection">
+          <p>Plastic Waste Collection</p>
+        </div>
+        <div class="gallery-item">
+          <img src="{{ asset('frontend/image/clean3.png') }}" alt="Awareness Campaign">
+          <p>Awareness Campaign</p>
+        </div>
+        <div class="gallery-item">
+          <img src="{{ asset('frontend/image/clean4.jpg') }}" alt="Volunteers">
+          <p>Our Volunteers in Action</p>
+        </div>
+        <div class="gallery-item">
+          <img src="{{ asset('frontend/image/clean5.png') }}" alt="Recycling Efforts">
+          <p>Recycling Efforts</p>
+        </div>
+        <div class="gallery-item">
+          <img src="{{ asset('frontend/image/tree.jpeg') }}" alt="Tree Planting">
+          <p>Tree Planting Event</p>
+        </div>
+        <!-- Add more images as needed -->
+      </div>
+    </div>
+  </section>
+
   <!-- Footer -->
   <footer class="footer">
     <div class="container footer-container">
