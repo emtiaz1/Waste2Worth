@@ -44,7 +44,7 @@
                     <h2>SUPPORT</h2>
                     <ul>
                         <li><i class="fas fa-flag"></i><a href="/frontend/reporting.html">Report</a></li>
-                        <li><i class="fas fa-circle-question"></i><a href="/frontend/help.html">Help</a></li>
+                        <li><i class="fas fa-circle-question"></i><a href="/help">Help</a></li>
                     </ul>
                 </div>
             </nav>

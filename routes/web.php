@@ -26,3 +26,7 @@ Route::get('/help', function () {
 Route::get('/reportWaste', function () {
     return view('reportWaste');
 })->name('reportWaste');
+
+Route::get('/home', function () {
+    return view('home');
+})->name('home');

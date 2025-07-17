@@ -27,9 +27,9 @@
                 <div class="section">
                     <h2>ACCOUNT</h2>
                     <ul>
-                        <li><a href="/frontend/leaderboard.html">🏠 Leaderboard</a></li>
-                        <li><a href="/frontend/profile.html">👤 Profile</a></li>
-                        <li><a href="{{ route('register') }}">❤️ Volunteer</a></li>
+                        <li><a href="/frontend/leaderboard.html"> Leaderboard</a></li>
+                        <li><a href="/frontend/profile.html"> Profile</a></li>
+                        <li><a href="{{ route('register') }}"> Volunteer</a></li>
                     </ul>
                 </div>
 
@@ -37,17 +37,17 @@
                     <h2>MAIN</h2>
                     <ul>
                         <li><a href="{{ route('event') }}"> Event</a></li>
-                        <li><a href="{{ route('community') }}">👥 Community</a></li>
-                        <li><a href="{{ route('reportWaste') }}">🗑️ Waste Report</a></li>
-                        <li><a href="/frontend/reward_system.html">🏆 Reward</a></li>
+                        <li><a href="{{ route('community') }}"> Community</a></li>
+                        <li><a href="{{ route('reportWaste') }}"> Waste Report</a></li>
+                        <li><a href="/frontend/reward_system.html"> Reward</a></li>
                     </ul>
                 </div>
 
                 <div class="section">
                     <h2>SUPPORT</h2>
                     <ul>
-                        <li><a href="/frontend/reporting.html">🚩 Report</a></li>
-                        <li><a href="{{ route('help') }}">❓ Help</a></li>
+                        <li><a href="/frontend/reporting.html"> Report</a></li>
+                        <li><a href="{{ route('help') }}"> Help</a></li>
                     </ul>
                 </div>
             </nav>

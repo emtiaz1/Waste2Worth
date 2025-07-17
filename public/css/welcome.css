@@ -149,16 +149,17 @@ body {
 
 .feature-item, .impact-item {
   flex: 1;
-  background: #fff;
+  background: #e8f5e9; /* light green */
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
 .feature-item:hover, .impact-item:hover {
-  transform: translateY(-5px);
+  background: #fff; /* white on hover */
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-5px);
 }
 
 /* How It Works */
