@@ -9,45 +9,45 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <div class="header-left">
-            <img src="{{ asset('frontend/image/logo.png') }}" alt="Logo" class="logo">
-            <h1>Waste2Worth</h1>
-        </div>
-        <div class="header-right">
-            <span>Hi, User!</span>
-        </div>
-    </header>
-
-    <div class="container">
+    <div class="layout">
+        <!-- Sidebar -->
         <aside class="sidebar">
-            <nav>
+            <div class="sidebar-header">
+                <img src="{{ asset('frontend/image/logo.png') }}" alt="Logo" class="sidebar-logo">
+                <span class="sidebar-title">Waste2Worth</span>
+            </div>
+            <div class="sidebar-user">
+                <img src="{{ asset('frontend/image/user.jpg') }}" alt="User" class="user-avatar">
+                <span class="user-name">Hi, User!</span>
+            </div>
+            <nav class="sidebar-nav">
                 <div class="nav-section">
-                    <h2>ACCOUNT</h2>
+                    <h3>Account</h3>
                     <ul>
-                        <li><i class="fas fa-home"></i><a href="{{ url('/home') }}">Home</a></li>
-                        <li><i class="fas fa-user"></i><a href="#">Profile</a></li>
-                        <li><i class="fas fa-heart"></i><a href="#">Volunteer</a></li>
+                        <li><a href="{{ url('/home') }}"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="#"><i class="fas fa-heart"></i> Volunteer</a></li>
                     </ul>
                 </div>
                 <div class="nav-section">
-                    <h2>MAIN</h2>
+                    <h3>Main</h3>
                     <ul>
-                        <li><i class="fas fa-users"></i><a href="{{ url('/community') }}">Community</a></li>
-                        <li><i class="fas fa-dumpster"></i><a href="{{ url('/reportWaste') }}">Waste Report</a></li>
-                        <li><i class="fas fa-gift"></i><a href="#">Reward</a></li>
+                        <li><a href="{{ url('/community') }}"><i class="fas fa-users"></i> Community</a></li>
+                        <li><a href="{{ url('/reportWaste') }}"><i class="fas fa-dumpster"></i> Waste Report</a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> Reward</a></li>
                     </ul>
                 </div>
                 <div class="nav-section">
-                    <h2>SUPPORT</h2>
+                    <h3>Support</h3>
                     <ul>
-                        <li><i class="fas fa-flag"></i><a href="#">Report</a></li>
-                        <li><i class="fas fa-circle-question"></i><a href="{{ url('/help') }}">Help</a></li>
+                        <li><a href="#"><i class="fas fa-flag"></i> Report</a></li>
+                        <li><a href="{{ url('/help') }}"><i class="fas fa-circle-question"></i> Help</a></li>
                     </ul>
                 </div>
             </nav>
         </aside>
 
+        <!-- Main Content -->
         <main class="main-content">
             <section class="card welcome-card">
                 <h2>Welcome Back!</h2>

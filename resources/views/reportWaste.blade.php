@@ -6,55 +6,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Waste2Worth - Report Waste</title>
     <link rel="shortcut icon" href="/frontend/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="css/reportWaste.css">
+    <link rel="stylesheet" href="{{ asset('css/reportWaste.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <header class="header">
-        <div class="header-left">
-            <img src="{{ asset('frontend/image/logo.png') }}" alt="Logo" class="logo">
-            <h1>Waste2Worth</h1>
-        </div>
-        <div class="header-right">
-            <span>Hi, User!</span>
-        </div>
-    </header>
-
-    <div class="container">
+    <div class="layout">
+        <!-- Sidebar -->
         <aside class="sidebar">
-            <nav>
+            <div class="sidebar-header">
+                <img src="{{ asset('frontend/image/logo.png') }}" alt="Logo" class="sidebar-logo">
+                <span class="sidebar-title">Waste2Worth</span>
+            </div>
+            <div class="sidebar-user">
+                <img src="{{ asset('frontend/image/user.jpg') }}" alt="User" class="user-avatar">
+                <span class="user-name">Hi, User!</span>
+            </div>
+            <nav class="sidebar-nav">
                 <div class="nav-section">
-                    <h2>ACCOUNT</h2>
+                    <h3>Account</h3>
                     <ul>
-                        <li><i class="fas fa-home"></i><a href="/frontend/dashboard.html">Home</a></li>
-                        <li><i class="fas fa-user"></i><a href="/frontend/profile.html">Profile</a></li>
-                        <li><i class="fas fa-heart"></i><a href="/frontend/volunteer.html">Volunteer</a></li>
+                        <li><a href="{{ url('/home') }}"><i class="fas fa-home"></i> Home</a></li>
+                        <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                        <li><a href="#"><i class="fas fa-heart"></i> Volunteer</a></li>
                     </ul>
                 </div>
                 <div class="nav-section">
-                    <h2>MAIN</h2>
+                    <h3>Main</h3>
                     <ul>
-                        <li><i class="fas fa-users"></i><a href="/frontend/community.html">Community</a></li>
-                        <li><i class="fas fa-users"></i><a href="/frontend/reportWaste.html">Waste Report</a></li>
-                        <li><i class="fas fa-users"></i><a href="/frontend/reward_system.html">Reward</a></li>
+                        <li><a href="{{ url('/community') }}"><i class="fas fa-users"></i> Community</a></li>
+                        <li><a href="{{ url('/reportWaste') }}"><i class="fas fa-dumpster"></i> Waste Report</a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> Reward</a></li>
                     </ul>
                 </div>
                 <div class="nav-section">
-                    <h2>SUPPORT</h2>
+                    <h3>Support</h3>
                     <ul>
-                        <li><i class="fas fa-flag"></i><a href="/frontend/reporting.html">Report</a></li>
-                        <li><i class="fas fa-circle-question"></i><a href="/help">Help</a></li>
+                        <li><a href="#"><i class="fas fa-flag"></i> Report</a></li>
+                        <li><a href="{{ url('/help') }}"><i class="fas fa-circle-question"></i> Help</a></li>
                     </ul>
                 </div>
             </nav>
         </aside>
 
+        <!-- Main Content -->
         <main class="main-content">
-            <h2>Report Waste</h2>
-
             <section class="card">
-                <h3>Submit a Waste Report</h3>
+                <h2>Report Waste</h2>
                 <form id="wasteForm">
                     <label>Waste Type
                         <select id="wasteType">
@@ -67,7 +65,6 @@
                             <option>Other</option>
                         </select>
                     </label>
-
                     <label>Estimated Amount
                         <div class="input-group">
                             <input type="number" id="wasteAmount" placeholder="Amount" required>
@@ -77,29 +74,25 @@
                             </select>
                         </div>
                     </label>
-
                     <label>Location
                         <input type="text" id="wasteLocation" placeholder="Location" required>
                     </label>
-
                     <label>Description
                         <textarea id="wasteDescription" rows="3" placeholder="Details..."></textarea>
                     </label>
-
                     <label>Upload Photo
                         <input type="file" id="wasteImage" accept="image/*">
                     </label>
-
                     <button type="submit">Submit Report</button>
                 </form>
             </section>
-
             <section class="card">
                 <h3>Recent Waste Reports</h3>
                 <div id="recentReports"></div>
             </section>
         </main>
 
+        <!-- Stats Bar -->
         <aside class="stats-bar">
             <h2>Waste Statistics</h2>
             <div class="stat">
@@ -120,8 +113,7 @@
             </div>
         </aside>
     </div>
-
-    <script src="js/reportWaste.js"></script>
+    <script src="{{ asset('js/reportWaste.js') }}"></script>
 </body>
 
 </html>
