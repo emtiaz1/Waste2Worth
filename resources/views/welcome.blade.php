@@ -24,6 +24,7 @@
         <a href="#how-it-works">How It Works</a>
         <a href="#impact">Our Impact</a>
         <a href="#join">Join Us</a>
+        <a href="{{ url('/community') }}"><i class="fas fa-users"></i> Community</a>
       </nav>
       <div class="auth-links">
         <a href="/frontend/login.html" class="login">Log In</a>
