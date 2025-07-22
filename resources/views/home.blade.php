@@ -32,6 +32,7 @@
                 <div class="nav-section">
                     <h3>Main</h3>
                     <ul>
+                        <li></li><a href="{{ url('/event') }}"><i class="fas fa-calendar-alt"></i> Event</a></li>
                         <li><a href="{{ url('/community') }}"><i class="fas fa-users"></i> Community</a></li>
                         <li><a href="{{ url('/reportWaste') }}"><i class="fas fa-dumpster"></i> Waste Report</a></li>
                         <li><a href="#"><i class="fas fa-gift"></i> Reward</a></li>
