@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Volunteer Registration</title>
-  <link rel="stylesheet" href="style_fuad.css" />
+  <link rel="stylesheet" href="public\css\style_fuad.css" />
 </head>
 <body>
   <div class="container">
@@ -24,6 +24,6 @@
       <button onclick="location.href='main.html'">Back to Home</button>
     </div>
 
-  <script src="script.js"></script>
+  <script src="resources\js\script_fuad.js"></script>
 </body>
 </html>

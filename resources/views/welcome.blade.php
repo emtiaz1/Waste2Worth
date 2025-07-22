@@ -1,6 +1,40 @@
 @extends('index')
 
+<<<<<<< HEAD
 @section('title', 'Welcome | Waste2Worth')
+=======
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Waste2Worth - Community-Led Environmental Action Network</title>
+  <link rel="stylesheet" href="css/welcome.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container header-container">
+      <div class="logo-section">
+        <img src="{{ asset('frontend/image/logo.png') }}" alt="Waste2Worth Logo" class="logo">
+        <h1 class="logo-text"><i></i> Waste2Worth</h1>
+      </div>
+      <nav class="nav">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#impact">Our Impact</a>
+        <a href="#join">Join Us</a>
+        <a href="{{ url('/community') }}"><i class="fas fa-users"></i> Community</a>
+      </nav>
+      <div class="auth-links">
+        <a href="/frontend/login.html" class="login">Log In</a>
+        <a href="/frontend/signup.html" class="signup">Sign Up</a>
+      </div>
+    </div>
+  </header>
+>>>>>>> 72d746128b7e22e8ee386d47157c8dcd5f0dc326
 
 @section('content')
   <!-- Hero Section -->
