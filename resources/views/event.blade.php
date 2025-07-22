@@ -26,6 +26,6 @@
   <div id="backHomeBtn" style="display:none; text-align:center; margin-top: 20px;">
   <button onclick="location.href='main.html'">Back to Home</button>
   </div>
-  <script src="script.js"></script>
+  <script src="resources\js\script_fuad.js"></script>
 </body>
 </html>
