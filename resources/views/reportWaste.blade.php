@@ -44,6 +44,7 @@
                     <ul>
                         <li><a href="#"><i class="fas fa-flag"></i> Report</a></li>
                         <li><a href="{{ url('/help') }}"><i class="fas fa-circle-question"></i> Help</a></li>
+                        <li><a href="{{ url('/contact') }}"><i class="fas fa-envelope"></i> Contact Us</a></li>
                     </ul>
                 </div>
             </nav>
