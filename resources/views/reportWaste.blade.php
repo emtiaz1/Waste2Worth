@@ -7,6 +7,7 @@
     <title>Waste2Worth - Report Waste</title>
     <link rel="shortcut icon" href="/frontend/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/reportWaste.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 
@@ -14,7 +15,6 @@
     <div class="layout">
         <!-- Sidebar -->
         @include('components.sidebar')
-
         <!-- Main Content -->
         <main class="main-content">
             <section class="card">

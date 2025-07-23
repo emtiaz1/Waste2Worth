@@ -1,70 +1,125 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f4f4;
+body{
   margin: 0;
-  padding: 20px;
+  padding: 0;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
 }
 
-.container {
-  max-width: 500px;
-  margin: auto;
-  background: #fff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+.layout-flex {
+    display: flex;
+    min-height: 100vh;
+    padding-left: 0;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
 }
-
-h1 {
-  text-align: center;
-  color: #28a745;
+.volunteer-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
 }
-
-form {
-  display: flex;
-  flex-direction: column;
+.volunteer-form-box {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(56, 142, 60, 0.1);
+    padding: 32px 36px;
+    max-width: 480px;
+    width: 100%;
+    margin: 0 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
-
-input, textarea, select {
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+.volunteer-form-box h1 {
+    color: #2e7d32;
+    margin-bottom: 24px;
+    text-align: center;
+    font-size: 2rem;
 }
-
-button {
-  padding: 12px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.volunteer-form-box input,
+.volunteer-form-box textarea {
+    width: 100%;
+    margin-bottom: 18px;
+    padding: 12px 14px;
+    border: 1.5px solid #a5d6a7;
+    border-radius: 8px;
+    font-size: 1em;
+    background: #e8f5e9;
+    color: #2e7d32;
+    transition: border 0.2s;
+    resize: none;
 }
-
-button:hover {
-  background-color: #218838;
+.volunteer-form-box input:focus,
+.volunteer-form-box textarea:focus {
+    border: 1.5px solid #43a047;
+    background: #f1f8e9;
+    outline: none;
 }
-
-#volunteerMessage,
-#eventMessage {
-  text-align: center;
-  margin-top: 20px;
-  color: #155724;
+.volunteer-form-box button {
+    background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 0;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
+    box-shadow: 0 2px 8px rgba(67, 160, 71, 0.12);
+    transition: background 0.2s;
 }
-input:hover,
-textarea:hover,
-select:hover {
-  border-color: #28a745;
-  box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
-  transition: all 0.2s ease-in-out;
+.volunteer-form-box button:hover {
+    background: linear-gradient(90deg, #388e3c 0%, #43a047 100%);
 }
-
-.container:hover {
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
-  transition: box-shadow 0.3s ease;
+#volunteerMessage {
+    margin-top: 16px;
+    text-align: center;
+    color: #388e3c;
+    font-weight: 500;
 }
-
-h1:hover {
-  color: #218838;
-  transition: color 0.2s ease;
+#backHomeBtn {
+    text-align: center;
+    margin-top: 20px;
 }
-
+#backHomeBtn button {
+    background: #2e7d32;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#backHomeBtn button:hover {
+    background: #388e3c;
+}
+@media (max-width: 900px) {
+    .volunteer-form-box {
+        max-width: 98vw;
+        padding: 18px 6vw;
+    }
+}
+@media (max-width: 700px) {
+    .layout-flex {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        min-height: unset;
+        border-radius: 0 0 32px 32px;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 18px 0 18px 0;
+    }
+    .volunteer-content {
+        padding: 16px 0;
+    }
+}
+@media (max-width: 500px) {
+    .volunteer-form-box {
+        padding: 12px 2vw;
+    }
+    .sidebar {
+        border-radius: 0;
+    }
+}

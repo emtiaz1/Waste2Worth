@@ -6,6 +6,7 @@
     <title>Waste2Worth - Home</title>
     <link rel="shortcut icon" href="/frontend/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
