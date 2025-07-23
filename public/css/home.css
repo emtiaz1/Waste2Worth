@@ -1,0 +1,185 @@
+body {
+    background: #f8fafc;
+    font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+    color: green;
+    margin: 0;
+}
+h3, p {
+    font-size: 16px;
+}
+.layout {
+    display: flex;
+    min-height: 100vh;
+    padding-left: 0;
+}
+
+.main-content {
+    flex: 1;
+    padding: 48px 48px 32px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    align-items: stretch;
+    background: none;
+    min-height: 100vh;
+}
+
+.card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(56, 142, 60, 0.1);
+    padding: 24px 28px;
+    margin-bottom: 0;
+    width: 55%;
+    height: 400px;
+    max-width: none;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+.card.welcome-card {
+    margin-bottom: 2rem;
+}
+
+.card:hover {
+    background: #f1f8e9;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+}
+
+.card-grid {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.card-grid .card {
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(56, 142, 60, 0.1);
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+.card-grid .card:hover {
+    background: #f1f8e9;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-5px);
+}
+
+.action-card {
+    flex: 1;
+    min-width: 100px;
+    width: 100%;
+    height: 300px;
+    background: #e8f5e9;
+    border-radius: 15px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+    padding: 24px;
+    margin-bottom: 0;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.card-img {
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 12px;
+    height: 150px;
+    object-fit: cover;
+}
+
+.report-card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(56, 142, 60, 0.1);
+    padding: 24px;
+    margin-bottom: 0;
+    width: 100%;
+    max-width: none;
+}
+
+.btn {
+    background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 12px;
+    box-shadow: 0 2px 8px rgba(67, 160, 71, 0.12);
+    text-decoration: none;
+    transition: background 0.2s;
+    display: inline-block;
+}
+
+.btn:hover {
+    background: linear-gradient(90deg, #388e3c 0%, #43a047 100%);
+}
+
+.impact-card .stat {
+    margin-bottom: 22px;
+}
+
+.impact-card .stat h4 {
+    color: #2e7d32;
+    margin-bottom: 6px;
+}
+
+.impact-card .stat p {
+    font-size: 1.1em;
+    margin: 0;
+}
+
+.muted {
+    color: #81c784;
+    font-size: 0.95em;
+}
+
+.progress-bar {
+    background: #c8e6c9;
+    border-radius: 8px;
+    height: 18px;
+    width: 100%;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+#cleanupBar {
+    background: linear-gradient(90deg, #43a047 0%, #81c784 100%);
+    height: 100%;
+    border-radius: 8px;
+    transition: width 0.4s;
+}
+
+#cleanupText {
+    color: #388e3c;
+    font-size: 1em;
+    margin-top: 0;
+}
+
+.scrolling-wrapper {
+    overflow-x: auto;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.scrolling-wrapper .card {
+    flex: 0 0 auto;
+    margin-right: 1rem;
+}
+
+
+@media (max-width: 900px) {
+    .main-content {
+        padding: 24px 8px 24px 8px;
+    }
+
+    .card-grid {
+        flex-direction: column;
+        gap: 16px;
+    }
+}
