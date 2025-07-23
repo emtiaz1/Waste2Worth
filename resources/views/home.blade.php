@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
-
 <body>
     <div class="layout">
         @include('components.sidebar')
@@ -22,7 +21,7 @@
                     <h2 class="card-title">Ongoing Events</h2>
                     <div class="card-grid">
                         <div class="card action-card">
-                            <img src="{{ asset('frontend/image/communities6.jpg') }}" alt="Event 1" class="card-img">
+                            <img src="{{ asset('frontend/image/Cleanup4.jpg') }}" alt="Event 1" class="card-img">
                             <div>
                                 <h3>Community Cleanup</h3>
                                 <p>Join our city-wide cleanup event and make a difference!</p>

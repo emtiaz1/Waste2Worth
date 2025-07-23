@@ -9,7 +9,6 @@ h3, p {
 }
 .layout {
     display: flex;
-    min-height: 100vh;
     padding-left: 0;
 }
 
@@ -30,7 +29,7 @@ h3, p {
     box-shadow: 0 2px 12px rgba(56, 142, 60, 0.1);
     padding: 24px 28px;
     margin-bottom: 0;
-    width: 55%;
+    width: 900px;
     height: 400px;
     max-width: none;
     transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
@@ -74,7 +73,6 @@ h3, p {
     border-radius: 15px;
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
     padding: 24px;
-    margin-bottom: 0;
     transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
     display: flex;
     flex-direction: column;

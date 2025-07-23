@@ -1,5 +1,4 @@
-<!-- Sidebar -->
-<aside class="sidebar">
+<aside class="sidebar sidebar-collapsed" id="sidebarMenu">
     <div class="sidebar-header">
         <img src="{{ asset('frontend/image/logo.png') }}" alt="Logo" class="sidebar-logo">
         <span class="sidebar-title">Waste2Worth</span>

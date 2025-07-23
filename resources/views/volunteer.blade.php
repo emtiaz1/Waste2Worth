@@ -32,6 +32,7 @@
     </div>
   </div>
   <script src="{{ asset('js/script_fuad.js') }}"></script>
+  <script src="{{ asset('js/sidebar.js') }}"></script>
 </body>
 
 </html>
