@@ -4,11 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Waste2Worth - Community</title>
-<<<<<<< HEAD
+
   <link rel="stylesheet" href="{{ asset('css/community.css') }}" />
-=======
+
   <link rel="stylesheet" href="{{ asset('css/community.css') }}">
->>>>>>> 72d746128b7e22e8ee386d47157c8dcd5f0dc326
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
