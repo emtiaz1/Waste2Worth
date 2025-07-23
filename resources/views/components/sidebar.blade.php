@@ -31,6 +31,7 @@
             <ul>
                 <li><a href="#"><i class="fas fa-flag"></i> Report</a></li>
                 <li><a href="{{ url('/help') }}"><i class="fas fa-circle-question"></i> Help</a></li>
+                <li><a href="{{ url('/contact') }}"><i class="fa-solid fa-phone"></i> Contact US</a></li>
             </ul>
         </div>
     </nav>

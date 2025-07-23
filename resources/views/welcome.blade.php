@@ -133,7 +133,7 @@
       <div class="container">
         <h2>Welcome Back!</h2>
         <p>Log in to your Waste2Worth account and continue making an impact.</p>
-        <a href="/frontend/login.html" class="cta"><i class="fas fa-sign-in-alt"></i> Go to Login Page</a>
+        <a href="{{ url('/signup') }}?mode=signin" class="cta"><i class="fas fa-sign-in-alt"></i> Go to Login Page</a>
       </div>
     </section>
 
