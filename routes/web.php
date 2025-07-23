@@ -37,3 +37,7 @@ Route::get('/home', function () {
 Route::get('/contact', function () {
     return view('contact');
 });
+
+Route::get('/leaderboard', function () {
+    return view('leaderboard');
+});
