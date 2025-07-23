@@ -14,7 +14,7 @@
         <div class="box">
             <div class="inner-box">
                 <div class="forms-wrap">
-                    <form action="index.html" autocomplete="off" class="sign-in-form">
+                    <form action="{{ url('/home') }}" autocomplete="off" class="sign-in-form">
                         <div class="logo">
                             <img src="{{ asset('frontend/image/logo.png') }}" alt="Waste2Worth" />
                             <h4>Waste2Worth</h4>
@@ -28,12 +28,12 @@
 
                         <div class="actual-form">
                             <div class="input-wrap">
-                                <input type="text" minlength="4" class="input-field" autocomplete="off" required />
+                                <input type="text" class="input-field" autocomplete="off" />
                                 <label>Name</label>
                             </div>
 
                             <div class="input-wrap">
-                                <input type="password" minlength="4" class="input-field" autocomplete="off" required />
+                                <input type="password" class="input-field" autocomplete="off" />
                                 <label>Password</label>
                             </div>
 
@@ -46,7 +46,7 @@
                         </div>
                     </form>
 
-                    <form action="index.html" autocomplete="off" class="sign-up-form">
+                    <form action="" autocomplete="off" class="sign-up-form">
                         <div class="logo">
                             <img src="{{ asset('frontend/image/logo.png') }}" alt="Waste2Worth" />
                             <h4>Waste2Worth</h4>
@@ -75,7 +75,7 @@
                             </div>
 
                             <div class="input-wrap">
-                                <input type="text" minlength="4" class="input-field" autocomplete="off" required />
+                                <input type="text" class="input-field" autocomplete="off" required />
                                 <label>Present Address</label>
                             </div>
 

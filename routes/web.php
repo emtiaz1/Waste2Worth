@@ -14,10 +14,9 @@ Route::get('community', function () {
     return view('community');
 })->name('community');
 
-
-Route::get('register', function () {
-    return view('register');
-})->name('register');
+Route::get('volunteer', function () {
+    return view('volunteer');
+})->name('volunteer');
 
 Route::get('event', function () {
     return view('event');

@@ -301,4 +301,93 @@ main.sign-up-mode .carousel {
     border-radius: 1rem;
 }
 
+@media (max-width: 850px) {
+    .box {
+        height: auto;
+        max-width: 550px;
+        overflow: hidden;
+    }
 
+    .inner-box {
+        position: static;
+        transform: none;
+        width: revert;
+        height: revert;
+        padding: 2rem;
+    }
+
+    .forms-wrap {
+        position: revert;
+        width: 100%;
+        height: auto;
+    }
+
+    form {
+        max-width: revert;
+        padding: 1.5rem 2.5rem 2rem;
+        transition: transform 0.8s ease-in-out, opacity 0.45s linear;
+    }
+
+    .heading {
+        margin: 2rem 0;
+    }
+
+    form.sign-up-form {
+        transform: translateX(100%);
+    }
+
+    main.sign-up-mode form.sign-in-form {
+        transform: translateX(-100%);
+    }
+
+    main.sign-up-mode form.sign-up-form {
+        transform: translateX(0%);
+    }
+
+    .carousel {
+        position: revert;
+        height: auto;
+        width: 100%;
+        padding: 3rem 2rem;
+        display: flex;
+    }
+
+    .images-wrapper {
+        display: none;
+    }
+
+    .text-slider {
+        width: 100%;
+    }
+}
+
+@media (max-width: 530px) {
+    main {
+        padding: 1rem;
+    }
+
+    .box {
+        border-radius: 2rem;
+    }
+
+    .inner-box {
+        padding: 1rem;
+    }
+
+    .carousel {
+        padding: 1.5rem 1rem;
+        border-radius: 1.6rem;
+    }
+
+    .text-wrap {
+        margin-bottom: 1rem;
+    }
+
+    .text-group h2 {
+        font-size: 1.2rem;
+    }
+
+    form {
+        padding: 1rem 2rem 1.5rem;
+    }
+}
