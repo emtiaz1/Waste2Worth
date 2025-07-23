@@ -8,6 +8,7 @@
 </head>
 <body>
   <div class="container">
+    @include('components.sidebar')
     <h1>Register as Volunteer</h1>
     <form id="volunteerForm">
       <input type="text" placeholder="Full Name" name="name" required />
