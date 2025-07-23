@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<<<<<<< HEAD
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -33,9 +32,6 @@
       </div>
     </div>
   </header>
-=======
-@section('title', 'Welcome | Waste2Worth')
->>>>>>> af41adae68b7d627f9863119a5941aa2b8eef0ef
 
   <!-- Main Content -->
   <main>

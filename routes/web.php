@@ -35,9 +35,6 @@ Route::get('/home', function () {
     return view('home');
 })->name('home');
 
-<<<<<<< HEAD
-=======
 Route::get('/contact', function () {
     return view('contact');
 });
->>>>>>> af41adae68b7d627f9863119a5941aa2b8eef0ef

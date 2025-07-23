@@ -4,11 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Volunteer Registration</title>
-  <link rel="stylesheet" href="public\css\style_fuad.css" />
+  <link rel="stylesheet" href="{{ asset('css/style_fuad.css') }}" />
 </head>
 <body>
   <div class="container">
-    @include('components.sidebar')
     <h1>Register as Volunteer</h1>
     <form id="volunteerForm">
       <input type="text" placeholder="Full Name" name="name" required />
@@ -25,6 +24,6 @@
       <button onclick="location.href='main.html'">Back to Home</button>
     </div>
 
-  <script src="resources\js\script_fuad.js"></script>
+  <script src="{{ asset('js/script_fuad.js') }}"></script>
 </body>
 </html>
