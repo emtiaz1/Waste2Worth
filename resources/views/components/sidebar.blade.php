@@ -1,5 +1,4 @@
-<!-- Sidebar -->
-<aside class="sidebar">
+<aside class="sidebar sidebar-collapsed" id="sidebarMenu">
     <div class="sidebar-header">
         <img src="{{ asset('frontend/image/logo.png') }}" alt="Logo" class="sidebar-logo">
         <span class="sidebar-title">Waste2Worth</span>
@@ -24,6 +23,11 @@
                 <li><a href="{{ url('/community') }}"><i class="fas fa-users"></i> Community</a></li>
                 <li><a href="{{ url('/reportWaste') }}"><i class="fas fa-dumpster"></i> Waste Report</a></li>
                 <li><a href="#"><i class="fas fa-gift"></i> Reward</a></li>
+                <li>
+                    <a href="{{ url('/leaderboard') }}">
+                        <i class="fas fa-trophy"></i> Leaderboard
+                    </a>
+                </li>
             </ul>
         </div>
         <div class="nav-section">

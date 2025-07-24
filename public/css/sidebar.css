@@ -11,6 +11,7 @@
     padding: 36px 0 32px 0;
     position: relative;
     margin-left: 0;
+    display: fixed;
 }
 
 .sidebar-header {
@@ -106,3 +107,4 @@
     font-weight: 600;
     box-shadow: 0 2px 8px rgba(56, 142, 60, 0.07);
 }
+
