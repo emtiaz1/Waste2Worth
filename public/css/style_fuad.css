@@ -123,3 +123,276 @@ body{
         border-radius: 0;
     }
 }
+
+button {
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+#volunteerMessage,
+#eventMessage {
+  text-align: center;
+  margin-top: 20px;
+  color: #155724;
+}
+
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: #28a745;
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.container:hover {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+h1:hover {
+  color: #218838;
+  transition: color 0.2s ease;
+}
+input:hover,
+textarea:hover,
+select:hover {
+  border-color: #28a745;
+  box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+  transition: all 0.2s ease-in-out;
+}
+
+.container:hover {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease;
+}
+
+h1:hover {
+  color: #218838;
+  transition: color 0.2s ease;
+}
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.event-card {
+  background: #fff;
+  padding: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.event-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.event-card h2 {
+  color: #28a745;
+  font-size: 18px;
+  margin: 16px;
+  margin-bottom: 8px;
+}
+
+.event-card p {
+  font-size: 14px;
+  color: #555;
+  margin: 0 16px 16px 16px;
+}
+
+.event-card button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 0 0 10px 10px;
+  padding: 12px;
+  width: 100%;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.event-card button:hover {
+  background-color: #218838;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 500px;
+  margin: auto;
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #28a745;
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input, textarea {
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+input[readonly] {
+  background-color: #e9ecef;
+}
+
+button {
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+#eventMessage {
+  text-align: center;
+  margin-top: 20px;
+  color: #155724;
+}
+/* Background and container */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background: url('../images/volunteer-bg.jpg') no-repeat center center/cover;
+}
+
+.bg-overlay {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 30px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  color: #fff;
+  animation: fadeIn 1s ease;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #00ffae;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input, textarea {
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  font-size: 15px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #ccc;
+}
+
+button {
+  background-color: #00ffae;
+  color: black;
+  padding: 12px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background-color: #00c98a;
+}
+
+#eventMessage {
+  text-align: center;
+  margin-top: 20px;
+  color: #e2ffe2;
+  font-weight: bold;
+}
+
+.back-btn {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.back-btn button {
+  background-color: #ffffff33;
+  color: white;
+  border: 1px solid #fff;
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.back-btn button:hover {
+  background-color: #ffffff55;
+}
+
+/* Simple fade-in animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
