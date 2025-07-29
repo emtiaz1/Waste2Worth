@@ -41,3 +41,7 @@ Route::get('/contact', function () {
 Route::get('/leaderboard', function () {
     return view('leaderboard');
 });
+
+Route::get('/event', function () {
+    return view('event');
+})->name('event');

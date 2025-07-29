@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Volunteer Registration</title>
   <link rel="stylesheet" href="{{ asset('css/style_fuad.css') }}"/>
+  <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}"/>
 </head>
 <body>
+  <div style="display: flex;">@include('components.sidebar')
   <div class="bg-overlay">
     <div class="container">
       <h1>Volunteer Registration</h1>
@@ -20,10 +22,10 @@
       </form>
       <div id="eventMessage"></div>
       <div class="back-btn">
-        <button onclick="window.location.href='event.html'">⬅ Back to Events</button>
+        <button onclick="window.location.href='{{ route('event') }}'">⬅ Back to Events</button>
       </div>
     </div>
-  </div>
+  </div></div>
   <script src="{{ asset('js/script_fuad.js') }}"></script>
   <script src="{{ asset('js/sidebar.js') }}"></script>
 </body>
