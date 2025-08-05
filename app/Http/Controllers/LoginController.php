@@ -13,7 +13,7 @@ class LoginController extends Controller
         $request->validate([
             'username' => 'required|min:4',
             'email' => 'required|email|unique:logins',
-            'password' => 'required|min:4',
+            'password' => 'required|min:4|confirmed',
             'present_address' => 'required',
         ]);
 
@@ -24,6 +24,28 @@ class LoginController extends Controller
             'present_address' => $request->present_address,
         ]);
 
-        return redirect('/home')->with('success', 'Account created successfully!');
+        return redirect('/signup?mode=signin#')->with('success', 'Account created successfully!');
+    }
+
+    public function signin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $user = Login::where('email', $request->email)->first();
+
+        if (!$user || !Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'email' => 'The provided credentials do not match our records.',
+            ]);
+        }
+
+        // Start a session for the user
+        session(['user_id' => $user->id]);
+        session(['username' => $user->username]);
+
+        return redirect('/home')->with('success', 'Signed in successfully!');
     }
 }
