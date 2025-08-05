@@ -46,13 +46,14 @@
                         </div>
                     </form>
 
-                    <form action="" autocomplete="off" class="sign-up-form">
+                    <form action="{{ route('signup.store') }}" method="POST" autocomplete="off" class="sign-up-form">
+                        @csrf
                         <div class="logo">
                             <img src="{{ asset('frontend/image/logo.png') }}" alt="Waste2Worth" />
                             <h4>Waste2Worth</h4>
                         </div>
 
-                        <div class="heading">
+                        <div class="heading" style="margin-bottom: 10px;">
                             <h2>Get Started</h2>
                             <h6>Already have an account?</h6>
                             <a href="#sign-in" class="toggle">Sign in</a>
@@ -60,22 +61,25 @@
 
                         <div class="actual-form">
                             <div class="input-wrap">
-                                <input type="text" minlength="4" class="input-field" autocomplete="off" required />
+                                <input type="text" name="username" minlength="4" class="input-field" autocomplete="off"
+                                    required />
                                 <label>User Name</label>
                             </div>
 
                             <div class="input-wrap">
-                                <input type="email" class="input-field" autocomplete="off" required />
+                                <input type="email" name="email" class="input-field" autocomplete="off" required />
                                 <label>Email</label>
                             </div>
 
                             <div class="input-wrap">
-                                <input type="password" minlength="4" class="input-field" autocomplete="off" required />
+                                <input type="password" name="password" minlength="4" class="input-field"
+                                    autocomplete="off" required />
                                 <label>Password</label>
                             </div>
 
                             <div class="input-wrap">
-                                <input type="text" class="input-field" autocomplete="off" required />
+                                <input type="text" name="present_address" class="input-field" autocomplete="off"
+                                    required />
                                 <label>Present Address</label>
                             </div>
 

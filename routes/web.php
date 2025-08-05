@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -9,6 +10,8 @@ Route::get('/', function () {
 Route::get('/signup', function () {
     return view('signup');
 })->name('signup');
+
+Route::post('/signup', [LoginController::class, 'signup'])->name('signup.store');
 
 Route::get('community', function () {
     return view('community');

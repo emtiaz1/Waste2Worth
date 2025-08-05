@@ -38,6 +38,18 @@ bullets.forEach((bullet) => {
     bullet.addEventListener("click", moveSlider);
 });
 
+function autoSlide() {
+    let currentIndex = parseInt(
+        document.querySelector(".bullets .active").dataset.value
+    );
+    let nextIndex = currentIndex === 3 ? 1 : currentIndex + 1;
+
+    let nextBullet = document.querySelector(
+        `.bullets span[data-value="${nextIndex}"]`
+    );
+    moveSlider.call(nextBullet);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     // Get mode from URL
     const params = new URLSearchParams(window.location.search);
@@ -49,5 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         main.classList.remove("sign-up-mode");
     }
-});
 
+    // Start auto-sliding every 3 seconds
+    setInterval(autoSlide, 3000);
+});
