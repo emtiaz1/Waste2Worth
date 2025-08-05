@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rewards | Waste2Worth</title>
     <link rel="shortcut icon" href="/frontend/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="{{ asset('css/appbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/reward.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
-    <div class="layout">
-        @include('components.sidebar')
-        <main class="main-content">
+    @include('components.appbar')
+    <div class="layout" id="mainLayout">
+        <div class="main-content">
             <!-- EcoCoins Overview Card -->
             <section class="card ecocoins-card">
                 <div class="ecocoins-header">
@@ -150,5 +152,7 @@
     </div>
 
     <script src="{{ asset('js/reward.js') }}"></script>
+    <script src="{{ asset('js/appbar.js') }}"></script>
 </body>
+
 </html>

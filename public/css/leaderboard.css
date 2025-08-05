@@ -1,3 +1,7 @@
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
 body {
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
     font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
@@ -15,7 +19,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    /* padding: 48px 0 32px 0; */
+    margin-top: 5px;
+    padding: 32px 48px;
+    
 }
 
 .leaderboard-card {

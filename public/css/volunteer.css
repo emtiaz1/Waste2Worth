@@ -1,0 +1,115 @@
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8fafc;
+    font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+    color: green;
+    margin: 0;
+}
+h3, p {
+    font-size: 16px;
+}
+.bg-overlay {
+    min-height: 100vh;
+    padding: 2rem;
+    background: #f8faf8;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(67, 160, 71, 0.1);
+}
+
+h1 {
+    color: #388e3c;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+}
+
+#registrationForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+input,
+textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #66bb6a;
+    box-shadow: 0 0 0 3px rgba(102, 187, 106, 0.1);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+button[type="submit"] {
+    background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
+    color: #fff;
+    border: none;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+button[type="submit"]:hover {
+    opacity: 0.9;
+}
+
+.back-btn {
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.back-btn button {
+    background: none;
+    border: none;
+    color: #43a047;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+.back-btn button:hover {
+    background: rgba(67, 160, 71, 0.1);
+}
+
+#eventMessage {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+#eventMessage.success {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+#eventMessage.error {
+    background: #ffebee;
+    color: #c62828;
+}

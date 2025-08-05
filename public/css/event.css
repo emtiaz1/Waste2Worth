@@ -1,0 +1,144 @@
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+
+body {
+    background: #f8fafc;
+    font-family: "Segoe UI", "Roboto", Arial, sans-serif;
+    color: #2d6a4f;
+    margin: 0;
+}
+
+.layout {
+    display: flex;
+    padding-left: 0;
+}
+
+.main-content {
+    flex: 1;
+    padding: 48px 48px 32px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    background: none;
+    min-height: 100vh;
+}
+
+.container {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px rgba(67, 160, 71, 0.1);
+    padding: 32px 28px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1200px;
+}
+
+h1 {
+    color: #388e3c;
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.event-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 32px;
+    margin-top: 24px;
+}
+
+.event-card {
+    background: linear-gradient(120deg, #e8f5e9 60%, #c8e6c9 100%);
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(67, 160, 71, 0.08);
+    padding: 24px 18px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: box-shadow 0.3s, transform 0.3s, background 0.3s;
+    position: relative;
+    min-height: 340px;
+}
+
+.event-card:hover {
+    box-shadow: 0 8px 24px rgba(67, 160, 71, 0.18);
+    background: linear-gradient(120deg, #c8e6c9 60%, #e8f5e9 100%);
+    transform: translateY(-6px) scale(1.03);
+}
+
+.event-card img {
+    width: 100%;
+    max-width: 220px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 18px;
+    box-shadow: 0 2px 8px rgba(67, 160, 71, 0.1);
+}
+
+.event-card h2 {
+    color: #388e3c;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.event-card p {
+    color: #2d6a4f;
+    font-size: 1.05rem;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.event-card button {
+    background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 28px;
+    font-size: 1.08rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(67, 160, 71, 0.12);
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    margin-top: auto;
+    margin-bottom: 0;
+}
+
+.event-card button:hover {
+    background: linear-gradient(90deg, #388e3c 0%, #43a047 100%);
+    box-shadow: 0 6px 16px rgba(67, 160, 71, 0.18);
+    transform: scale(1.05);
+}
+
+@media (max-width: 900px) {
+    .main-content {
+        padding: 24px 8px 24px 8px;
+    }
+    .container {
+        padding: 16px 4px;
+    }
+    .event-grid {
+        gap: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .event-card {
+        min-height: 280px;
+        padding: 16px 8px;
+    }
+    .event-card img {
+        max-width: 100%;
+        height: 90px;
+    }
+    h1 {
+        font-size: 1.3rem;
+    }
+}

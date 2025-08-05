@@ -1,5 +1,8 @@
 /* reportWaste.css */
 /* General */
+*, ::after, ::before {
+    box-sizing: border-box;
+}
 body {
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
     font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
@@ -48,6 +51,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 32px;
+    margin-top: 0;;
 }
 
 .card {

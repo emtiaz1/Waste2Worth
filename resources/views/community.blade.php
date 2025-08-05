@@ -6,29 +6,13 @@
   <title>Waste2Worth - Community</title>
 
   <link rel="stylesheet" href="{{ asset('css/community.css') }}" />
-
-  <link rel="stylesheet" href="{{ asset('css/community.css') }}">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('css/appbar.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="header">
-    <div class="container" style="display:flex; align-items:center; justify-content:space-between;">
-      <div class="logo-section" style="display:flex; align-items:center;">
-        <img src="{{ asset('frontend/image/logo.png') }}" alt="Waste2Worth Logo" class="logo" style="height:40px; margin-right:12px;">
-        <span class="logo-text" style="font-family:'Playfair Display',serif; font-size:1.5em; font-weight:bold;">Waste2Worth</span>
-      </div>
-      <nav>
-        <ul style="display:flex; gap:20px; margin:0;">
-          <li><a href="{{ url('/home') }}">Home</a></li>
-          <li><a href="{{ url('/event') }}">Events</a></li>
-          <li><a href="{{ url('/market') }}">Marketplace</a></li>
-          <li><a href="{{ url('/community') }}" class="active">Community</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <main class="container">
+  @include('components.appbar')
+  <div class="layout" id="mainLayout"><div class="main-content">
     <section class="intro">
       <h2>Welcome to Our Community</h2>
       <p>Connect, share, and collaborate with eco-warriors working together to transform waste into worth. Join groups, discuss ideas, and take part in sustainability campaigns.</p>
@@ -75,12 +59,6 @@
         </div>
       </div>
     </section>
-  </main>
-
-  <footer class="footer">
-    <div class="container">
-      <p>&copy; 2025 Waste2Worth. All rights reserved.</p>
-    </div>
-  </footer>
+  <script src="{{ asset('js/appbar.js') }}"></script>
 </body>
 </html>
