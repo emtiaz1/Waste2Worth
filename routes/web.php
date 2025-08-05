@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\GoogleController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -13,6 +14,10 @@ Route::get('/signup', function () {
 
 Route::post('/signup', [LoginController::class, 'signup'])->name('signup.store');
 Route::post('/signin', [LoginController::class, 'signin'])->name('signin');
+
+// Google OAuth Routes
+Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 Route::get('community', function () {
     return view('community');

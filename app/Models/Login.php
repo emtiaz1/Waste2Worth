@@ -11,6 +11,7 @@ class Login extends Model
         'email',
         'password',
         'present_address',
+        'google_id',
     ];
 
     /**
