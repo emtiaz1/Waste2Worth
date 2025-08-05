@@ -71,7 +71,7 @@
                             </div>
                         </div>
                         <div class="achievement-card">
-                            <img src="/frontend/image/user3.jpg" alt="User" class="achievement-avatar">
+                            <img src="/frontend/image/user3.png" alt="User" class="achievement-avatar">
                             <div>
                                 <div class="achievement-title">Eco Innovator</div>
                                 <div class="achievement-desc">Proposed 5 sustainable solutions</div>
