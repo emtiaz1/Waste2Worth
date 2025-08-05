@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Help - Waste2Worth</title>
     <link rel="stylesheet" href="{{ asset('css/help.css') }}">
 </head>
+
 <body>
     <header>
         <h1>Need Help?</h1>
@@ -16,7 +18,8 @@
     <main>
         <section class="help-container">
             <h2>How can we assist you?</h2>
-            <p>Welcome to the Waste2Worth help page! Here you’ll find answers to common questions and resources to get the most out of our platform.</p>
+            <p>Welcome to the Waste2Worth help page! Here you’ll find answers to common questions and resources to get
+                the most out of our platform.</p>
             <ul class="faq-list">
                 <li>
                     <strong>How do I register?</strong>
@@ -37,4 +40,5 @@
         <p>&copy; 2025 Waste2Worth. All rights reserved.</p>
     </footer>
 </body>
+
 </html>

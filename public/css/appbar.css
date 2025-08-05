@@ -1,0 +1,154 @@
+/* Unified Appbar & Sidebar Styles */
+.appbar {
+    width: 100%;
+    height: 64px;
+    background: linear-gradient(#429b47 80%, rgb(28, 156, 28) 100%);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1001;
+    box-shadow: 0 2px 8px rgba(67, 160, 71, 0.12);
+}
+.appbar-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+.appbar-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #fff;
+    object-fit: contain;
+}
+.appbar-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.appbar-menu-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.7rem;
+    cursor: pointer;
+    outline: none;
+    margin-right: 8px;
+    transition: color 0.2s;
+}
+.appbar-menu-btn:hover {
+    color: #c8e6c9;
+}
+.appbar-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.appbar-username {
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: #fff;
+    background: #388e3c;
+    padding: 6px 18px;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(67, 160, 71, 0.12);
+    margin-right: 0;
+}
+
+.layout.shifted {
+    transition: margin-left 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+    margin-left: 240px;
+}
+
+.sidebar {
+    width: 240px;
+    background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
+    border-top-right-radius: 32px;
+    border-bottom-right-radius: 32px;
+    box-shadow: 2px 0 24px rgba(56, 142, 60, 0.1);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    height: calc(100vh - 64px);
+    z-index: 1000;
+    transition: left 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+    visibility: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+.sidebar.visible {
+    visibility: visible;
+    left: 0;
+}
+.sidebar.hidden {
+    left: -240px;
+}
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+.main-content {
+    margin-top: 80px;
+}
+
+/* Sidebar Navigation Styles */
+.sidebar-nav {
+    width: 100%;
+    padding: 1.5rem 1rem;
+    height: 100%;
+}
+
+.nav-section {
+    margin-bottom: 2rem;
+    padding-right: 0.5rem;
+}
+
+.nav-section h3 {
+    color: #fff;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    padding-left: 0.5rem;
+}
+
+.nav-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-section li {
+    margin-bottom: 0.5rem;
+}
+
+.nav-section a {
+    display: flex;
+    align-items: center;
+    color: #fff;
+    text-decoration: none;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    transition: background 0.3s;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.nav-section a:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.nav-section a i {
+    margin-right: 12px;
+    width: 20px;
+    text-align: center;
+}

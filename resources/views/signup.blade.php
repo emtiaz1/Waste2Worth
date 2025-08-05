@@ -72,7 +72,9 @@
 
                             <p class="text">
                                 Forgotten your password or you login datails?
-                                <a href="#">Get help</a> signing in
+                                <a
+                                    href="mailto:emtiaz837@gmail.com?subject=Login%20Help%20Request&body=Hi%20Waste2Worth%20Team%2C%0A%0AI%20need%20help%20with%20my%20login.%20My%20email%20is%3A%20">Get
+                                    help</a> signing in
                             </p>
 
                             <div style="text-align: center; margin: 1rem 0;">

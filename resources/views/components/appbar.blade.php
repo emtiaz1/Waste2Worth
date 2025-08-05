@@ -1,12 +1,19 @@
-<aside class="sidebar sidebar-collapsed" id="sidebarMenu">
-    <div class="sidebar-header">
-        <img src="{{ asset('frontend/image/logo.png') }}" alt="Logo" class="sidebar-logo">
-        <span class="sidebar-title">Waste2Worth</span>
+<nav class="appbar">
+    <div class="appbar-left">
+        <button id="sidebarToggle" class="appbar-menu-btn">
+            <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <img src="{{ asset('frontend/image/logo.png') }}" alt="Waste2Worth" class="appbar-logo">
+        <span class="appbar-title">Waste2Worth</span>
     </div>
-    <div class="sidebar-user">
-        <img src="{{ asset('frontend/image/user.jpg') }}" alt="User" class="user-avatar">
-        <span class="user-name">Hi, User!</span>
+    <div class="appbar-right">
+        <span class="appbar-username">
+            {{ Auth::user() ? Auth::user()->username : 'Guest' }}
+        </span>
     </div>
+</nav>
+
+<aside class="sidebar" id="sidebarMenu">
     <nav class="sidebar-nav">
         <div class="nav-section">
             <h3>Account</h3>

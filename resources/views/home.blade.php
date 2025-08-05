@@ -8,12 +8,13 @@
     <link rel="shortcut icon" href="/frontend/logo.png" type="image/x-icon" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/home.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/sidebar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/appbar.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
-    <div class="layout">
-        @include('components.sidebar')
+    @include('components.appbar')
+    <div class="layout" id="mainLayout">
         <main class="main-content">
             <!-- Ongoing Events -->
             <section class="card welcome-card">
@@ -107,6 +108,7 @@
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/appbar.js') }}"></script>
     <script>
         // Example: Animate the cleanup bar (replace with real data as needed)
         document.addEventListener('DOMContentLoaded', function () {
