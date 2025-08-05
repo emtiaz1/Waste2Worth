@@ -28,7 +28,7 @@ main {
     position: relative;
     width: 100%;
     max-width: 1020px;
-    height: 535px;
+    height: 90vh;
     background-color: #fff;
     border-radius: 3.3rem;
     box-shadow: 0 60px 40px -30px rgba(0, 0, 0, 0.27);
@@ -156,59 +156,129 @@ label {
     color: #1dca3d;
 }
 
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 35%;
+    height: 1px;
+    background-color: #bbb;
+}
+
+.divider::before {
+    left: 15%;
+}
+
+.divider::after {
+    right: 15%;
+}
+
+.divider span {
+    background-color: white;
+    padding: 0 10px;
+    color: #bbb;
+    font-size: 0.8rem;
+    z-index: 1;
+}
+
+.google-btn {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.google-btn:hover {
+    transform: scale(1.1);
+}
+
 .notification {
     position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%) translateY(-100%);
-    padding: 15px 25px;
-    border-radius: 8px;
+    padding: 16px 30px;
+    border-radius: 15px;
     color: white;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.95rem;
     z-index: 9999;
-    animation: slideDown 0.5s forwards, fadeOut 0.5s 4s forwards;
+    animation: flashIn 0.5s forwards, flashOut 0.5s 4s forwards;
     display: flex;
     align-items: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    min-width: 300px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    min-width: 320px;
     justify-content: center;
+    backdrop-filter: blur(8px);
 }
 
 .notification.success {
-    background: linear-gradient(135deg, #28a745, #20c997);
-    border-bottom: 5px solid #1e7e34;
+    background: linear-gradient(
+        135deg,
+        rgba(45, 206, 137, 0.95),
+        rgba(46, 125, 50, 0.95)
+    );
+    border-left: 5px solid #1dca3d;
+    box-shadow: 0 8px 20px rgba(29, 202, 61, 0.2);
 }
 
 .notification.error {
-    background: linear-gradient(135deg, #dc3545, #f72c47);
-    border-bottom: 5px solid #a71d2a;
+    background: linear-gradient(
+        135deg,
+        rgba(239, 68, 68, 0.95),
+        rgba(155, 28, 28, 0.95)
+    );
+    border-left: 5px solid #ef4444;
+    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.2);
 }
 
 .notification-icon {
-    margin-right: 10px;
-    font-size: 1.2rem;
+    margin-right: 12px;
+    font-size: 1.1rem;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-@keyframes slideDown {
-    from {
+@keyframes flashIn {
+    0% {
         transform: translateX(-50%) translateY(-100%);
-    }
-
-    to {
-        transform: translateX(-50%) translateY(0);
-    }
-}
-
-@keyframes fadeOut {
-    from {
-        opacity: 1;
-        transform: translateX(-50%) translateY(0);
-    }
-
-    to {
         opacity: 0;
+    }
+    50% {
+        transform: translateX(-50%) translateY(10px);
+    }
+    100% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes flashOut {
+    0% {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+    50% {
+        transform: translateX(-50%) translateY(10px);
+        opacity: 0.5;
+    }
+    100% {
         transform: translateX(-50%) translateY(-100%);
+        opacity: 0;
     }
 }
 

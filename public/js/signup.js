@@ -65,3 +65,33 @@ document.addEventListener("DOMContentLoaded", function () {
     // Start auto-sliding every 3 seconds
     setInterval(autoSlide, 3000);
 });
+
+// Password visibility toggle
+document.querySelectorAll(".password-toggle").forEach((toggle) => {
+    toggle.addEventListener("click", function () {
+        const passwordInput =
+            this.previousElementSibling.previousElementSibling;
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            this.classList.remove("fa-eye-slash");
+            this.classList.add("fa-eye");
+        } else {
+            passwordInput.type = "password";
+            this.classList.remove("fa-eye");
+            this.classList.add("fa-eye-slash");
+        }
+    });
+});
+
+// Password confirmation validation
+const signupForm = document.querySelector(".sign-up-form");
+const password = document.getElementById("signup-password");
+const confirmPassword = document.getElementById("confirm-password");
+
+signupForm.addEventListener("submit", function (e) {
+    if (password.value !== confirmPassword.value) {
+        e.preventDefault();
+        alert("Passwords do not match!");
+        confirmPassword.focus();
+    }
+});
