@@ -54,3 +54,7 @@ Route::get('/leaderboard', function () {
 Route::get('/event', function () {
     return view('event');
 })->name('event');
+
+Route::get('/reward', function () {
+    return view('reward');
+});
