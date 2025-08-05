@@ -1,0 +1,295 @@
+body {
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+    font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    color: #2e7d32;
+    margin: 0;
+}
+
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 12px rgba(56, 142, 60, 0.10);
+    padding: 32px;
+    transition: box-shadow 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 8px 24px rgba(56, 142, 60, 0.16);
+}
+
+/* EcoCoins Card */
+.ecocoins-card {
+    background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+    color: #fff;
+}
+
+.ecocoins-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.ecocoins-header h2 {
+    font-size: 1.5em;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.balance-display {
+    text-align: right;
+}
+
+.balance-amount {
+    display: block;
+    font-size: 2.5em;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.balance-label {
+    font-size: 1em;
+    opacity: 0.9;
+}
+
+.recent-activities h4 {
+    margin: 0 0 16px 0;
+    font-size: 1.1em;
+}
+
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.activity-earn {
+    font-weight: 600;
+    color: #c8e6c9;
+}
+
+/* Rewards Marketplace */
+.rewards-marketplace h3 {
+    color: #388e3c;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rewards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.reward-item {
+    background: #f1f8e9;
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid #e8f5e9;
+}
+
+.reward-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(56, 142, 60, 0.12);
+}
+
+.reward-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    background: #e8f5e9;
+}
+
+.reward-name {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2e7d32;
+}
+
+.reward-cost {
+    font-size: 1em;
+    color: #388e3c;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.btn-add-cart {
+    background: #43a047;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s;
+    width: 100%;
+}
+
+.btn-add-cart:hover {
+    background: #388e3c;
+}
+
+.btn-add-cart:disabled {
+    background: #bdbdbd;
+    cursor: not-allowed;
+}
+
+/* Cart Section */
+.cart-section {
+    border: 2px solid #43a047;
+}
+
+.cart-section h3 {
+    color: #388e3c;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e8f5e9;
+}
+
+.cart-item-info {
+    flex: 1;
+}
+
+.cart-item-name {
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+.cart-item-cost {
+    color: #388e3c;
+    font-size: 0.95em;
+}
+
+.btn-remove {
+    background: #f44336;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+}
+
+.btn-remove:hover {
+    background: #d32f2f;
+}
+
+.cart-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 2px solid #e8f5e9;
+    font-size: 1.1em;
+    font-weight: 600;
+}
+
+.btn-primary {
+    background: #43a047;
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: #388e3c;
+}
+
+/* History Section */
+.history-section h3 {
+    color: #388e3c;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #e8f5e9;
+}
+
+.history-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.history-item-name {
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+.history-date {
+    font-size: 0.9em;
+    color: #81c784;
+}
+
+.history-cost {
+    color: #f44336;
+    font-weight: 500;
+}
+
+.hidden {
+    display: none;
+}
+
+@media (max-width: 900px) {
+    .main-content {
+        padding: 16px 8px;
+    }
+    .rewards-grid {
+        grid-template-columns: 1fr;
+    }
+    .ecocoins-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+}
