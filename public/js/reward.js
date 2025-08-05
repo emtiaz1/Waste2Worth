@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     let ecoBalance = 2450;
     let cart = [];
+    let deliveryAddress = null;
 
     const rewards = [
         {
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         {
             id: 3,
-            name: "Plant",
+            name: "Plant a Tree",
             cost: 1000,
             image: "/frontend/image/plant.jpg",
             description: "Plant a tree in your name"
@@ -40,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         {
             id: 6,
-            name: "500 taka Voucher",
+            name: "Green Store Voucher",
             cost: 600,
             image: "/frontend/image/voucher.jpg",
             description: "20% off at partner eco stores"
@@ -53,6 +54,9 @@ document.addEventListener("DOMContentLoaded", function () {
     const cartItems = document.getElementById("cartItems");
     const cartTotal = document.getElementById("cartTotal");
     const purchaseBtn = document.getElementById("purchaseBtn");
+    const addressModal = document.getElementById("addressModal");
+    const confirmModal = document.getElementById("confirmModal");
+    const addressForm = document.getElementById("addressForm");
 
     function updateBalance() {
         balanceEl.textContent = ecoBalance.toLocaleString();
@@ -76,6 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Add to cart directly (no address modal)
     window.addToCart = function(rewardId) {
         const reward = rewards.find(r => r.id === rewardId);
         if (reward && ecoBalance >= reward.cost) {
@@ -114,18 +119,98 @@ document.addEventListener("DOMContentLoaded", function () {
         renderCart();
     };
 
+    // Open address modal when confirming purchase
     purchaseBtn.addEventListener("click", function() {
+        if (cart.length > 0) {
+            if (!deliveryAddress) {
+                // Show address modal first
+                addressModal.classList.remove("hidden");
+            } else {
+                // Show confirmation modal if address already exists
+                showConfirmationModal();
+            }
+        } else {
+            alert("Please add items to cart first.");
+        }
+    });
+
+    // Close address modal
+    window.closeAddressModal = function() {
+        addressModal.classList.add("hidden");
+        addressForm.reset();
+    };
+
+    // Handle address form submission
+    addressForm.addEventListener("submit", function(e) {
+        e.preventDefault();
+        
+        deliveryAddress = {
+            fullName: document.getElementById("fullName").value,
+            phone: document.getElementById("phone").value,
+            address: document.getElementById("address").value,
+            city: document.getElementById("city").value,
+            zipCode: document.getElementById("zipCode").value
+        };
+
+        closeAddressModal();
+        // After getting address, show confirmation modal
+        showConfirmationModal();
+    });
+
+    function showConfirmationModal() {
+        // Populate confirmation items
+        const confirmItemsEl = document.getElementById("confirmItems");
+        confirmItemsEl.innerHTML = "";
+        
+        let total = 0;
+        cart.forEach(item => {
+            total += item.cost;
+            const confirmItem = document.createElement("div");
+            confirmItem.className = "confirm-item";
+            confirmItem.innerHTML = `
+                <span>${item.name}</span>
+                <span>${item.cost} EcoCoins</span>
+            `;
+            confirmItemsEl.appendChild(confirmItem);
+        });
+
+        // Update total
+        document.getElementById("confirmTotal").textContent = total.toLocaleString();
+
+        // Display delivery address
+        const deliveryEl = document.getElementById("deliveryAddress");
+        deliveryEl.innerHTML = `
+            <div class="address-display">
+                <strong>${deliveryAddress.fullName}</strong><br>
+                ${deliveryAddress.phone}<br>
+                ${deliveryAddress.address}<br>
+                ${deliveryAddress.city}, ${deliveryAddress.zipCode}
+            </div>
+        `;
+
+        confirmModal.classList.remove("hidden");
+    }
+
+    // Close confirmation modal
+    window.closeConfirmModal = function() {
+        confirmModal.classList.add("hidden");
+    };
+
+    // Complete purchase
+    window.completePurchase = function() {
         const total = cart.reduce((sum, item) => sum + item.cost, 0);
         if (ecoBalance >= total && cart.length > 0) {
             ecoBalance -= total;
             updateBalance();
             addToHistory(cart);
             cart = [];
+            deliveryAddress = null;
             cartSection.classList.add("hidden");
+            confirmModal.classList.add("hidden");
             renderRewards();
             showSuccessMessage();
         }
-    });
+    };
 
     function addToHistory(items) {
         const historyList = document.getElementById("historyList");
@@ -165,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         notification.innerHTML = `
             <i class="fas fa-check-circle"></i> 
-            Purchase successful! Thank you for supporting sustainability 🌱
+            Order confirmed! Your items will be delivered soon 🚚
         `;
         document.body.appendChild(notification);
 
@@ -173,6 +258,16 @@ document.addEventListener("DOMContentLoaded", function () {
             notification.remove();
         }, 4000);
     }
+
+    // Close modal when clicking outside
+    window.addEventListener("click", function(e) {
+        if (e.target === addressModal) {
+            closeAddressModal();
+        }
+        if (e.target === confirmModal) {
+            closeConfirmModal();
+        }
+    });
 
     // Initial render
     updateBalance();

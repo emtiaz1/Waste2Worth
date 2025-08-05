@@ -81,6 +81,74 @@
             </section>
         </main>
     </div>
+
+    <!-- Address Modal -->
+    <div class="modal hidden" id="addressModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-map-marker-alt"></i> Delivery Address</h3>
+                <button class="close-btn" onclick="closeAddressModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="addressForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Street Address</label>
+                        <textarea id="address" rows="3" required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="zipCode">ZIP Code</label>
+                            <input type="text" id="zipCode" required>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-secondary" onclick="closeAddressModal()">Cancel</button>
+                        <button type="submit" class="btn-primary">Add to Cart</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Purchase Confirmation Modal -->
+    <div class="modal hidden" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> Confirm Purchase</h3>
+                <button class="close-btn" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="confirm-details">
+                    <h4>Order Summary</h4>
+                    <div id="confirmItems"></div>
+                    <div class="confirm-total">
+                        <strong>Total: <span id="confirmTotal">0</span> EcoCoins</strong>
+                    </div>
+                    <div class="delivery-info">
+                        <h4>Delivery Address</h4>
+                        <div id="deliveryAddress"></div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
+                    <button type="button" class="btn-primary" onclick="completePurchase()">Confirm Purchase</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="{{ asset('js/reward.js') }}"></script>
 </body>
 </html>
