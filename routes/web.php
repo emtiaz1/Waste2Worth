@@ -12,6 +12,7 @@ Route::get('/signup', function () {
 })->name('signup');
 
 Route::post('/signup', [LoginController::class, 'signup'])->name('signup.store');
+Route::post('/signin', [LoginController::class, 'signin'])->name('signin');
 
 Route::get('community', function () {
     return view('community');
