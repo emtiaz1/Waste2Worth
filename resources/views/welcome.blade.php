@@ -27,8 +27,8 @@
         <a href="#join">Join Us</a>
       </nav>
       <div class="auth-links">
-        <a href="{{ url('/signup') }}?mode=signin" class="login">Log In</a>
-        <a href="{{ url('/signup') }}?mode=signup" class="signup">Sign Up</a>
+        <a href="{{ url('/login') }}?mode=signin" class="login">Log In</a>
+        <a href="{{ url('/login') }}?mode=signup" class="signup">Sign Up</a>
       </div>
     </div>
   </header>
@@ -124,16 +124,7 @@
       <div class="container">
         <h2>Ready to Make a Difference?</h2>
         <p>Join thousands of people around the world creating a cleaner tomorrow.</p>
-        <a href="/frontend/signup.html" class="cta"><i class="fas fa-users"></i> Join the Movement</a>
-      </div>
-    </section>
-
-    <!-- Login Section -->
-    <section id="login" class="login-section">
-      <div class="container">
-        <h2>Welcome Back!</h2>
-        <p>Log in to your Waste2Worth account and continue making an impact.</p>
-        <a href="{{ url('/signup') }}?mode=signin" class="cta"><i class="fas fa-sign-in-alt"></i> Go to Login Page</a>
+        <a href="{{ url('/login') }}?mode=signin" class="cta"><i class="fas fa-users"></i> Join the Movement</a>
       </div>
     </section>
 

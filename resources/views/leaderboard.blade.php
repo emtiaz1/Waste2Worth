@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    @include('components.appbar')
+    @include('layouts.appbar')
     <div class="layout" id="mainLayout">
         <div class="main-content">
 

@@ -13,7 +13,7 @@
 </head>
 
 <body>
-    @include('components.appbar')
+    @include('layouts.appbar')
     <div class="layout" id="mainLayout">
         <main class="main-content">
             <!-- Ongoing Events -->

@@ -11,7 +11,7 @@
 </head>
 
 <body>
-  @include('components.appbar')
+  @include('layouts.appbar')
   <div class="layout" id="mainLayout">
     <div class="main-content">
       <div class="container" style="max-width: 1200px; background: transparent; box-shadow: none; padding: 20px;">

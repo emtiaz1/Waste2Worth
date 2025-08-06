@@ -1,4 +1,6 @@
-*, ::after, ::before {
+*,
+::after,
+::before {
     box-sizing: border-box;
 }
 
@@ -10,6 +12,22 @@ body {
 }
 h3, p {
     font-size: 16px;
+}
+.layout {
+    display: flex;
+    padding-left: 0;
+}
+
+.main-content {
+    flex: 1;
+    padding: 48px 48px 32px 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    background: none;
+    min-height: 100vh;
 }
 .bg-overlay {
     min-height: 100vh;
@@ -61,20 +79,28 @@ textarea {
     min-height: 100px;
 }
 
-button[type="submit"] {
-    background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
+.register-btn {
+    background: linear-gradient(90deg, #388e3c 0%, #43a047 100%);
     color: #fff;
     border: none;
-    padding: 1rem;
+    padding: 1rem 0;
     border-radius: 8px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: opacity 0.3s;
+    box-shadow: 0 2px 8px rgba(67, 160, 71, 0.08);
+    letter-spacing: 0.5px;
+    transition: background 0.3s, box-shadow 0.3s, opacity 0.3s;
+    width: 100%;
+    margin-top: 0.5rem;
 }
 
-button[type="submit"]:hover {
-    opacity: 0.9;
+.register-btn:hover,
+.register-btn:focus {
+    background: linear-gradient(90deg, #2e7d32 0%, #388e3c 100%);
+    opacity: 0.95;
+    box-shadow: 0 4px 16px rgba(67, 160, 71, 0.15);
+    outline: none;
 }
 
 .back-btn {

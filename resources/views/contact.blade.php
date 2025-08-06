@@ -12,7 +12,7 @@
 </head>
 
 <body>
-    @include('components.appbar')
+    @include('layouts.appbar')
     <div class="layout" id="mainLayout">
         <!-- Main Content -->
         <div class="main-content">

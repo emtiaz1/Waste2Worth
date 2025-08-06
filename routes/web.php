@@ -3,14 +3,21 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\GoogleController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/signup', function () {
-    return view('signup');
-})->name('signup');
+Route::post('/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+    return redirect('/login')->with('success', 'Logged out successfully!');
+})->name('logout');
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
 
 Route::post('/signup', [LoginController::class, 'signup'])->name('signup.store');
 Route::post('/signin', [LoginController::class, 'signin'])->name('signin');
@@ -19,42 +26,46 @@ Route::post('/signin', [LoginController::class, 'signin'])->name('signin');
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
-Route::get('community', function () {
-    return view('community');
-})->name('community');
+// All other routes require authentication
+Route::middleware(['auth'])->group(function () {
 
-Route::get('volunteer', function () {
-    return view('volunteer');
-})->name('volunteer');
+    Route::get('community', function () {
+        return view('community');
+    })->name('community');
 
-Route::get('event', function () {
-    return view('event');
-})->name('event');
+    Route::get('volunteer', function () {
+        return view('volunteer');
+    })->name('volunteer');
 
-Route::get('/help', function () {
-    return view('help');
-})->name('help');
+    Route::get('event', function () {
+        return view('event');
+    })->name('event');
 
-Route::get('/reportWaste', function () {
-    return view('reportWaste');
-})->name('reportWaste');
+    Route::get('/help', function () {
+        return view('help');
+    })->name('help');
 
-Route::get('/home', function () {
-    return view('home');
-})->name('home');
+    Route::get('/reportWaste', function () {
+        return view('reportWaste');
+    })->name('reportWaste');
 
-Route::get('/contact', function () {
-    return view('contact');
-});
+    Route::get('/home', function () {
+        return view('home');
+    })->name('home');
 
-Route::get('/leaderboard', function () {
-    return view('leaderboard');
-});
+    Route::get('/contact', function () {
+        return view('contact');
+    });
 
-Route::get('/event', function () {
-    return view('event');
-})->name('event');
+    Route::get('/leaderboard', function () {
+        return view('leaderboard');
+    });
 
-Route::get('/reward', function () {
-    return view('reward');
+    Route::get('/event', function () {
+        return view('event');
+    })->name('event');
+
+    Route::get('/reward', function () {
+        return view('reward');
+    });
 });

@@ -11,7 +11,7 @@
 </head>
 
 <body>
-  @include('components.appbar')
+  @include('layouts.appbar')
   <div class="layout" id="mainLayout">
     <div class="main-content">
       <div class="bg-overlay">
@@ -23,7 +23,7 @@
             <input type="tel" name="phone" placeholder="Phone Number" required />
             <input type="text" name="address" placeholder="Present Address" required />
             <textarea name="tools" placeholder="Any special skills or tools you'll bring?" rows="4"></textarea>
-            <button type="submit">Register</button>
+            <button type="submit" class="register-btn">Register</button>
           </form>
           <div id="eventMessage"></div>
           <div class="back-btn">

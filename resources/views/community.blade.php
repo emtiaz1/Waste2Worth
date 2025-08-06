@@ -11,7 +11,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-  @include('components.appbar')
+  @include('layouts.appbar')
   <div class="layout" id="mainLayout"><div class="main-content">
     <section class="intro">
       <h2>Welcome to Our Community</h2>

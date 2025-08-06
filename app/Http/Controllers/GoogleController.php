@@ -34,7 +34,6 @@ class GoogleController extends Controller
                 'username' => $user->name,
                 'email' => $user->email,
                 'password' => bcrypt(\Str::random(16)),
-                'present_address' => '', // Default empty address
                 'google_id' => $user->id,
             ]);
 

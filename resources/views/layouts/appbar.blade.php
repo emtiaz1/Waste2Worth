@@ -45,5 +45,13 @@
                 <li><a href="{{ url('/contact') }}"><i class="fa-solid fa-phone"></i> Contact US</a></li>
             </ul>
         </div>
+        <div class="nav-section">
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit" class="logoutbtn">
+                    <i class="fas fa-sign-out-alt"></i> Log Out
+                </button>
+            </form>
+        </div>
     </nav>
 </aside>

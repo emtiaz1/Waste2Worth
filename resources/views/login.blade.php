@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sign in & Sign up Form</title>
-    <link rel="stylesheet" href="{{ asset('css/signup.css') }}" />
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 
@@ -129,12 +129,6 @@
                                 <i class="password-toggle fas fa-eye-slash"></i>
                             </div>
 
-                            <div class="input-wrap">
-                                <input type="text" name="present_address" class="input-field" autocomplete="off"
-                                    required />
-                                <label>Present Address</label>
-                            </div>
-
                             <input type="submit" value="Sign Up" class="sign-btn" />
 
                             <p class="text">
@@ -174,7 +168,7 @@
     </main>
 
     <!-- Javascript file -->
-    <script src="{{ asset('js/signup.js') }}"></script>
+    <script src="{{ asset('js/login.js') }}"></script>
 </body>
 
 </html>
