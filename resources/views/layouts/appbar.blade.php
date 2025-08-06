@@ -14,6 +14,41 @@
 </nav>
 
 <aside class="sidebar" id="sidebarMenu">
+    <div class="sidebar-header">
+        @php
+            $user = Auth::user();
+            $profile = null;
+            if ($user) {
+                $profile = App\Models\Profile::where('email', $user->email)->first();
+            }
+        @endphp
+        <div class="sidebar-profile">
+            <div class="sidebar-profile-picture-container">
+                @if($profile && $profile->profile_picture)
+                    <img src="{{ asset($profile->profile_picture) }}?t={{ time() }}" 
+                         alt="Profile Picture" class="sidebar-profile-picture">
+                @else
+                    <img src="{{ asset('frontend/image/dp.jpg') }}" 
+                         alt="Default Profile" class="sidebar-profile-picture">
+                @endif
+                <div class="online-indicator"></div>
+            </div>
+            <div class="sidebar-profile-info">
+                <h4 class="sidebar-username">{{ $profile->display_name ?? ($user->name ?? 'User') }}</h4>
+                <p class="sidebar-user-status">{{ $profile->status ?? 'Making a difference' }}</p>
+                <div class="sidebar-quick-stats">
+                    <div class="quick-stat">
+                        <i class="fas fa-coins"></i>
+                        <span>{{ $profile->total_token ?? 0 }} tokens</span>
+                    </div>
+                    <div class="quick-stat">
+                        <i class="fas fa-star"></i>
+                        <span>{{ $profile->points_earned ?? 0 }} points</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <nav class="sidebar-nav">
         <div class="nav-section">
             <h3>Account</h3>

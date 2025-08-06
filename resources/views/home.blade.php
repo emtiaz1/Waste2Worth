@@ -16,6 +16,49 @@
     @include('layouts.appbar')
     <div class="layout" id="mainLayout">
         <main class="main-content">
+            <!-- Welcome Section with Profile Info -->
+            @if($profile)
+            <section class="card profile-overview-card">
+                <div class="profile-overview">
+                    <div class="profile-overview-left">
+                        <div class="profile-picture-small">
+                            @if($profile->profile_picture)
+                                <img src="{{ asset($profile->profile_picture) }}?t={{ time() }}" 
+                                     alt="Profile Picture" class="profile-img-small">
+                            @else
+                                <img src="{{ asset('frontend/image/dp.jpg') }}" 
+                                     alt="Default Profile" class="profile-img-small">
+                            @endif
+                        </div>
+                        <div class="profile-overview-info">
+                            <h2>Welcome back, {{ $profile->display_name ?? 'User' }}!</h2>
+                            <p class="profile-overview-status">{{ $profile->status ?? 'Ready to make a difference' }}</p>
+                            <div class="profile-overview-stats">
+                                <div class="overview-stat">
+                                    <i class="fas fa-leaf"></i>
+                                    <span>{{ $profile->contribution ?? 0 }} Contributions</span>
+                                </div>
+                                <div class="overview-stat">
+                                    <i class="fas fa-coins"></i>
+                                    <span>{{ $profile->total_token ?? 0 }} Tokens</span>
+                                </div>
+                                <div class="overview-stat">
+                                    <i class="fas fa-recycle"></i>
+                                    <span>{{ $profile->waste_reports_count ?? 0 }} Reports</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-overview-right">
+                        <a href="{{ route('profile.show') }}" class="btn btn-profile">
+                            <i class="fas fa-user-edit"></i>
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </section>
+            @endif
+
             <!-- Ongoing Events -->
             <section class="card welcome-card">
                 <div>

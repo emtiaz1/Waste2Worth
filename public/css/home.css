@@ -4,6 +4,117 @@ body {
     color: green;
     margin: 0;
 }
+
+/* Profile Overview Section */
+.profile-overview-card {
+    background: linear-gradient(135deg, #43a047, #66bb6a);
+    color: white;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    height: auto;
+    min-height: 150px;
+}
+
+.profile-overview {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+}
+
+.profile-overview-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex: 1;
+}
+
+.profile-picture-small {
+    position: relative;
+}
+
+.profile-img-small {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.profile-img-small:hover {
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.profile-overview-info h2 {
+    color: white;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.profile-overview-status {
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0 0 1rem 0;
+    font-style: italic;
+    font-size: 1rem;
+}
+
+.profile-overview-stats {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.overview-stat {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.overview-stat i {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.profile-overview-right {
+    display: flex;
+    align-items: center;
+}
+
+.btn-profile {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.btn-profile:hover {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.profile-overview-card:hover {
+    background: linear-gradient(135deg, #43a047, #66bb6a);
+    transform: none;
+}
+
 h3, p {
     font-size: 16px;
 }
@@ -180,5 +291,31 @@ h3, p {
     .card-grid {
         flex-direction: column;
         gap: 16px;
+    }
+
+    /* Profile overview responsive */
+    .profile-overview {
+        flex-direction: column;
+        text-align: center;
+        gap: 1.5rem;
+    }
+
+    .profile-overview-left {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .profile-overview-stats {
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .profile-overview-info h2 {
+        font-size: 1.5rem;
+    }
+
+    .overview-stat {
+        font-size: 0.85rem;
     }
 }

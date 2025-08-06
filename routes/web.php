@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -36,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
     Route::put('profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+    Route::post('profile/picture', [App\Http\Controllers\ProfileController::class, 'updateProfilePicture'])->name('profile.picture.update');
 
     Route::get('volunteer', function () {
         return view('volunteer');
@@ -53,9 +55,7 @@ Route::middleware(['auth'])->group(function () {
         return view('reportWaste');
     })->name('reportWaste');
 
-    Route::get('/home', function () {
-        return view('home');
-    })->name('home');
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
 
     Route::get('/contact', function () {
         return view('contact');
