@@ -46,15 +46,7 @@
                         </div>
                     </div>
                     <div class="profile-details">
-                        <h1 class="profile-name">
-                            @if($profile->first_name || $profile->last_name)
-                                {{ trim(($profile->first_name ?? '') . ' ' . ($profile->last_name ?? '')) }}
-                            @elseif($profile->username)
-                                {{ $profile->username }}
-                            @else
-                                {{ $profile->email }}
-                            @endif
-                        </h1>
+                        <h1 class="profile-name">{{ $profile->display_name ?? 'User' }}</h1>
                         <div class="profile-meta">
                             <div class="profile-location">
                                 <i class="fas fa-map-marker-alt"></i>
@@ -121,8 +113,8 @@
                 <button class="tab-btn" onclick="switchTab('activity')">
                     <i class="fas fa-chart-line"></i> Activity
                 </button>
-                <button class="tab-btn" onclick="switchTab('social')">
-                    <i class="fas fa-share-alt"></i> Social Media
+                <button class="tab-btn" onclick="switchTab('preferences')">
+                    <i class="fas fa-cog"></i> Preferences
                 </button>
             </div>
 
@@ -294,32 +286,43 @@
                     </div>
                 </div>
 
-                <!-- Social Media Tab -->
-                <div id="social-tab" class="tab-pane">                        @if($profile->social_links && is_array($profile->social_links) && count($profile->social_links) > 0)
-                            <div class="social-links">
-                                @foreach($profile->social_links as $platform => $url)
-                                    <a href="{{ $url }}" target="_blank" rel="noopener" class="social-link">
-                                        <i class="fab fa-{{ $platform }}"></i>
-                                        {{ ucfirst($platform) }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="empty-state">
-                                <i class="fas fa-share-alt"></i>
-                                <p>No social media links added yet.</p>
-                            </div>
-                        @endif
+                <!-- Preferences Tab -->
+                <div id="preferences-tab" class="tab-pane">
+                    <div class="preferences-section">
+                        <h3><i class="fas fa-cog"></i> Preferences</h3>
+                        
+                        <div class="preference-item">
+                            <label>Notification Preferences</label>
+                            <span class="preference-value">{{ ucfirst($profile->notification_preferences ?? 'all') }}</span>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <label>Email Notifications</label>
+                            <span class="preference-value">{{ $profile->email_notifications ? 'Enabled' : 'Disabled' }}</span>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <label>SMS Notifications</label>
+                            <span class="preference-value">{{ $profile->sms_notifications ? 'Enabled' : 'Disabled' }}</span>
+                        </div>
+                        
+                        <div class="preference-item">
+                            <label>Profile Visibility</label>
+                            <span class="preference-value">{{ $profile->profile_public ? 'Public' : 'Private' }}</span>
+                        </div>
 
                         @if($profile->preferred_causes && is_array($profile->preferred_causes) && count($profile->preferred_causes) > 0)
-                            <h4><i class="fas fa-heart"></i> Preferred Causes</h4>
-                            <div class="tags">
-                                @foreach($profile->preferred_causes as $cause)
-                                    <span class="tag cause-tag">{{ $cause }}</span>
-                                @endforeach
+                            <div class="preference-item">
+                                <label>Preferred Causes</label>
+                                <div class="tags">
+                                    @foreach($profile->preferred_causes as $cause)
+                                        <span class="tag cause-tag">{{ $cause }}</span>
+                                    @endforeach
+                                </div>
                             </div>
                         @endif
                     </div>
+                </div>
             </div>
 
             <!-- Edit Form -->
@@ -331,174 +334,190 @@
 
                 <!-- Single Edit Container -->
                 <div class="edit-container">
-                    <!-- Basic Information -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-user"></i> Basic Information</h3>
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="email">Email *</label>
-                                <input type="email" name="email" id="email" value="{{ old('email', $profile->email) }}" required>
-                            </div>
-                            <div class="input-group">
-                                <label for="username">Username</label>
-                                <input type="text" name="username" id="username" value="{{ old('username', $profile->username) }}">
-                            </div>
-                        </div>
-
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="first_name">First Name</label>
-                                <input type="text" name="first_name" id="first_name" value="{{ old('first_name', $profile->first_name) }}">
-                            </div>
-                            <div class="input-group">
-                                <label for="last_name">Last Name</label>
-                                <input type="text" name="last_name" id="last_name" value="{{ old('last_name', $profile->last_name) }}">
-                            </div>
-                        </div>
-
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="location">Location</label>
-                                <input type="text" name="location" id="location" value="{{ old('location', $profile->location) }}" placeholder="City, Country">
-                            </div>
-                            <div class="input-group">
-                                <label for="status">Status</label>
-                                <input type="text" name="status" id="status" value="{{ old('status', $profile->status) }}" placeholder="What's on your mind?">
-                            </div>
-                        </div>
-
+                    <div class="input-row">
                         <div class="input-group">
-                            <label for="bio">Bio</label>
-                            <textarea name="bio" id="bio" rows="4" placeholder="Tell us about yourself...">{{ old('bio', $profile->bio) }}</textarea>
+                            <label for="email">Email *</label>
+                            <input type="email" name="email" id="email" value="{{ old('email', $profile->email) }}" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="username">Username</label>
+                            <input type="text" name="username" id="username" value="{{ old('username', $profile->username) }}">
                         </div>
                     </div>
 
-                    <!-- Personal Details -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-id-card"></i> Personal Details</h3>
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="phone">Phone Number</label>
-                                <input type="tel" name="phone" id="phone" value="{{ old('phone', $profile->phone) }}">
-                            </div>
-                            <div class="input-group">
-                                <label for="date_of_birth">Date of Birth</label>
-                                <input type="date" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth', $profile->date_of_birth?->format('Y-m-d')) }}">
-                            </div>
-                        </div>
-
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="gender">Gender</label>
-                                <select name="gender" id="gender">
-                                    <option value="">Select Gender</option>
-                                    <option value="male" {{ old('gender', $profile->gender) == 'male' ? 'selected' : '' }}>Male</option>
-                                    <option value="female" {{ old('gender', $profile->gender) == 'female' ? 'selected' : '' }}>Female</option>
-                                    <option value="other" {{ old('gender', $profile->gender) == 'other' ? 'selected' : '' }}>Other</option>
-                                    <option value="prefer_not_to_say" {{ old('gender', $profile->gender) == 'prefer_not_to_say' ? 'selected' : '' }}>Prefer not to say</option>
-                                </select>
-                            </div>
-                            <div class="input-group">
-                                <label for="organization">Organization</label>
-                                <input type="text" name="organization" id="organization" value="{{ old('organization', $profile->organization) }}">
-                            </div>
-                        </div>
-
+                    <div class="input-row">
                         <div class="input-group">
-                            <label for="website">Website</label>
-                            <input type="url" name="website" id="website" value="{{ old('website', $profile->website) }}" placeholder="https://example.com">
+                            <label for="location">Location</label>
+                            <input type="text" name="location" id="location" value="{{ old('location', $profile->location) }}" placeholder="City, Country">
+                        </div>
+                            <label for="first_name">First Name</label>
+                            <input type="text" name="first_name" id="first_name" value="{{ old('first_name', $profile->first_name) }}">
+                        </div>
+                        <div class="input-group">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" name="last_name" id="last_name" value="{{ old('last_name', $profile->last_name) }}">
                         </div>
                     </div>
 
-                    <!-- Interests & Skills -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-heart"></i> Interests & Skills</h3>
-                        <div class="input-group">
-                            <label>Interests</label>
-                            <div class="tags-input-container">
-                                <input type="text" id="interests-input" placeholder="Add interests (press Enter to add)">
-                                <div id="interests-display" class="tags-display">
-                                    @if($profile->interests && is_array($profile->interests))
-                                        @foreach($profile->interests as $interest)
-                                            <span class="tag editable" data-value="{{ $interest }}">
-                                                {{ $interest }}
-                                                <button type="button" onclick="removeTag(this, 'interests')">&times;</button>
-                                            </span>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+                    <div class="input-group">
+                        <label for="bio">Bio</label>
+                        <textarea name="bio" id="bio" rows="4" placeholder="Tell us about yourself...">{{ old('bio', $profile->bio) }}</textarea>
+                    </div>
 
-                        <div class="input-group">
-                            <label>Skills</label>
-                            <div class="tags-input-container">
-                                <input type="text" id="skills-input" placeholder="Add skills (press Enter to add)">
-                                <div id="skills-display" class="tags-display">
-                                    @if($profile->skills && is_array($profile->skills))
-                                        @foreach($profile->skills as $skill)
-                                            <span class="tag editable" data-value="{{ $skill }}">
-                                                {{ $skill }}
-                                                <button type="button" onclick="removeTag(this, 'skills')">&times;</button>
-                                            </span>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
+                    <div class="input-group">
+                        <label for="status">Status</label>
+                        <input type="text" name="status" id="status" value="{{ old('status', $profile->status) }}" placeholder="What's on your mind?">
+                    </div>
+                </div>
 
+                <!-- Personal Info Form -->
+                <div id="personal-form" class="form-tab-content">
+                    <div class="input-row">
                         <div class="input-group">
-                            <label>Preferred Causes</label>
-                            <div class="checkbox-group">
-                                @php
-                                    $causes = ['Climate Action', 'Waste Reduction', 'Recycling', 'Community Clean-up', 'Environmental Education', 'Sustainable Living', 'Ocean Conservation', 'Green Energy'];
-                                    $userCauses = is_array($profile->preferred_causes ?? []) ? $profile->preferred_causes : [];
-                                @endphp
-                                @foreach($causes as $cause)
-                                    <label class="checkbox-label">
-                                        <input type="checkbox" name="preferred_causes[]" value="{{ $cause }}" 
-                                               {{ in_array($cause, $userCauses) ? 'checked' : '' }}>
-                                        <span>{{ $cause }}</span>
-                                    </label>
-                                @endforeach
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" name="phone" id="phone" value="{{ old('phone', $profile->phone) }}">
+                        </div>
+                        <div class="input-group">
+                            <label for="date_of_birth">Date of Birth</label>
+                            <input type="date" name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth', $profile->date_of_birth?->format('Y-m-d')) }}">
+                        </div>
+                    </div>
+
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="gender">Gender</label>
+                            <select name="gender" id="gender">
+                                <option value="">Select Gender</option>
+                                <option value="male" {{ old('gender', $profile->gender) == 'male' ? 'selected' : '' }}>Male</option>
+                                <option value="female" {{ old('gender', $profile->gender) == 'female' ? 'selected' : '' }}>Female</option>
+                                <option value="other" {{ old('gender', $profile->gender) == 'other' ? 'selected' : '' }}>Other</option>
+                                <option value="prefer_not_to_say" {{ old('gender', $profile->gender) == 'prefer_not_to_say' ? 'selected' : '' }}>Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="organization">Organization</label>
+                            <input type="text" name="organization" id="organization" value="{{ old('organization', $profile->organization) }}">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="website">Website</label>
+                        <input type="url" name="website" id="website" value="{{ old('website', $profile->website) }}" placeholder="https://example.com">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Interests</label>
+                        <div class="tags-input-container">
+                            <input type="text" id="interests-input" placeholder="Add interests (press Enter to add)">
+                            <div id="interests-display" class="tags-display">
+                                @if($profile->interests && is_array($profile->interests))
+                                    @foreach($profile->interests as $interest)
+                                        <span class="tag editable" data-value="{{ $interest }}">
+                                            {{ $interest }}
+                                            <button type="button" onclick="removeTag(this, 'interests')">&times;</button>
+                                        </span>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
                     </div>
 
-                    <!-- Social Media & Notifications -->
-                    <div class="form-section">
-                        <h3><i class="fas fa-share-alt"></i> Social Media & Notifications</h3>
-                        
-                        <h4>Social Media Links</h4>
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="facebook">Facebook</label>
-                                <input type="url" name="social_links[facebook]" id="facebook" 
-                                       value="{{ old('social_links.facebook', (is_array($profile->social_links ?? []) ? ($profile->social_links['facebook'] ?? '') : '')) }}" 
-                                       placeholder="https://facebook.com/username">
-                            </div>
-                            <div class="input-group">
-                                <label for="twitter">Twitter</label>
-                                <input type="url" name="social_links[twitter]" id="twitter" 
-                                       value="{{ old('social_links.twitter', (is_array($profile->social_links ?? []) ? ($profile->social_links['twitter'] ?? '') : '')) }}" 
-                                       placeholder="https://twitter.com/username">
+                    <div class="input-group">
+                        <label>Skills</label>
+                        <div class="tags-input-container">
+                            <input type="text" id="skills-input" placeholder="Add skills (press Enter to add)">
+                            <div id="skills-display" class="tags-display">
+                                @if($profile->skills && is_array($profile->skills))
+                                    @foreach($profile->skills as $skill)
+                                        <span class="tag editable" data-value="{{ $skill }}">
+                                            {{ $skill }}
+                                            <button type="button" onclick="removeTag(this, 'skills')">&times;</button>
+                                        </span>
+                                    @endforeach
+                                @endif
                             </div>
                         </div>
+                    </div>
 
-                        <div class="input-row">
-                            <div class="input-group">
-                                <label for="linkedin">LinkedIn</label>
-                                <input type="url" name="social_links[linkedin]" id="linkedin" 
-                                       value="{{ old('social_links.linkedin', (is_array($profile->social_links ?? []) ? ($profile->social_links['linkedin'] ?? '') : '')) }}" 
-                                       placeholder="https://linkedin.com/in/username">
-                            </div>
-                            <div class="input-group">
-                                <label for="instagram">Instagram</label>
-                                <input type="url" name="social_links[instagram]" id="instagram" 
-                                       value="{{ old('social_links.instagram', (is_array($profile->social_links ?? []) ? ($profile->social_links['instagram'] ?? '') : '')) }}" 
-                                       placeholder="https://instagram.com/username">
-                            </div>
+                    <div class="input-group">
+                        <label>Preferred Causes</label>
+                        <div class="checkbox-group">
+                            @php
+                                $causes = ['Climate Action', 'Waste Reduction', 'Recycling', 'Community Clean-up', 'Environmental Education', 'Sustainable Living', 'Ocean Conservation', 'Green Energy'];
+                                $userCauses = is_array($profile->preferred_causes ?? []) ? $profile->preferred_causes : [];
+                            @endphp
+                            @foreach($causes as $cause)
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="preferred_causes[]" value="{{ $cause }}" 
+                                           {{ in_array($cause, $userCauses) ? 'checked' : '' }}>
+                                    <span>{{ $cause }}</span>
+                                </label>
+                            @endforeach
                         </div>
+                    </div>
+                </div>
+
+                <!-- Social & Links Form -->
+                <div id="social-form" class="form-tab-content">
+                    <h4>Social Media Links</h4>
+                    <div class="input-group">
+                        <label for="facebook">Facebook</label>
+                        <input type="url" name="social_links[facebook]" id="facebook" 
+                               value="{{ old('social_links.facebook', (is_array($profile->social_links ?? []) ? ($profile->social_links['facebook'] ?? '') : '')) }}" 
+                               placeholder="https://facebook.com/username">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="twitter">Twitter</label>
+                        <input type="url" name="social_links[twitter]" id="twitter" 
+                               value="{{ old('social_links.twitter', (is_array($profile->social_links ?? []) ? ($profile->social_links['twitter'] ?? '') : '')) }}" 
+                               placeholder="https://twitter.com/username">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="linkedin">LinkedIn</label>
+                        <input type="url" name="social_links[linkedin]" id="linkedin" 
+                               value="{{ old('social_links.linkedin', (is_array($profile->social_links ?? []) ? ($profile->social_links['linkedin'] ?? '') : '')) }}" 
+                               placeholder="https://linkedin.com/in/username">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="instagram">Instagram</label>
+                        <input type="url" name="social_links[instagram]" id="instagram" 
+                               value="{{ old('social_links.instagram', (is_array($profile->social_links ?? []) ? ($profile->social_links['instagram'] ?? '') : '')) }}" 
+                               placeholder="https://instagram.com/username">
+                    </div>
+                </div>
+
+                <!-- Settings Form -->
+                <div id="settings-form" class="form-tab-content">
+                    <div class="input-group">
+                        <label for="notification_preferences">Notification Preferences</label>
+                        <select name="notification_preferences" id="notification_preferences">
+                            <option value="all" {{ old('notification_preferences', $profile->notification_preferences) == 'all' ? 'selected' : '' }}>All Notifications</option>
+                            <option value="important" {{ old('notification_preferences', $profile->notification_preferences) == 'important' ? 'selected' : '' }}>Important Only</option>
+                            <option value="none" {{ old('notification_preferences', $profile->notification_preferences) == 'none' ? 'selected' : '' }}>No Notifications</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="email_notifications" value="1" 
+                                   {{ old('email_notifications', $profile->email_notifications) ? 'checked' : '' }}>
+                            <span>Email Notifications</span>
+                        </label>
+
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sms_notifications" value="1" 
+                                   {{ old('sms_notifications', $profile->sms_notifications) ? 'checked' : '' }}>
+                            <span>SMS Notifications</span>
+                        </label>
+
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="profile_public" value="1" 
+                                   {{ old('profile_public', $profile->profile_public) ? 'checked' : '' }}>
+                            <span>Make Profile Public</span>
+                        </label>
                     </div>
                 </div>
 
@@ -700,7 +719,16 @@
             document.getElementById(tabName + '-tab').classList.add('active');
         }
 
-
+        // Tab switching for edit form
+        function switchFormTab(tabName) {
+            // Remove active class from all form tabs and content
+            document.querySelectorAll('.form-tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.form-tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding content
+            event.target.classList.add('active');
+            document.getElementById(tabName + '-form').classList.add('active');
+        }
 
         // Toggle edit mode
         function toggleEditMode() {

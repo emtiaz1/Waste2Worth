@@ -7,9 +7,26 @@
         <span class="appbar-title">Waste2Worth</span>
     </div>
     <div class="appbar-right">
-        <span class="appbar-username">
-            {{ Auth::user() ? Auth::user()->username : 'Guest' }}
-        </span>
+        @php
+            $user = Auth::user();
+            $profile = null;
+            $displayName = 'Guest';
+            if ($user) {
+                $profile = App\Models\Profile::where('email', $user->email)->first();
+                if ($profile) {
+                    if ($profile->username) {
+                        $displayName = $profile->username;
+                    } elseif ($profile->first_name || $profile->last_name) {
+                        $displayName = trim(($profile->first_name ?? '') . ' ' . ($profile->last_name ?? ''));
+                    } else {
+                        $displayName = $profile->email;
+                    }
+                } else {
+                    $displayName = $user->name ?? $user->email ?? 'User';
+                }
+            }
+        @endphp
+        <span class="appbar-username">{{ $displayName }}</span>
     </div>
 </nav>
 
@@ -34,7 +51,21 @@
                 <div class="online-indicator"></div>
             </div>
             <div class="sidebar-profile-info">
-                <h4 class="sidebar-username">{{ $profile->display_name ?? ($user->name ?? 'User') }}</h4>
+                @php
+                    $sidebarDisplayName = 'User';
+                    if ($profile) {
+                        if ($profile->username) {
+                            $sidebarDisplayName = $profile->username;
+                        } elseif ($profile->first_name || $profile->last_name) {
+                            $sidebarDisplayName = trim(($profile->first_name ?? '') . ' ' . ($profile->last_name ?? ''));
+                        } else {
+                            $sidebarDisplayName = $profile->email;
+                        }
+                    } elseif ($user) {
+                        $sidebarDisplayName = $user->name ?? $user->email ?? 'User';
+                    }
+                @endphp
+                <h4 class="sidebar-username">{{ $sidebarDisplayName }}</h4>
                 <p class="sidebar-user-status">{{ $profile->status ?? 'Making a difference' }}</p>
                 <div class="sidebar-quick-stats">
                     <div class="quick-stat">

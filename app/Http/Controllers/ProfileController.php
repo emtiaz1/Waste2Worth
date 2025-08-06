@@ -31,20 +31,21 @@ class ProfileController extends Controller
         $user = Auth::user();
         
         $validatedData = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
             'email' => 'required|email|max:255',
             'username' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|string|max:20',
             'location' => 'nullable|string|max:255',
+            'status' => 'nullable|string|max:255',
             'bio' => 'nullable|string|max:1000',
             'organization' => 'nullable|string|max:255',
             'website' => 'nullable|url|max:255',
-            'social_links' => 'nullable|json',
-            'interests' => 'nullable|json',
-            'skills' => 'nullable|json',
+            'social_links' => 'nullable|array',
+            'interests' => 'nullable|array',
+            'skills' => 'nullable|array',
             'achievements' => 'nullable|string|max:1000',
             'contribution' => 'nullable|string|max:1000',
             'total_token' => 'nullable|integer|min:0',
@@ -53,18 +54,34 @@ class ProfileController extends Controller
             'community_events_attended' => 'nullable|integer|min:0',
             'volunteer_hours' => 'nullable|integer|min:0',
             'carbon_footprint_saved' => 'nullable|numeric|min:0',
-            'preferred_causes' => 'nullable|json',
+            'preferred_causes' => 'nullable|array',
             'notification_preferences' => 'nullable|string|max:100',
             'email_notifications' => 'nullable|boolean',
             'sms_notifications' => 'nullable|boolean',
             'profile_public' => 'nullable|boolean',
         ]);
 
-                // Update user's basic info
-        $user->update([
-            'name' => $validatedData['first_name'] . ' ' . $validatedData['last_name'],
-            'email' => $validatedData['email'],
-        ]);
+        // Convert arrays to JSON for storage
+        if (isset($validatedData['social_links'])) {
+            $validatedData['social_links'] = json_encode($validatedData['social_links']);
+        }
+        if (isset($validatedData['interests'])) {
+            $validatedData['interests'] = json_encode($validatedData['interests']);
+        }
+        if (isset($validatedData['skills'])) {
+            $validatedData['skills'] = json_encode($validatedData['skills']);
+        }
+        if (isset($validatedData['preferred_causes'])) {
+            $validatedData['preferred_causes'] = json_encode($validatedData['preferred_causes']);
+        }
+
+        // Update user's basic info if first_name and last_name are provided
+        if (!empty($validatedData['first_name']) || !empty($validatedData['last_name'])) {
+            $user->update([
+                'name' => trim(($validatedData['first_name'] ?? '') . ' ' . ($validatedData['last_name'] ?? '')),
+                'email' => $validatedData['email'],
+            ]);
+        }
 
         // Update or create profile
         $profile = Profile::where('email', $user->email)->first();
