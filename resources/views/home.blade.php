@@ -23,7 +23,7 @@
                     <div class="profile-overview-left">
                         <div class="profile-picture-small">
                             @if($profile->profile_picture)
-                                <img src="{{ asset($profile->profile_picture) }}?t={{ time() }}" 
+                                <img src="{{ asset('storage/' . $profile->profile_picture) }}?t={{ time() }}" 
                                      alt="Profile Picture" class="profile-img-small">
                             @else
                                 <img src="{{ asset('frontend/image/dp.jpg') }}" 

@@ -33,12 +33,13 @@
             <div class="profile-header">
                 <div class="profile-info">
                     <div class="profile-picture-container">
-                        @php
-                            $pic = $profile->profile_picture;
-                            $picPath = $pic && $pic !== '' ? public_path($pic) : null;
-                        @endphp
-                        <img src="{{ asset(($pic && $pic !== '' && $picPath && file_exists($picPath)) ? $pic : 'frontend/image/dp.jpg') }}?t={{ time() }}"
-                            alt="Profile Picture" class="profile-picture" id="profilePictureDisplay" />
+                        @if($profile->profile_picture)
+                            <img src="{{ asset('storage/' . $profile->profile_picture) }}?t={{ time() }}"
+                                alt="Profile Picture" class="profile-picture" id="profilePictureDisplay" />
+                        @else
+                            <img src="{{ asset('frontend/image/dp.jpg') }}?t={{ time() }}"
+                                alt="Profile Picture" class="profile-picture" id="profilePictureDisplay" />
+                        @endif
                         <div class="edit-picture-overlay" onclick="openImageUploadModal()">
                             <i class="fas fa-camera"></i>
                             <span>Change Photo</span>

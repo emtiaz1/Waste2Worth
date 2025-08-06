@@ -25,7 +25,7 @@
         <div class="sidebar-profile">
             <div class="sidebar-profile-picture-container">
                 @if($profile && $profile->profile_picture)
-                    <img src="{{ asset($profile->profile_picture) }}?t={{ time() }}" 
+                    <img src="{{ asset('storage/' . $profile->profile_picture) }}?t={{ time() }}" 
                          alt="Profile Picture" class="sidebar-profile-picture">
                 @else
                     <img src="{{ asset('frontend/image/dp.jpg') }}" 

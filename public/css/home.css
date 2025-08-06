@@ -48,14 +48,14 @@ body {
 }
 
 .profile-overview-info h2 {
-    color: white;
+    color: black;
     margin: 0 0 0.5rem 0;
     font-size: 1.8rem;
     font-weight: 600;
 }
 
 .profile-overview-status {
-    color: rgba(255, 255, 255, 0.9);
+    color: black;
     margin: 0 0 1rem 0;
     font-style: italic;
     font-size: 1rem;
@@ -71,7 +71,7 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: rgba(255, 255, 255, 0.95);
+    color: black;
     font-weight: 500;
     font-size: 0.9rem;
 }
