@@ -25,7 +25,36 @@
             <textarea name="tools" placeholder="Any special skills or tools you'll bring?" rows="4"></textarea>
             <button type="submit" class="register-btn">Register</button>
           </form>
-          <div id="eventMessage"></div>
+          <div id="eventMessage" style="display: none;"></div>
+          
+          <!-- Success message and events display -->
+          <div id="successSection" style="display: none;">
+            <div class="success-message">
+              <h2><i class="fas fa-check-circle"></i> Registration Successful!</h2>
+              <p>Thank you for registering as a volunteer. You can join additional events below.</p>
+            </div>
+            
+            <!-- Display all events with registration status -->
+            <div class="registered-events">
+              <h3>Available Events:</h3>
+              <div class="event-list">
+                <!-- Events will be populated by JavaScript -->
+              </div>
+            </div>
+            
+            <!-- Action buttons -->
+            <div class="action-buttons">
+              <button onclick="window.location.href='{{ route('home') }}'" class="btn-home">
+                <i class="fas fa-home"></i> Go to Dashboard
+              </button>
+              <button onclick="window.location.href='{{ route('event') }}'" class="btn-events">
+                <i class="fas fa-calendar"></i> View All Events
+              </button>
+              <button onclick="resetRegistration()" class="btn-reset">
+                <i class="fas fa-refresh"></i> Reset Registration
+              </button>
+            </div>
+          </div>
           <div class="back-btn">
             <button onclick="window.location.href='{{ route('event') }}'">⬅ Back to Events</button>
           </div>

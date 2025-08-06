@@ -21,32 +21,52 @@
           <!-- Event Card 1 -->
           <div class="event-card">
             <img src="{{ asset('frontend/image/clean1.jpg') }}" alt="Park Cleanup">
-            <h2>Park Cleanup</h2>
-            <p>Join us to restore the natural beauty of the city park. Gloves and bags provided.</p>
+            <h2>Sher-e-Bangla Park Cleanup</h2>
+            <div class="event-details">
+              <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Sher-e-Bangla Nagar Park, Agargaon</p>
+              <p><i class="fas fa-clock"></i> <strong>Time:</strong> 8:00 AM - 12:00 PM</p>
+              <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> August 15, 2025</p>
+            </div>
+            <p>Join us to restore the natural beauty of Sher-e-Bangla Park. Gloves and bags provided.</p>
             <button onclick="location.href='{{ route('volunteer') }}?event=park-cleanup'">Sign Up</button>
           </div>
 
           <!-- Event Card 2 -->
           <div class="event-card">
             <img src="{{ asset('frontend/image/clean2.png') }}" alt="Beach Cleanup">
-            <h2>Beach Cleanup</h2>
-            <p>Help protect marine life by removing litter from the beach. Volunteers welcome!</p>
+            <h2>Cox's Bazar Beach Cleanup</h2>
+            <div class="event-details">
+              <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Cox's Bazar Sea Beach, Laboni Point</p>
+              <p><i class="fas fa-clock"></i> <strong>Time:</strong> 6:00 AM - 10:00 AM</p>
+              <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> August 20, 2025</p>
+            </div>
+            <p>Help protect marine life by removing litter from Cox's Bazar beach. Volunteers welcome!</p>
             <button onclick="location.href='{{ route('volunteer') }}?event=beach-cleanup'">Sign Up</button>
           </div>
 
           <!-- Event Card 3 -->
           <div class="event-card">
             <img src="{{ asset('frontend/image/clean3.png') }}" alt="City Street Cleaning">
-            <h2>City Street Cleaning</h2>
-            <p>Make our city cleaner! Join others in a fun and impactful community effort.</p>
+            <h2>Mirpur-1 Street Cleaning</h2>
+            <div class="event-details">
+              <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Mirpur-1, Section-2, Main Road</p>
+              <p><i class="fas fa-clock"></i> <strong>Time:</strong> 7:00 AM - 11:00 AM</p>
+              <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> August 25, 2025</p>
+            </div>
+            <p>Make our city cleaner! Join others in a fun and impactful community effort in Mirpur.</p>
             <button onclick="location.href='{{ route('volunteer') }}?event=city-street'">Sign Up</button>
           </div>
 
           <!-- Event Card 4 -->
           <div class="event-card">
             <img src="{{ asset('frontend/image/clean4.jpg') }}" alt="Riverbank Cleanup">
-            <h2>Riverbank Cleanup</h2>
-            <p>Support local ecology by cleaning up along the riverbank trail. All ages welcome.</p>
+            <h2>Turag River Bank Cleanup</h2>
+            <div class="event-details">
+              <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Turag River, Uttara Sector-18</p>
+              <p><i class="fas fa-clock"></i> <strong>Time:</strong> 7:30 AM - 11:30 AM</p>
+              <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> August 30, 2025</p>
+            </div>
+            <p>Support local ecology by cleaning up along the Turag riverbank trail. All ages welcome.</p>
             <button onclick="location.href='{{ route('volunteer') }}?event=riverbank-cleanup'">Sign Up</button>
           </div>
         </div>

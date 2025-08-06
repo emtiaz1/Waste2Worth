@@ -96,6 +96,32 @@ h1 {
     margin-bottom: 16px;
 }
 
+.event-details {
+    margin: 10px 0 16px 0;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    border-left: 4px solid #43a047;
+}
+
+.event-details p {
+    color: #2d6a4f;
+    font-size: 0.95rem;
+    margin: 6px 0;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-details i {
+    color: #43a047;
+    width: 20px;
+    font-size: 0.9rem;
+    text-align: center;
+    display: inline-block;
+}
+
 .event-card button {
     background: linear-gradient(90deg, #43a047 0%, #66bb6a 100%);
     color: #fff;
