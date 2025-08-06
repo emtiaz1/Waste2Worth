@@ -33,6 +33,10 @@ Route::middleware(['auth'])->group(function () {
         return view('community');
     })->name('community');
 
+
+    Route::get('profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
+    Route::put('profile', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+
     Route::get('volunteer', function () {
         return view('volunteer');
     })->name('volunteer');

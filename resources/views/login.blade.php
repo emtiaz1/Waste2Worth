@@ -29,6 +29,14 @@
                 {{ session('error') }}
             </div>
         @endif
+        @if($errors->any())
+            <div class="notification error" role="alert">
+                <span class="notification-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </span>
+                {{ $errors->first() }}
+            </div>
+        @endif
 
         <div class="box">
             <div class="inner-box">

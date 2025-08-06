@@ -19,7 +19,7 @@
             <h3>Account</h3>
             <ul>
                 <li><a href="{{ url('/home') }}"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="#"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="{{ url('profile') }}"><i class="fas fa-user"></i> Profile</a></li>
                 <li><a href="{{ url('volunteer') }}"><i class="fas fa-heart"></i> Volunteer</a></li>
             </ul>
         </div>

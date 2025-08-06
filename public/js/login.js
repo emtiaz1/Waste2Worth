@@ -83,15 +83,31 @@ document.querySelectorAll(".password-toggle").forEach((toggle) => {
     });
 });
 
-// Password confirmation validation
-const signupForm = document.querySelector(".sign-up-form");
-const password = document.getElementById("signup-password");
-const confirmPassword = document.getElementById("confirm-password");
+// Password confirmation validation (handled by backend for flash notification)
 
-signupForm.addEventListener("submit", function (e) {
-    if (password.value !== confirmPassword.value) {
-        e.preventDefault();
-        alert("Passwords do not match!");
-        confirmPassword.focus();
+// Show error without page refresh for password confirmation
+document.addEventListener("DOMContentLoaded", function () {
+    const signupForm = document.querySelector(".sign-up-form");
+    const password = document.getElementById("signup-password");
+    const confirmPassword = document.getElementById("confirm-password");
+
+    if (signupForm && password && confirmPassword) {
+        // Create or select error message element
+        let errorMsg = document.createElement("div");
+        errorMsg.className = "notification error";
+        errorMsg.style.display = "none";
+        confirmPassword.parentNode.appendChild(errorMsg);
+
+        signupForm.addEventListener("submit", function (e) {
+            if (password.value !== confirmPassword.value) {
+                e.preventDefault();
+                errorMsg.textContent =
+                    "Confirm password does not match password.";
+                errorMsg.style.display = "block";
+                confirmPassword.focus();
+            } else {
+                errorMsg.style.display = "none";
+            }
+        });
     }
 });

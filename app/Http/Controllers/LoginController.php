@@ -11,8 +11,8 @@ class LoginController extends Controller
 {
     public function signup(Request $request)
     {
-        $request->validate([
-            'username' => 'required|min:4|unique:logins',
+        $validated = $request->validate([
+            'username' => 'required|min:4',
             'email' => 'required|email|unique:logins',
             'password' => 'required|min:4|confirmed',
         ]);
@@ -23,7 +23,16 @@ class LoginController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect('/signup?mode=signin#')->with('success', 'Account created successfully!');
+        // Create a profile record for the new user
+        \App\Models\Profile::firstOrCreate(
+            ['email' => $request->email],
+            [
+                'username' => $request->username,
+                'email' => $request->email
+            ]
+        );
+
+        return redirect('/login?mode=signin#')->with('success', 'Account created successfully!');
     }
 
     public function signin(Request $request)
@@ -35,9 +44,15 @@ class LoginController extends Controller
 
         $user = Login::where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user) {
             return back()->withErrors([
-                'email' => 'The provided credentials do not match our records.',
+                'email' => 'Email is not registered.',
+            ]);
+        }
+
+        if (!Hash::check($request->password, $user->password)) {
+            return back()->withErrors([
+                'password' => 'Password is incorrect.',
             ]);
         }
 
