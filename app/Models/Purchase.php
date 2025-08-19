@@ -7,39 +7,30 @@ use Illuminate\Database\Eloquent\Model;
 class Purchase extends Model
 {
     protected $fillable = [
-        'user_email',
+        'email',
         'product_id',
-        'quantity',
-        'eco_coin_price',
-        'total_cost',
-        'delivery_address',
-        'status'
+        'name',
+        'address',
+        'mobile',
+        'eco_coins_spent'
     ];
 
-    protected $casts = [
-        'quantity' => 'integer',
-        'eco_coin_price' => 'integer',
-        'total_cost' => 'integer',
-        'delivery_address' => 'array'
-    ];
-
-    /**
-     * Get product relationship
-     */
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
 
     /**
-     * Get purchase history for a user
+     * Get purchase history for a specific user
+     *
+     * @param string $email
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getPurchaseHistory($userEmail, $limit = 10)
+    public static function getPurchaseHistory($email)
     {
-        return self::where('user_email', $userEmail)
-            ->with('product')
+        return self::where('email', $email)
+            ->with('product')  // Eager load product relationship
             ->orderBy('created_at', 'desc')
-            ->limit($limit)
             ->get();
     }
 }

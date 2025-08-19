@@ -10,6 +10,183 @@
     <link rel="stylesheet" href="{{ asset('css/appbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/reward.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .product-card {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .purchase-form {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .purchase-form.active {
+            display: block;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        .purchase-history {
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .history-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+        }
+        <style>
+            .modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+
+            .modal.hidden {
+                display: none;
+            }
+
+            .modal-content {
+                background: white;
+                padding: 30px;
+                border-radius: 10px;
+                max-width: 500px;
+                width: 90%;
+                max-height: 80vh;
+                overflow-y: auto;
+            }
+
+            .modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .close-btn {
+                background: none;
+                border: none;
+                font-size: 24px;
+                cursor: pointer;
+                color: #666;
+            }
+
+            .order-summary {
+                background: #f5f5f5;
+                padding: 15px;
+                border-radius: 5px;
+                margin-bottom: 20px;
+            }
+
+            .product-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+
+            .form-control {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                font-size: 14px;
+            }
+
+            .modal-actions {
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+                margin-top: 20px;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+            .btn-primary {
+                background: #28a745;
+                color: white;
+            }
+
+            .btn-secondary {
+                background: #6c757d;
+                color: white;
+            }
+
+            .success-message {
+                text-align: center;
+                padding: 20px;
+            }
+
+            .success-icon {
+                font-size: 48px;
+                color: #28a745;
+                margin-bottom: 20px;
+            }
+        </style>
+    </style>
 </head>
 
 <body>
@@ -56,12 +233,12 @@
                             <div class="reward-info">
                                 <h4 class="reward-name">{{ $product->name }}</h4>
                                 <p class="reward-description">{{ $product->description }}</p>
-                                <div class="reward-price">{{ $product->eco_coin_price }} EcoCoins</div>
+                                <div class="reward-price">{{ $product->eco_coin_value }} EcoCoins</div>
                                 <div class="reward-stock">Stock: {{ $product->stock }}</div>
-                                <button class="btn-primary add-to-cart-btn" 
-                                        onclick="addToCart({{ $product->id }})"
-                                        {{ $product->stock > 0 ? '' : 'disabled' }}>
-                                    {{ $product->stock > 0 ? 'Add to Cart' : 'Out of Stock' }}
+                                <button class="btn-primary order-btn"
+                                    onclick="showOrderForm({{ $product->id }}, '{{ $product->name }}', {{ $product->eco_coin_value }})"
+                                    {{ $product->stock > 0 ? '' : 'disabled' }}>
+                                    {{ $product->stock > 0 ? 'Order Now' : 'Out of Stock' }}
                                 </button>
                             </div>
                         </div>
@@ -73,33 +250,8 @@
                 </div>
             </section>
 
-            <!-- Cart Section -->
-            <section class="card cart-section {{ $cartItems->isEmpty() ? 'hidden' : '' }}" id="cartSection">
-                <h3><i class="fas fa-shopping-cart"></i> Your Cart ({{ $cartItems->sum('quantity') }} items)</h3>
-                <div class="cart-items" id="cartItems">
-                    @foreach($cartItems as $item)
-                        <div class="cart-item" data-product-id="{{ $item->product_id }}">
-                            <img src="{{ asset($item->product->image) }}" alt="{{ $item->product->name }}" class="cart-item-image">
-                            <div class="cart-item-info">
-                                <h4>{{ $item->product->name }}</h4>
-                                <div class="cart-item-price">{{ $item->product->eco_coin_price }} EcoCoins each</div>
-                                <div class="cart-item-quantity">Quantity: {{ $item->quantity }}</div>
-                                <div class="cart-item-total">Total: {{ $item->quantity * $item->product->eco_coin_price }} EcoCoins</div>
-                            </div>
-                            <button class="btn-remove" onclick="removeFromCart({{ $item->product_id }})">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </div>
-                    @endforeach
-                </div>
-                <div class="cart-total">
-                    <span>Total: <span id="cartTotal">{{ $cartTotal }}</span> EcoCoins</span>
-                    <button class="btn-primary" id="purchaseBtn" onclick="showAddressModal()">Complete Purchase</button>
-                </div>
-            </section>
-
             <!-- History Section -->
-                        <!-- Purchase History Section -->
+            <!-- Purchase History Section -->
             <section class="card history-section">
                 <h3><i class="fas fa-history"></i> Purchase History</h3>
                 @if($purchaseHistory->isEmpty())
@@ -114,32 +266,26 @@
                                 <div class="history-header">
                                     <span class="order-id">Order #{{ $purchase->id }}</span>
                                     <span class="order-date">{{ $purchase->created_at->format('M d, Y') }}</span>
-                                    <span class="order-status delivered">{{ ucfirst($purchase->status) }}</span>
                                 </div>
                                 <div class="history-products">
-                                    @foreach($purchase->products as $product)
-                                        <div class="history-product">
-                                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="history-product-image">
-                                            <div class="history-product-info">
-                                                <h4>{{ $product->name }}</h4>
-                                                <div class="product-details">
-                                                    <span>Quantity: {{ $product->pivot->quantity }}</span>
-                                                    <span>Price: {{ $product->eco_coin_price }} EcoCoins each</span>
-                                                </div>
-                                            </div>
-                                            <div class="product-total">
-                                                {{ $product->pivot->quantity * $product->eco_coin_price }} EcoCoins
+                                    <div class="history-product">
+                                        <img src="{{ asset($purchase->product->image) }}" alt="{{ $purchase->product->name }}"
+                                            class="history-product-image">
+                                        <div class="history-product-info">
+                                            <h4>{{ $purchase->product->name }}</h4>
+                                            <div class="product-details">
+                                                <span>Price: {{ $purchase->eco_coins_spent }} EcoCoins</span>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    </div>
                                 </div>
                                 <div class="history-footer">
                                     <div class="delivery-info">
                                         <i class="fas fa-map-marker-alt"></i>
-                                        <span>Delivered to: {{ $purchase->delivery_address['street'] }}, {{ $purchase->delivery_address['city'] }}</span>
+                                        <span>Delivered to: {{ $purchase->name }}, {{ $purchase->address }}</span>
                                     </div>
                                     <div class="order-total">
-                                        <strong>Total: {{ $purchase->total_amount }} EcoCoins</strong>
+                                        <strong>Total: {{ $purchase->eco_coins_spent }} EcoCoins</strong>
                                     </div>
                                 </div>
                             </div>
@@ -147,44 +293,48 @@
                     </div>
                 @endif
             </section>
-            </main>
         </div>
 
-        <!-- Address Modal -->
-                <!-- Address Modal -->
-        <div class="modal hidden" id="addressModal">
+        <!-- Order Form Modal -->
+        <div class="modal hidden" id="orderModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3><i class="fas fa-map-marker-alt"></i> Delivery Address</h3>
-                    <button class="close-btn" onclick="closeAddressModal()">&times;</button>
+                    <h3><i class="fas fa-shopping-cart"></i> Place Order</h3>
+                    <button class="close-btn" onclick="closeOrderModal()">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <form id="addressForm" onsubmit="completePurchase(event)">
-                        <div class="form-group">
-                            <label for="street">Street Address *</label>
-                            <input type="text" id="street" name="street" required>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="city">City *</label>
-                                <input type="text" id="city" name="city" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="zipCode">ZIP Code *</label>
-                                <input type="text" id="zipCode" name="zipCode" required>
+                    <form id="orderForm" action="{{ route('purchase.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="product_id" id="orderProductId">
+
+                        <div class="order-summary">
+                            <h4>Order Summary</h4>
+                            <div class="product-info">
+                                <span id="orderProductName"></span>
+                                <span id="orderProductPrice" class="price"></span>
                             </div>
                         </div>
+
                         <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone">
+                            <label for="name">Full Name *</label>
+                            <input type="text" id="name" name="name" required class="form-control">
                         </div>
+
                         <div class="form-group">
-                            <label for="notes">Delivery Notes</label>
-                            <textarea id="notes" name="notes" rows="3" placeholder="Special delivery instructions..."></textarea>
+                            <label for="address">Address *</label>
+                            <textarea id="address" name="address" required class="form-control" rows="3"
+                                placeholder="Enter your complete address"></textarea>
                         </div>
+
+                        <div class="form-group">
+                            <label for="mobile">Mobile Number *</label>
+                            <input type="tel" id="mobile" name="mobile" required class="form-control"
+                                placeholder="+880XXXXXXXXX">
+                        </div>
+
                         <div class="modal-actions">
-                            <button type="button" class="btn-secondary" onclick="closeAddressModal()">Cancel</button>
-                            <button type="submit" class="btn-primary">Complete Purchase</button>
+                            <button type="button" class="btn-secondary" onclick="closeOrderModal()">Cancel</button>
+                            <button type="submit" class="btn-primary">Confirm Order</button>
                         </div>
                     </form>
                 </div>
@@ -195,14 +345,14 @@
         <div class="modal hidden" id="successModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3><i class="fas fa-check-circle"></i> Purchase Successful!</h3>
+                    <h3><i class="fas fa-check-circle"></i> Order Successful!</h3>
                     <button class="close-btn" onclick="closeSuccessModal()">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="success-message">
                         <i class="fas fa-check-circle success-icon"></i>
                         <p>Your order has been placed successfully!</p>
-                        <p>Your items will be delivered within 3-5 business days.</p>
+                        <p>Your item will be delivered to the provided address.</p>
                     </div>
                 </div>
                 <div class="modal-actions">
@@ -211,35 +361,31 @@
             </div>
         </div>
 
-        <!-- Purchase Confirmation Modal -->
-        <div class="modal hidden" id="confirmModal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3><i class="fas fa-check-circle"></i> Confirm Purchase</h3>
-                    <button class="close-btn" onclick="closeConfirmModal()">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="confirm-details">
-                        <h4>Order Summary</h4>
-                        <div id="confirmItems"></div>
-                        <div class="confirm-total">
-                            <strong>Total: <span id="confirmTotal">0</span> EcoCoins</strong>
-                        </div>
-                        <div class="delivery-info">
-                            <h4>Delivery Address</h4>
-                            <div id="deliveryAddress"></div>
-                        </div>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="button" class="btn-secondary" onclick="closeConfirmModal()">Cancel</button>
-                        <button type="button" class="btn-primary" onclick="completePurchase()">Confirm Purchase</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <script>
+            function showOrderForm(productId, productName, productPrice) {
+                document.getElementById('orderProductId').value = productId;
+                document.getElementById('orderProductName').textContent = productName;
+                document.getElementById('orderProductPrice').textContent = productPrice + ' EcoCoins';
+                document.getElementById('orderModal').classList.remove('hidden');
+            }
 
-        <script src="{{ asset('js/reward.js') }}"></script>
-        <script src="{{ asset('js/appbar.js') }}"></script>
+            function closeOrderModal() {
+                document.getElementById('orderModal').classList.add('hidden');
+                document.getElementById('orderForm').reset();
+            }
+
+            function closeSuccessModal() {
+                document.getElementById('successModal').classList.add('hidden');
+                location.reload(); // Refresh to show updated data
+            }
+
+            // Show success modal if there's a success message
+            @if(session('success'))
+                document.addEventListener('DOMContentLoaded', function () {
+                    document.getElementById('successModal').classList.remove('hidden');
+                });
+            @endif
+        </script>
 </body>
 
 </html>

@@ -8,27 +8,26 @@ class Product extends Model
 {
     protected $fillable = [
         'name',
-        'description',
         'image',
-        'eco_coin_price',
         'stock',
-        'is_active'
+        'eco_coin_value',
+        'description'
     ];
 
-    protected $casts = [
-        'eco_coin_price' => 'integer',
-        'stock' => 'integer',
-        'is_active' => 'boolean'
-    ];
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class);
+    }
 
     /**
-     * Get active products
+     * Get all active products (products with stock > 0)
+     * 
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getActiveProducts()
     {
-        return self::where('is_active', true)
-            ->where('stock', '>', 0)
-            ->orderBy('name')
+        return self::where('stock', '>', 0)
+            ->orderBy('created_at', 'desc')
             ->get();
     }
 }

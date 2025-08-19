@@ -6,6 +6,9 @@ use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\WasteReportController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\RewardController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -31,6 +34,10 @@ Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallba
 
 // All other routes require authentication
 Route::middleware(['auth'])->group(function () {
+    // Reward products routes
+    Route::get('/reward', [App\Http\Controllers\RewardController::class, 'index'])->name('reward');
+    Route::post('/purchase', [PurchaseController::class, 'store'])->name('purchase.store');
+    Route::get('/purchase/history', [PurchaseController::class, 'history'])->name('purchase.history');
 
     Route::get('community', [App\Http\Controllers\CommunityController::class, 'index'])->name('community');
 
@@ -75,10 +82,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/reward', [App\Http\Controllers\RewardController::class, 'index'])->name('reward.index');
     Route::post('/reward/add-coins', [App\Http\Controllers\RewardController::class, 'addCoins'])->name('reward.add.coins');
-    Route::post('/cart/add', [App\Http\Controllers\RewardController::class, 'addToCart'])->name('cart.add');
-    Route::delete('/cart/remove', [App\Http\Controllers\RewardController::class, 'removeFromCart'])->name('cart.remove');
-    Route::post('/purchase/complete', [App\Http\Controllers\RewardController::class, 'completePurchase'])->name('purchase.complete');
-
     // Admin route to add coins
     Route::get('/admin/add-coins', function () {
         return view('admin.add-coins');
