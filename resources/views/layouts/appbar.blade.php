@@ -70,11 +70,7 @@
                 <div class="sidebar-quick-stats">
                     <div class="quick-stat">
                         <i class="fas fa-coins"></i>
-                        <span>{{ $profile->total_token ?? 0 }} tokens</span>
-                    </div>
-                    <div class="quick-stat">
-                        <i class="fas fa-star"></i>
-                        <span>{{ $profile->points_earned ?? 0 }} points</span>
+                        <span>{{ $profile->total_token ?? 0 }} Eco Coins</span>
                     </div>
                 </div>
             </div>

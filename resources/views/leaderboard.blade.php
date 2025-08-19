@@ -67,11 +67,16 @@
                                 <tr>
                                     <th>Rank</th>
                                     <th>User</th>
+
                                     <th>Reports</th>
                                     <th>Waste (kg)</th>
                                     <th>Performance Score</th>
                                     <th>EcoCoins</th>
                                     <th>Badge</th>
+                                    <th>Contributions</th>
+                                    <th>Score</th>
+                                    <th>Eco Coins</th>
+
                                 </tr>
                             </thead>
                             <tbody id="leaderboardTableBody">
