@@ -86,22 +86,12 @@
                 <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-coins"></i></div>
                     <div class="stat-value">{{ $profile->total_token ?? 0 }}</div>
-                    <div class="stat-label">Total Tokens</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-star"></i></div>
-                    <div class="stat-value">{{ $profile->points_earned ?? 0 }}</div>
-                    <div class="stat-label">Points Earned</div>
+                    <div class="stat-label">Eco Coins</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-recycle"></i></div>
                     <div class="stat-value">{{ $profile->waste_reports_count ?? 0 }}</div>
                     <div class="stat-label">Waste Reports</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
-                    <div class="stat-value">{{ $profile->volunteer_hours ?? 0 }}</div>
-                    <div class="stat-label">Volunteer Hours</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon"><i class="fas fa-globe"></i></div>

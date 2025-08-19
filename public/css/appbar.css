@@ -67,7 +67,7 @@
 }
 
 .layout.shifted {
-    transition: margin-left 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+    transition: none;
     margin-left: 240px;
 }
 
@@ -85,7 +85,7 @@
     left: 0;
     height: calc(100vh - 64px);
     z-index: 1000;
-    transition: left 0.4s cubic-bezier(0.77, 0, 0.18, 1);
+    transition: none;
     visibility: hidden;
     overflow-y: auto;
     overflow-x: hidden;
@@ -193,7 +193,7 @@
     padding: 1rem;
     background: rgba(255, 255, 255, 0.1);
     border-radius: 12px;
-    transition: all 0.3s ease;
+    transition: none;
 }
 
 .sidebar-profile:hover {
@@ -211,7 +211,7 @@
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
+    transition: none;
 }
 
 .sidebar-profile-picture:hover {

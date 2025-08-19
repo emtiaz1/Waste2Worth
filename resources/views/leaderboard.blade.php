@@ -27,7 +27,7 @@
                                     <th>User</th>
                                     <th>Contributions</th>
                                     <th>Score</th>
-                                    <th>EcoTokens</th>
+                                    <th>Eco Coins</th>
                                 </tr>
                             </thead>
                             <tbody>

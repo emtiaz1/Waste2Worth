@@ -40,7 +40,7 @@
                                 </div>
                                 <div class="overview-stat">
                                     <i class="fas fa-coins"></i>
-                                    <span>{{ $profile->total_token ?? 0 }} Tokens</span>
+                                    <span>{{ $profile->total_token ?? 0 }} Eco Coins</span>
                                 </div>
                                 <div class="overview-stat">
                                     <i class="fas fa-recycle"></i>
