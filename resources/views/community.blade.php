@@ -19,44 +19,30 @@
     </section>
 
     <section class="community-actions">
-      <div class="card">
-        <h3>👥 Join Groups</h3>
-        <p>Find like-minded individuals and join waste management and recycling groups in your area.</p>
-        <button>Explore Groups</button>
-      </div>
-      <div class="card">
-        <h3>🗣️ Forum Discussions</h3>
+  <div class="full-card">
+        <h3>️ Forum Discussions</h3>
         <p>Share ideas, ask questions, and discuss solutions with the Waste2Worth community.</p>
-        <button>Go to Forum</button>
-      </div>
-      <div class="card">
-        <h3>📅 Volunteer Events</h3>
-        <p>Participate in community clean-ups and awareness events. Earn EcoPoints!</p>
-        <a href="{{ url('/event') }}">
-          <button>Find Events</button>
-        </a>
+        <a href="{{ route('forum.index') }}"><button>Go to Forum</button></a>
       </div>
     </section>
 
     <section class="testimonials">
-      <h2>Community Comments</h2>
-      <div class="testimonial">
-        <span class="user">Andrej Csizmadia</span>
-        <div class="comment">I am very much interested in sustainable living practices.</div>
-        <div class="actions">
-          <span>Like</span>
-          <span>Reply</span>
-          <span>Share</span>
-        </div>
-      </div>
-      <div class="testimonial">
-        <span class="user">Sadia Khandaker</span>
-        <div class="comment">Hello,<br>I just want to let you know that I am very interested in joining the community.</div>
-        <div class="actions">
-          <span>Like</span>
-          <span>Reply</span>
-          <span>Share</span>
-        </div>
+  <div class="full-card">
+        <h2>Community Comments</h2>
+        @foreach($forumDiscussions as $discussion)
+          <div class="testimonial">
+            <span class="user">{{ $discussion->username }}</span>
+            <div class="comment">{{ $discussion->message }}</div>
+            @if($discussion->image)
+              <div class="comment-image">
+                <img src="{{ asset('storage/' . $discussion->image) }}" alt="Forum Image" class="community-image">
+              </div>
+            @endif
+            <div class="actions">
+              <span>{{ $discussion->created_at->format('M d, Y H:i') }}</span>
+            </div>
+          </div>
+        @endforeach
       </div>
     </section>
   <script src="{{ asset('js/appbar.js') }}"></script>
