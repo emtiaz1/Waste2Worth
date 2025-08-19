@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\WasteReportController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -72,4 +73,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reward', function () {
         return view('reward');
     });
+
+    Route::post('/wastereport', [WasteReportController::class, 'store'])->name('wastereport.store');
+    Route::get('/wastereport/recent', [WasteReportController::class, 'recent'])->name('wastereport.recent');
+    Route::get('/wastereport/stats', [WasteReportController::class, 'stats'])->name('wastereport.stats');
+    Route::get('/wastereport/community-activity', [WasteReportController::class, 'communityActivity'])->name('wastereport.community');
 });

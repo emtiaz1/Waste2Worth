@@ -180,6 +180,113 @@ button[type="submit"]:hover {
     margin-top: 0;
 }
 
+/* Community Activity Feed */
+.activity-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.live-indicator {
+    color: #4caf50;
+    font-size: 0.6em;
+    animation: pulse 2s infinite;
+    margin-left: 8px;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.activity-item:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.6);
+}
+
+.activity-icon {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+    color: white;
+    font-size: 0.9em;
+}
+
+.activity-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.activity-text {
+    font-size: 0.9em;
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+.activity-count {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: #1b5e20;
+    transition: all 0.3s ease;
+}
+
+.goal-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 5px;
+}
+
+.goal-bar {
+    width: 100%;
+    height: 8px;
+    background: #e8f5e9;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.goal-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50 0%, #81c784 100%);
+    border-radius: 4px;
+    transition: width 0.8s ease-out;
+    width: 0%;
+}
+
+.goal-text {
+    font-size: 0.8em;
+    color: #4caf50;
+    font-weight: 600;
+}
+
+.last-update {
+    text-align: center;
+    margin-top: 15px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.last-update small {
+    color: #81c784;
+    font-size: 0.75em;
+}
+
 ::-webkit-scrollbar {
     width: 8px;
     background: #e8f5e9;
