@@ -4,8 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\HomeController;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\LeaderboardController;
 use App\Http\Controllers\WasteReportController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
@@ -63,9 +64,10 @@ Route::middleware(['auth'])->group(function () {
         return view('contact');
     });
 
-    Route::get('/leaderboard', function () {
-        return view('leaderboard');
-    });
+    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+    Route::get('/leaderboard/api', [LeaderboardController::class, 'apiData'])->name('leaderboard.api');
+    Route::get('/leaderboard/user-rank', [LeaderboardController::class, 'getUserRank'])->name('leaderboard.user.rank');
+    Route::post('/leaderboard/update-score', [LeaderboardController::class, 'updatePerformanceScore'])->name('leaderboard.update.score');
 
     Route::get('/event', function () {
         return view('event');
