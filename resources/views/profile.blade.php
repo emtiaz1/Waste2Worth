@@ -452,7 +452,8 @@
                             <div class="checkbox-group">
                                 @php
                                     $causes = ['Climate Action', 'Waste Reduction', 'Recycling', 'Community Clean-up', 'Environmental Education', 'Sustainable Living', 'Ocean Conservation', 'Green Energy'];
-                                    $userCauses = is_array($profile->preferred_causes ?? []) ? $profile->preferred_causes : [];
+                                    $userCauses = $profile->preferred_causes ?? [];
+                                    if (!is_array($userCauses)) $userCauses = [];
                                 @endphp
                                 @foreach($causes as $cause)
                                     <label class="checkbox-label">

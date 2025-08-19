@@ -31,9 +31,10 @@ Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallba
 // All other routes require authentication
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('community', function () {
-        return view('community');
-    })->name('community');
+    Route::get('community', [App\Http\Controllers\CommunityController::class, 'index'])->name('community');
+
+    Route::get('forum', [App\Http\Controllers\ForumController::class, 'index'])->name('forum.index');
+    Route::post('forum', [App\Http\Controllers\ForumController::class, 'store'])->name('forum.store');
 
 
     Route::get('profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
@@ -73,9 +74,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/reward', function () {
         return view('reward');
     });
-
-    Route::post('/wastereport', [WasteReportController::class, 'store'])->name('wastereport.store');
-    Route::get('/wastereport/recent', [WasteReportController::class, 'recent'])->name('wastereport.recent');
-    Route::get('/wastereport/stats', [WasteReportController::class, 'stats'])->name('wastereport.stats');
-    Route::get('/wastereport/community-activity', [WasteReportController::class, 'communityActivity'])->name('wastereport.community');
 });
