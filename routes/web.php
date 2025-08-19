@@ -71,7 +71,19 @@ Route::middleware(['auth'])->group(function () {
         return view('event');
     })->name('event');
 
-    Route::get('/reward', function () {
-        return view('reward');
-    });
+    Route::get('/reward', [App\Http\Controllers\RewardController::class, 'index'])->name('reward.index');
+    Route::post('/reward/add-coins', [App\Http\Controllers\RewardController::class, 'addCoins'])->name('reward.add.coins');
+    Route::post('/cart/add', [App\Http\Controllers\RewardController::class, 'addToCart'])->name('cart.add');
+    Route::delete('/cart/remove', [App\Http\Controllers\RewardController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/purchase/complete', [App\Http\Controllers\RewardController::class, 'completePurchase'])->name('purchase.complete');
+
+    // Admin route to add coins
+    Route::get('/admin/add-coins', function () {
+        return view('admin.add-coins');
+    })->name('admin.add.coins');
+
+    Route::post('/wastereport', [WasteReportController::class, 'store'])->name('wastereport.store');
+    Route::get('/wastereport/recent', [WasteReportController::class, 'recent'])->name('wastereport.recent');
+    Route::get('/wastereport/stats', [WasteReportController::class, 'stats'])->name('wastereport.stats');
+    Route::get('/wastereport/community-activity', [WasteReportController::class, 'communityActivity'])->name('wastereport.community');
 });
