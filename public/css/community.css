@@ -1,3 +1,27 @@
+/* Image style for community comments */
+.community-image {
+    max-width: 300px;
+    max-height: 200px;
+    margin-top: 8px;
+    border-radius: 8px;
+}
+.full-card {
+    width: auto;
+    margin: auto auto auto auto;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
+    border-radius: 20px;
+    background: #fff;
+    padding: 2.5rem 2rem 2rem 2rem;
+    alignment: center;
+}
+.full-card button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
 /* community.css */
 *,
 ::after,

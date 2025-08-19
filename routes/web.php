@@ -30,9 +30,10 @@ Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallba
 // All other routes require authentication
 Route::middleware(['auth'])->group(function () {
 
-    Route::get('community', function () {
-        return view('community');
-    })->name('community');
+    Route::get('community', [App\Http\Controllers\CommunityController::class, 'index'])->name('community');
+
+    Route::get('forum', [App\Http\Controllers\ForumController::class, 'index'])->name('forum.index');
+    Route::post('forum', [App\Http\Controllers\ForumController::class, 'store'])->name('forum.store');
 
 
     Route::get('profile', [App\Http\Controllers\ProfileController::class, 'show'])->name('profile.show');
