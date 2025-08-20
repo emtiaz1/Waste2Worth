@@ -312,6 +312,57 @@ class AdminController extends Controller
                     // Fallback: try to get username from email (before @)
                     $reporterName = explode('@', $report->user_email)[0];
                 }
+
+                // Prepare collection data with enhanced collector info
+                $collectionData = null;
+                if ($latestCollection) {
+                    // Get collector profile properly
+                    $collectorProfile = null;
+                    $collectorName = 'Unknown User';
+                    
+                    if ($latestCollection->requester_email) {
+                        $collectorProfile = \App\Models\Profile::where('email', $latestCollection->requester_email)->first();
+                        if ($collectorProfile) {
+                            $firstName = trim($collectorProfile->first_name ?? '');
+                            $lastName = trim($collectorProfile->last_name ?? '');
+                            if ($firstName || $lastName) {
+                                $collectorName = trim($firstName . ' ' . $lastName);
+                            } elseif ($collectorProfile->username) {
+                                $collectorName = $collectorProfile->username;
+                            }
+                        } else {
+                            // Fallback: try to get username from email (before @)
+                            $collectorName = explode('@', $latestCollection->requester_email)[0];
+                        }
+                    }
+
+                    // Calculate coin distribution if collection is completed
+                    $reporterCoinsAwarded = 0;
+                    $collectorCoinsAwarded = 0;
+                    
+                    if ($latestCollection->status === 'completed' && $latestCollection->actual_weight) {
+                        $reporterCoinsAwarded = round($latestCollection->actual_weight * 5);
+                        $collectorCoinsAwarded = round($latestCollection->actual_weight * 10);
+                    }
+
+                    $collectionData = [
+                        'id' => $latestCollection->id,
+                        'collector_email' => $latestCollection->requester_email,
+                        'collector_name' => $collectorName,
+                        'collector_contact' => $collectorProfile ? $collectorProfile->phone : null,
+                        'status' => $latestCollection->status,
+                        'requested_at' => $latestCollection->requested_at,
+                        'assigned_at' => $latestCollection->assigned_at,
+                        'collected_at' => $latestCollection->collected_at,
+                        'estimated_weight' => $latestCollection->estimated_weight,
+                        'expected_weight' => $latestCollection->expected_weight,
+                        'actual_weight' => $latestCollection->actual_weight,
+                        'collection_notes' => $latestCollection->collection_notes,
+                        'collection_photos' => $latestCollection->collection_photos,
+                        'reporter_coins_awarded' => $reporterCoinsAwarded,
+                        'collector_coins_awarded' => $collectorCoinsAwarded
+                    ];
+                }
                 
                 return [
                     'report_id' => $report->id,
@@ -323,31 +374,30 @@ class AdminController extends Controller
                     'reporter_name' => $reporterName,
                     'reported_at' => $report->created_at,
                     'status' => $report->status ?? 'pending',
-                    'collection' => $latestCollection ? [
-                        'id' => $latestCollection->id,
-                        'collector_email' => $latestCollection->collector_email,
-                        'collector_name' => $latestCollection->collector_name ?: 
-                            ($latestCollection->collectorProfile ? 
-                                trim($latestCollection->collectorProfile->first_name . ' ' . $latestCollection->collectorProfile->last_name) : 
-                                'Unknown User'),
-                        'collector_contact' => $latestCollection->collector_contact ?: 
-                            ($latestCollection->collectorProfile ? 
-                                $latestCollection->collectorProfile->phone : 
-                                null),
-                        'status' => $latestCollection->status,
-                        'requested_at' => $latestCollection->requested_at,
-                        'assigned_at' => $latestCollection->assigned_at,
-                        'collected_at' => $latestCollection->collected_at,
-                        'estimated_weight' => $latestCollection->estimated_weight,
-                        'expected_weight' => $latestCollection->expected_weight,
-                        'actual_weight' => $latestCollection->actual_weight,
-                        'collection_notes' => $latestCollection->collection_notes,
-                        'collection_photos' => $latestCollection->collection_photos
-                    ] : null
+                    'collection' => $collectionData
                 ];
             });
 
-            return view('admin.adminWasteReport', compact('reportsData'));
+            // Calculate statistics for dashboard
+            $statistics = [
+                'pending' => $reportsData->filter(function($report) {
+                    return $report['status'] === 'pending' && !isset($report['collection']);
+                })->count(),
+                'assigned' => $reportsData->filter(function($report) {
+                    return isset($report['collection']['status']) && $report['collection']['status'] === 'assigned';
+                })->count(),
+                'ready_for_review' => $reportsData->filter(function($report) {
+                    return isset($report['collection']['status']) && 
+                           in_array($report['collection']['status'], ['submitted', 'collected']);
+                })->count(),
+                'confirmed' => $reportsData->filter(function($report) {
+                    return $report['status'] === 'confirmed' ||
+                           (isset($report['collection']['status']) && 
+                            in_array($report['collection']['status'], ['confirmed', 'completed']));
+                })->count(),
+            ];
+
+            return view('admin.adminWasteReport', compact('reportsData', 'statistics'));
             
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Error loading waste reports: ' . $e->getMessage());

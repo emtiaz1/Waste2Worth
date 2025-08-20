@@ -49,11 +49,6 @@
 
             <!-- Engagement -->
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">
-                    <i class="fas fa-trophy me-2"></i> Leaderboard
-                </a>
-            </li>
-            <li class="nav-item mb-2">
                 <a href="{{ route('admin.contact.messages') }}" class="nav-link text-white">
                     <i class="fas fa-envelope me-2"></i> Contact Messages
                 </a>

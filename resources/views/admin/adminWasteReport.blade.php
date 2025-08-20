@@ -218,7 +218,7 @@
                     <div class="card stats-card text-warning">
                         <div class="card-body text-center">
                             <i class="fas fa-hourglass-half fa-2x mb-2 text-warning"></i>
-                            <h4 class="mb-1 text-white">{{ $reportsData->where('status', 'pending')->count() }}</h4>
+                            <h4 class="mb-1 text-white">{{ $statistics['pending'] ?? 0 }}</h4>
                             <small class="text-warning">Pending</small>
                         </div>
                     </div>
@@ -227,7 +227,7 @@
                     <div class="card stats-card text-info">
                         <div class="card-body text-center">
                             <i class="fas fa-user-check fa-2x mb-2 text-info"></i>
-                            <h4 class="mb-1 text-white">{{ $reportsData->where('collection.status', 'assigned')->count() }}</h4>
+                            <h4 class="mb-1 text-white">{{ $statistics['assigned'] ?? 0 }}</h4>
                             <small class="text-info">Assigned</small>
                         </div>
                     </div>
@@ -236,7 +236,7 @@
                     <div class="card stats-card text-success">
                         <div class="card-body text-center">
                             <i class="fas fa-check-circle fa-2x mb-2 text-success"></i>
-                            <h4 class="mb-1 text-white">{{ $reportsData->whereIn('collection.status', ['submitted', 'collected'])->count() }}</h4>
+                            <h4 class="mb-1 text-white">{{ $statistics['ready_for_review'] ?? 0 }}</h4>
                             <small class="text-success">Ready for Review</small>
                         </div>
                     </div>
@@ -245,7 +245,7 @@
                     <div class="card stats-card text-primary">
                         <div class="card-body text-center">
                             <i class="fas fa-medal fa-2x mb-2 text-primary"></i>
-                            <h4 class="mb-1 text-white">{{ $reportsData->where('collection.status', 'confirmed')->count() }}</h4>
+                            <h4 class="mb-1 text-white">{{ $statistics['confirmed'] ?? 0 }}</h4>
                             <small class="text-primary">Confirmed</small>
                         </div>
                     </div>
@@ -300,6 +300,18 @@
                                             <div class="col-sm-4"><strong>Reporting Time:</strong></div>
                                             <div class="col-sm-8">{{ \Carbon\Carbon::parse($report['reported_at'])->format('M d, Y H:i') }}</div>
                                         </div>
+                                        
+                                        @if($report['collection'] && $report['collection']['status'] === 'completed' && $report['collection']['actual_weight'])
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="alert p-2 mb-0" style="background-color: #28a745; border-color: #1e7e34; color: white;">
+                                                    <h6 class="mb-1"><i class="fas fa-coins me-2"></i>Coins Awarded</h6>
+                                                    <small><strong>{{ $report['collection']['reporter_coins_awarded'] ?? 0 }} coins</strong> earned</small><br>
+                                                    <small class="text-light">Based on {{ $report['collection']['actual_weight'] }}kg confirmed</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        @endif
                                     </div>
                                 </div>
                                 
@@ -318,10 +330,28 @@
                                             <div class="col-sm-4"><strong>Email:</strong></div>
                                             <div class="col-sm-8">{{ $report['collection']['collector_email'] }}</div>
                                         </div>
+                                        @if($report['collection']['collector_contact'])
+                                        <div class="row mt-2">
+                                            <div class="col-sm-4"><strong>Contact:</strong></div>
+                                            <div class="col-sm-8">{{ $report['collection']['collector_contact'] }}</div>
+                                        </div>
+                                        @endif
                                         @if($report['collection']['collected_at'])
                                         <div class="row mt-2">
                                             <div class="col-sm-4"><strong>Collection Time:</strong></div>
                                             <div class="col-sm-8">{{ \Carbon\Carbon::parse($report['collection']['collected_at'])->format('M d, Y H:i') }}</div>
+                                        </div>
+                                        @endif
+                                        
+                                        @if($report['collection']['status'] === 'completed' && $report['collection']['actual_weight'])
+                                        <div class="row mt-3">
+                                            <div class="col-12">
+                                                <div class="alert p-2 mb-0" style="background-color: #17a2b8; border-color: #117a8b; color: white;">
+                                                    <h6 class="mb-1"><i class="fas fa-coins me-2"></i>Coins Awarded</h6>
+                                                    <small><strong>{{ $report['collection']['collector_coins_awarded'] ?? 0 }} coins</strong> earned</small><br>
+                                                    <small class="text-light">Based on {{ $report['collection']['actual_weight'] }}kg confirmed</small>
+                                                </div>
+                                            </div>
                                         </div>
                                         @endif
                                     </div>
