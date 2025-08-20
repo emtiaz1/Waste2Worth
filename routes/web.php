@@ -9,10 +9,26 @@ use App\Http\Controllers\WasteReportController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RewardController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+// Admin Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['guest:admin'])->group(function () {
+        Route::get('/login', [AdminController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AdminController::class, 'login']);
+        Route::get('/register', [AdminController::class, 'showRegisterForm'])->name('register');
+        Route::post('/register', [AdminController::class, 'register']);
+    });
+
+    Route::middleware(['auth:admin'])->group(function () {
+        Route::get('/home', [AdminController::class, 'home'])->name('home');
+        Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+    });
 });
 
 Route::post('/logout', function () {
