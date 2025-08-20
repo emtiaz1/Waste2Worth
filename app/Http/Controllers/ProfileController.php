@@ -72,9 +72,7 @@ class ProfileController extends Controller
             $validatedData['skills'] = json_encode($validatedData['skills']);
         }
         if (isset($validatedData['preferred_causes'])) {
-            $validatedData['preferred_causes'] = json_encode($validatedData['preferred_causes']);
-        }
-
+            $validatedData['preferred_causes'] = json_encode($validatedData['preferred_causes']);}
         // Update user's basic info if first_name and last_name are provided
         if (!empty($validatedData['first_name']) || !empty($validatedData['last_name'])) {
             $user->update([
