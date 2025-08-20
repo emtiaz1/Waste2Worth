@@ -277,20 +277,7 @@
                 @endif
 
                 <!-- Footer -->
-                <section class="leaderboard-footer-section">
-                    <div class="container">
-                        <div class="footer-content">
-                            <div class="last-update-info">
-                                <i class="fas fa-clock"></i>
-                                <span>Last updated: <strong id="lastUpdate">{{ now()->format('M d, Y h:i A') }}</strong></span>
-                            </div>
-                            <button class="refresh-btn" onclick="refreshLeaderboard()">
-                                <i class="fas fa-sync-alt" id="refreshIcon"></i> 
-                                <span id="refreshText">Refresh</span>
-                            </button>
-                        </div>
-                    </div>
-                </section>
+                
             </main>
         </div>
     </div>
@@ -1011,7 +998,7 @@
 
     .stat-label {
         font-size: 1rem;
-        color: #ecf0f1;
+        color: #000000ff;
         font-weight: 500;
     }
 

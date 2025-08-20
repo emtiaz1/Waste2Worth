@@ -26,7 +26,7 @@ class LeaderboardController extends Controller
             ->leftJoin('users as u', 'p.email', '=', 'u.email')
             ->leftJoin(DB::raw('(SELECT user_email, SUM(eco_coin_value) as total_coins FROM coins GROUP BY user_email) as c'), 'p.email', '=', 'c.user_email')
             ->leftJoin(DB::raw('(SELECT user_email, COUNT(*) as waste_reports_count, SUM(amount) as total_waste_amount FROM wastereport GROUP BY user_email) as w'), 'p.email', '=', 'w.user_email')
-            ->leftJoin(DB::raw('(SELECT collector_email, COUNT(*) as collections_completed FROM waste_collections WHERE status = "completed" GROUP BY collector_email) as wc'), 'p.email', '=', 'wc.collector_email')
+            ->leftJoin(DB::raw('(SELECT requester_email, COUNT(*) as collections_completed FROM waste_collections WHERE status = "completed" GROUP BY requester_email) as wc'), 'p.email', '=', 'wc.requester_email')
             ->select([
                 'p.username',
                 'p.first_name', 

@@ -40,19 +40,19 @@ class WasteCollection extends Model
     }
 
     /**
-     * Get the collector profile information
-     */
-    public function collectorProfile()
-    {
-        return $this->belongsTo(Profile::class, 'collector_email', 'email');
-    }
-
-    /**
-     * Get the requester profile information
+     * Get the profile of the user who requested the collection
      */
     public function requesterProfile()
     {
         return $this->belongsTo(Profile::class, 'requester_email', 'email');
+    }
+
+    /**
+     * Get the profile of the collector
+     */
+    public function collectorProfile()
+    {
+        return $this->belongsTo(Profile::class, 'collector_email', 'email');
     }
 
     /**

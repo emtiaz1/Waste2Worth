@@ -12,13 +12,403 @@
     <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <link rel="stylesheet" href="{{ asset('css/appbar.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
+<style>
+        .notification-toast {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .priority-high { background-color: #dc3545; color: white; }
+        .priority-medium { background-color: #ffc107; color: black; }
+        .priority-low { background-color: #28a745; color: white; }
+        
+        .priority-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        /* Enhanced Activity Feed Styles - Simplified */
+        .activity-feed-simple {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .activity-item-simple {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.2s ease;
+        }
+        
+        .activity-item-simple:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .activity-detailed-info {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 0.5rem;
+            border-left: 3px solid #007bff;
+        }
+        
+        .status-detail-item {
+            margin-bottom: 0.25rem;
+        }
+        
+        .status-detail-item:last-child {
+            margin-bottom: 0;
+        }
+            background-color: #f8f9fa;
+        }
+        
+        .activity-item-simple:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .activity-status-icon.status-available { background-color: #0d6efd; }
+        .activity-status-icon.status-assigned { background-color: #fd7e14; }
+        .activity-status-icon.status-submitted { background-color: #0dcaf0; }
+        .activity-status-icon.status-collected { background-color: #198754; }
+        .activity-status-icon.status-cancelled { background-color: #dc3545; }
+        
+        .activity-content-main {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .activity-header-simple {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.badge-primary { background-color: #0d6efd; color: white; }
+        .status-badge.badge-warning { background-color: #ffc107; color: #212529; }
+        .status-badge.badge-info { background-color: #0dcaf0; color: #212529; }
+        .status-badge.badge-success { background-color: #198754; color: white; }
+        .status-badge.badge-danger { background-color: #dc3545; color: white; }
+        
+        .activity-time-simple {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .activity-message-main {
+            margin-bottom: 0.75rem;
+            color: #495057;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+        
+        .activity-details-simple {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .activity-details-simple span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .activity-details-simple i {
+            width: 14px;
+            color: #9c9c9c;
+        }
+        
+        .activity-action-simple {
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .activity-summary-simple {
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .summary-stat-simple {
+            text-align: center;
+            padding: 0.5rem;
+        }
+        
+        .stat-number-simple {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label-simple {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .empty-state-simple {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+        
+        .empty-state-simple i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-state-simple h5 {
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+        
+        /* Enhanced Stat Cards in Flex Layout */
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border-color: #198754;
+        }
+        
+        .stat-card.eco-coins:hover {
+            border-color: #ffc107;
+        }
+        
+        .stat-card.waste-reports:hover {
+            border-color: #0d6efd;
+        }
+        
+        .stat-card.community-rank:hover {
+            border-color: #fd7e14;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .stat-card.eco-coins .stat-icon {
+            background: linear-gradient(135deg, #ffc107, #ffca28);
+            color: white;
+        }
+        
+        .stat-card.waste-reports .stat-icon {
+            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+            color: white;
+        }
+        
+        .stat-card.community-rank .stat-icon {
+            background: linear-gradient(135deg, #fd7e14, #e55a0e);
+            color: white;
+        }
+        
+        .stat-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .stat-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.25rem 0;
+            color: #212529;
+        }
+        
+        .stat-content p {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #6c757d;
+        }
+        
+        .stat-content small {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Mobile responsiveness for stat cards */
+        @media (max-width: 768px) {
+            .stat-card {
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+            
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .stat-content h3 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .activity-item-simple {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .activity-status-icon {
+                align-self: flex-start;
+                margin-bottom: 1rem;
+                margin-right: 0;
+            }
+            
+            .activity-action-simple {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+            
+            .activity-details-simple {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+        
+        .collection-item {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .collection-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .my-collection-item, .my-report-item {
+            background: #f8f9fa;
+            border-left: 4px solid #43a047;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border-radius: 8px;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .status-pending { background-color: #fff3cd; color: #856404; }
+        .status-assigned { background-color: #cff4fc; color: #055160; }
+        .status-submitted { background-color: #e2e3e5; color: #383d41; }
+        .status-collected { background-color: #d1e7dd; color: #0a3622; }
+        .status-completed { background-color: #d1e7dd; color: #0a3622; }
+        
+        .collection-available {
+            color: #28a745;
+            font-weight: 500;
+        }
+        
+        .collection-assigned {
+            color: #ffc107;
+            font-weight: 500;
+        }
+        
+        .empty-state-small {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #6c757d;
+        }
+        
+        .activity-action {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+        }
+        
+        .collection-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .submit-collection-btn {
+            font-size: 0.875rem;
+            padding: 0.375rem 0.75rem;
+        }
+
+        .my-collection-item {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collection-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.5rem;
+        }
+
+        .collection-details-summary .card {
+            border: 0;
+        }
+    </style>
 </head>
 
 <body>
     @include('layouts.appbar')
     <div class="layout" id="mainLayout">
         <main class="main-content">
-            @if($profile)
+            @if($profileData)
             
             <!-- Dashboard Header with User Overview -->
             <section class="dashboard-header">
@@ -28,8 +418,8 @@
                         <div class="card user-overview-card">
                             <div class="user-overview">
                                 <div class="user-avatar">
-                                    @if($profile->profile_picture)
-                                        <img src="{{ asset('storage/' . $profile->profile_picture) }}?t={{ time() }}" 
+                                    @if($profileData->profile_picture)
+                                        <img src="{{ asset('storage/' . $profileData->profile_picture) }}?t={{ time() }}" 
                                              alt="Profile Picture" class="avatar-img">
                                     @else
                                         <img src="{{ asset('frontend/image/dp.jpg') }}" 
@@ -38,13 +428,13 @@
                                     <div class="status-indicator active"></div>
                                 </div>
                                 <div class="user-info">
-                                    <h2>Welcome back, {{ $profile->username ?? 'User' }}!</h2>
-                                    <p class="user-status">{{ $profile->status ?? 'Active Environmental Contributor' }}</p>
+                                    <h2>Welcome back, {{ $profileData->username ?? 'User' }}!</h2>
+                                    <p class="user-status">{{ $profileData->status ?? 'Active Environmental Contributor' }}</p>
                                     <div class="user-badges">
-                                        @if(($profile->personal_stats['total_reports'] ?? 0) >= 10)
+                                        @if(($profileData->personal_stats['total_reports'] ?? 0) >= 10)
                                             <span class="badge bg-success"><i class="fas fa-award"></i> Eco Warrior</span>
                                         @endif
-                                        @if(($profile->community_rank['percentile'] ?? 0) >= 80)
+                                        @if(($profileData->community_rank['percentile'] ?? 0) >= 80)
                                             <span class="badge bg-warning"><i class="fas fa-crown"></i> Top Contributor</span>
                                         @endif
                                     </div>
@@ -70,15 +460,15 @@
                                         <i class="fas fa-coins"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <h3>{{ $profile->personal_stats['coins_available'] ?? 0 }}</h3>
+                                        <h3>{{ $profileData->personal_stats['coins_available'] ?? 0 }}</h3>
                                         <p>Available Eco Coins</p>
                                         <div class="coin-details">
-                                            <small class="text-success">+{{ $profile->personal_stats['monthly_coins'] ?? 0 }} this month</small>
-                                            @if(($profile->personal_stats['total_eco_coins'] ?? 0) > 0)
-                                                <br><small class="text-muted">{{ $profile->personal_stats['total_eco_coins'] ?? 0 }} total earned</small>
+                                            <small class="text-success">+{{ $profileData->personal_stats['monthly_coins'] ?? 0 }} this month</small>
+                                            @if(($profileData->personal_stats['total_eco_coins'] ?? 0) > 0)
+                                                <br><small class="text-muted">{{ $profileData->personal_stats['total_eco_coins'] ?? 0 }} total earned</small>
                                             @endif
-                                            @if(($profile->personal_stats['coins_spent'] ?? 0) > 0)
-                                                <br><small class="text-warning">{{ $profile->personal_stats['coins_spent'] ?? 0 }} spent on purchases</small>
+                                            @if(($profileData->personal_stats['coins_spent'] ?? 0) > 0)
+                                                <br><small class="text-warning">{{ $profileData->personal_stats['coins_spent'] ?? 0 }} spent on purchases</small>
                                             @endif
                                         </div>
                                     </div>
@@ -91,9 +481,9 @@
                                         <i class="fas fa-recycle"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <h3>{{ $profile->personal_stats['total_reports'] ?? 0 }}</h3>
+                                        <h3>{{ $profileData->personal_stats['total_reports'] ?? 0 }}</h3>
                                         <p>Reports Submitted</p>
-                                        <small class="text-info">{{ $profile->personal_stats['weekly_reports'] ?? 0 }} this week</small>
+                                        <small class="text-info">{{ $profileData->personal_stats['weekly_reports'] ?? 0 }} this week</small>
                                     </div>
                                 </div>
                             </div>
@@ -104,9 +494,9 @@
                                         <i class="fas fa-trophy"></i>
                                     </div>
                                     <div class="stat-content">
-                                        <h3>#{{ $profile->community_rank['rank'] ?? 'N/A' }}</h3>
+                                        <h3>#{{ $profileData->community_rank['rank'] ?? 'N/A' }}</h3>
                                         <p>Community Rank</p>
-                                        <small class="text-warning">Top {{ $profile->community_rank['percentile'] ?? 0 }}%</small>
+                                        <small class="text-warning">Top {{ $profileData->community_rank['percentile'] ?? 0 }}%</small>
                                     </div>
                                 </div>
                             </div>
@@ -127,24 +517,21 @@
                         
                         <div class="impact-metrics">
                             <div class="metric">
-                                <div class="metric-value">{{ $profile->personal_stats['total_waste_reported'] ?? '0' }} kg</div>
+                                <div class="metric-value">{{ $profileData->personal_stats['total_waste_reported'] ?? '0' }} kg</div>
                                 <div class="metric-label">Total Waste Reported</div>
                             </div>
                             
                             <div class="metric">
-                                <div class="metric-value">{{ $profile->waste_impact['total_waste_collected'] ?? '0' }} kg</div>
+                                <div class="metric-value">{{ $profileData->waste_impact['total_waste_collected'] ?? '0' }} kg</div>
                                 <div class="metric-label">Total Waste Collected</div>
                             </div>
                             
-                            <div class="metric">
-                                <div class="metric-value">{{ $profile->waste_impact['carbon_footprint_saved'] ?? '0' }} kg</div>
-                                <div class="metric-label">CO₂ Equivalent Saved</div>
-                            </div>
+                            
                             
                             <div class="metric">
                                 <div class="metric-value">
-                                    <span class="badge bg-primary">{{ $profile->waste_impact['today_reports'] ?? 0 }}</span>
-                                    <span class="badge bg-success">{{ $profile->waste_impact['today_collections'] ?? 0 }}</span>
+                                    <span class="badge bg-primary">{{ $profileData->waste_impact['today_reports'] ?? 0 }}</span>
+                                    <span class="badge bg-success">{{ $profileData->waste_impact['today_collections'] ?? 0 }}</span>
                                 </div>
                                 <div class="metric-label">Today: Reports | Collections</div>
                             </div>
@@ -235,7 +622,7 @@
                                         {{ ucfirst($request['status']) }}
                                     </span>
                                     <div class="weight-info">{{ $request['expected_weight'] }} kg</div>
-                                    @if($request['status'] === 'assigned')
+                                    @if($request['status'] === 'pending')
                                     <button class="btn btn-sm btn-primary submit-collection-btn" 
                                             data-collection-id="{{ $request['collection_id'] }}"
                                             data-waste-type="{{ $request['waste_type'] }}"
@@ -243,6 +630,8 @@
                                             data-expected-weight="{{ $request['expected_weight'] }}">
                                         <i class="fas fa-check"></i> Submit Collection
                                     </button>
+                                    @elseif($request['status'] === 'submitted')
+                                    <small class="text-warning"><i class="fas fa-clock"></i> Awaiting Admin Verification</small>
                                     @elseif($request['status'] === 'completed')
                                     <small class="text-success"><i class="fas fa-check-circle"></i> Completed</small>
                                     @endif
@@ -354,7 +743,17 @@
                                 <div class="event-details">
                                     <h5>{{ $event['name'] }}</h5>
                                     <p><i class="fas fa-map-marker-alt"></i> {{ $event['location'] }}</p>
+                                    @if(isset($event['time']))
+                                    <p><i class="fas fa-clock"></i> {{ date('g:i A', strtotime($event['time'])) }}</p>
+                                    @endif
                                     <small class="text-muted">{{ $event['participants'] }} participants registered</small>
+                                    @if(isset($event['days_until']) && $event['days_until'] == 0)
+                                    <div class="badge bg-success ms-2">Today!</div>
+                                    @elseif(isset($event['days_until']) && $event['days_until'] == 1)
+                                    <div class="badge bg-warning ms-2">Tomorrow</div>
+                                    @elseif(isset($event['days_until']) && $event['days_until'] <= 7)
+                                    <div class="badge bg-info ms-2">{{ $event['days_until'] }} days</div>
+                                    @endif
                                 </div>
                                 <div class="event-actions">
                                     <a href="{{ route('event') }}" class="btn btn-outline-primary btn-sm">
@@ -402,21 +801,28 @@
                                         <span class="activity-time-simple">{{ $activity['time_ago'] }}</span>
                                     </div>
                                     <p class="activity-message-main">{{ $activity['message'] }}</p>
+                                    
+                                    <!-- Enhanced Activity Details -->
+                                    @if(isset($activity['detailed_status']) && count($activity['detailed_status']) > 0)
+                                    <div class="activity-detailed-info mt-2">
+                                        @foreach($activity['detailed_status'] as $detail)
+                                        <div class="status-detail-item">
+                                            <small class="text-muted">{{ $detail }}</small>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                    
                                     <div class="activity-details-simple">
                                         <span class="location-info">
                                             <i class="fas fa-map-marker-alt"></i> {{ $activity['location'] }}
                                         </span>
                                         <span class="amount-info">
-                                            <i class="fas fa-weight"></i> {{ $activity['amount'] }}kg
+                                            <i class="fas fa-weight"></i> {{ $activity['amount'] }}{{ $activity['unit'] ?? 'kg' }}
                                         </span>
                                         <span class="waste-type-info">
                                             <i class="fas fa-recycle"></i> {{ $activity['waste_type'] }}
                                         </span>
-                                        @if($activity['collector_name'])
-                                            <span class="collector-info">
-                                                <i class="fas fa-user"></i> {{ $activity['collector_name'] }}
-                                            </span>
-                                        @endif
                                     </div>
                                 </div>
                                 @if($activity['can_collect'])
@@ -822,379 +1228,6 @@
         });
     </script>
     
-    <style>
-        .notification-toast {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            z-index: 9999;
-            min-width: 300px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-        
-        .priority-high { background-color: #dc3545; color: white; }
-        .priority-medium { background-color: #ffc107; color: black; }
-        .priority-low { background-color: #28a745; color: white; }
-        
-        .priority-badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        /* Enhanced Activity Feed Styles - Simplified */
-        .activity-feed-simple {
-            max-height: 500px;
-            overflow-y: auto;
-        }
-        
-        .activity-item-simple {
-            display: flex;
-            align-items: flex-start;
-            padding: 1rem;
-            border-bottom: 1px solid #e9ecef;
-            transition: background-color 0.2s ease;
-        }
-        
-        .activity-item-simple:hover {
-            background-color: #f8f9fa;
-        }
-        
-        .activity-item-simple:last-child {
-            border-bottom: none;
-        }
-        
-        .activity-status-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1rem;
-            margin-right: 1rem;
-            flex-shrink: 0;
-        }
-        
-        .activity-status-icon.status-available { background-color: #0d6efd; }
-        .activity-status-icon.status-assigned { background-color: #fd7e14; }
-        .activity-status-icon.status-submitted { background-color: #0dcaf0; }
-        .activity-status-icon.status-collected { background-color: #198754; }
-        .activity-status-icon.status-cancelled { background-color: #dc3545; }
-        
-        .activity-content-main {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .activity-header-simple {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-        
-        .status-badge {
-            padding: 0.25rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-        
-        .status-badge.badge-primary { background-color: #0d6efd; color: white; }
-        .status-badge.badge-warning { background-color: #ffc107; color: #212529; }
-        .status-badge.badge-info { background-color: #0dcaf0; color: #212529; }
-        .status-badge.badge-success { background-color: #198754; color: white; }
-        .status-badge.badge-danger { background-color: #dc3545; color: white; }
-        
-        .activity-time-simple {
-            font-size: 0.8rem;
-            color: #6c757d;
-        }
-        
-        .activity-message-main {
-            margin-bottom: 0.75rem;
-            color: #495057;
-            line-height: 1.4;
-            font-size: 0.95rem;
-        }
-        
-        .activity-details-simple {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            font-size: 0.8rem;
-            color: #6c757d;
-        }
-        
-        .activity-details-simple span {
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-        
-        .activity-details-simple i {
-            width: 14px;
-            color: #9c9c9c;
-        }
-        
-        .activity-action-simple {
-            margin-left: 1rem;
-            flex-shrink: 0;
-        }
-        
-        .activity-summary-simple {
-            border-top: 2px solid #e9ecef;
-        }
-        
-        .summary-stat-simple {
-            text-align: center;
-            padding: 0.5rem;
-        }
-        
-        .stat-number-simple {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        
-        .stat-label-simple {
-            font-size: 0.75rem;
-            color: #6c757d;
-            text-transform: uppercase;
-            font-weight: 500;
-        }
-        
-        .empty-state-simple {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #6c757d;
-        }
-        
-        .empty-state-simple i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
-        }
-        
-        .empty-state-simple h5 {
-            margin-bottom: 0.5rem;
-            color: #495057;
-        }
-        
-        /* Enhanced Stat Cards in Flex Layout */
-        .stat-card {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-            border-color: #198754;
-        }
-        
-        .stat-card.eco-coins:hover {
-            border-color: #ffc107;
-        }
-        
-        .stat-card.waste-reports:hover {
-            border-color: #0d6efd;
-        }
-        
-        .stat-card.community-rank:hover {
-            border-color: #fd7e14;
-        }
-        
-        .stat-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-        
-        .stat-card.eco-coins .stat-icon {
-            background: linear-gradient(135deg, #ffc107, #ffca28);
-            color: white;
-        }
-        
-        .stat-card.waste-reports .stat-icon {
-            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
-            color: white;
-        }
-        
-        .stat-card.community-rank .stat-icon {
-            background: linear-gradient(135deg, #fd7e14, #e55a0e);
-            color: white;
-        }
-        
-        .stat-content {
-            flex: 1;
-            min-width: 0;
-        }
-        
-        .stat-content h3 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0 0 0.25rem 0;
-            color: #212529;
-        }
-        
-        .stat-content p {
-            margin: 0 0 0.5rem 0;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #6c757d;
-        }
-        
-        .stat-content small {
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-        
-        /* Mobile responsiveness for stat cards */
-        @media (max-width: 768px) {
-            .stat-card {
-                padding: 1rem;
-                gap: 0.75rem;
-            }
-            
-            .stat-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 1.25rem;
-            }
-            
-            .stat-content h3 {
-                font-size: 1.5rem;
-            }
-        }
-        
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            .activity-item-simple {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .activity-status-icon {
-                align-self: flex-start;
-                margin-bottom: 1rem;
-                margin-right: 0;
-            }
-            
-            .activity-action-simple {
-                margin-left: 0;
-                margin-top: 1rem;
-            }
-            
-            .activity-details-simple {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-        }
-        
-        .collection-item {
-            background: white;
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            padding: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .collection-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-        
-        .my-collection-item, .my-report-item {
-            background: #f8f9fa;
-            border-left: 4px solid #43a047;
-            padding: 1rem;
-            margin-bottom: 0.75rem;
-            border-radius: 8px;
-        }
-        
-        .status-badge {
-            padding: 0.25rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-        
-        .status-pending { background-color: #fff3cd; color: #856404; }
-        .status-assigned { background-color: #cff4fc; color: #055160; }
-        .status-submitted { background-color: #e2e3e5; color: #383d41; }
-        .status-collected { background-color: #d1e7dd; color: #0a3622; }
-        .status-completed { background-color: #d1e7dd; color: #0a3622; }
-        
-        .collection-available {
-            color: #28a745;
-            font-weight: 500;
-        }
-        
-        .collection-assigned {
-            color: #ffc107;
-            font-weight: 500;
-        }
-        
-        .empty-state-small {
-            text-align: center;
-            padding: 2rem 1rem;
-            color: #6c757d;
-        }
-        
-        .activity-action {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-        }
-        
-        .collection-actions {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .submit-collection-btn {
-            font-size: 0.875rem;
-            padding: 0.375rem 0.75rem;
-        }
-
-        .my-collection-item {
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .collection-meta {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 0.5rem;
-        }
-
-        .collection-details-summary .card {
-            border: 0;
-        }
-    </style>
     <script>
         // Real-time dashboard updates
         document.addEventListener('DOMContentLoaded', function () {
