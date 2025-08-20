@@ -40,7 +40,7 @@
               <div style="margin-bottom:18px;">
                 <textarea name="tools" placeholder="Any special skills or tools you'll bring?" rows="3" style="width:100%;padding:10px;border-radius:8px;border:1px solid #bdbdbd;"></textarea>
               </div>
-              <button type="submit" style="width:100%;margin-top:8px;padding:12px 0;font-size:1.1em;border-radius:8px;background:#4CAF50;color:#fff;border:none;cursor:pointer;font-weight:600;letter-spacing:1px;transition:background 0.2s;">Sign Up</button>
+              <button type="submit" style="width:100%;margin-top:8px;padding:12px 0;font-size:1.1em;border-radius:8px;background:#4CAF50;color:#fff;border:none;cursor:pointer;font-weight:600;letter-spacing:1px;transition:background 0.2s;">Join</button>
             </form>
             <div id="eventSignupMsg" style="margin-top:16px;color:#388e3c;font-weight:bold;text-align:center;"></div>
           </div>

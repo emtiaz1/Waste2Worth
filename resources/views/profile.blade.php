@@ -150,40 +150,6 @@
                                 @endif
                             </div>
                         </div>
-
-                        <div class="section">
-                            <h3><i class="fas fa-heart"></i> Interests & Skills</h3>
-                            <div class="tags-section">
-                                @if($profile->interests && is_array($profile->interests) && count($profile->interests) > 0)
-                                    <div class="tag-group">
-                                        <h4>Interests</h4>
-                                        <div class="tags">
-                                            @foreach($profile->interests as $interest)
-                                                <span class="tag interest-tag">{{ $interest }}</span>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
-                                
-                                @if($profile->skills && is_array($profile->skills) && count($profile->skills) > 0)
-                                    <div class="tag-group">
-                                        <h4>Skills</h4>
-                                        <div class="tags">
-                                            @foreach($profile->skills as $skill)
-                                                <span class="tag skill-tag">{{ $skill }}</span>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
-
-                                @if((!$profile->interests || !is_array($profile->interests) || count($profile->interests) == 0) && (!$profile->skills || !is_array($profile->skills) || count($profile->skills) == 0))
-                                    <div class="empty-state">
-                                        <i class="fas fa-lightbulb"></i>
-                                        <p>Add your interests and skills to connect with like-minded people!</p>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -219,18 +185,6 @@
                                 </span>
                             </div>
                         </div>
-
-                        @if($profile->social_links && is_array($profile->social_links) && count($profile->social_links) > 0)
-                            <h4><i class="fas fa-share-alt"></i> Social Links</h4>
-                            <div class="social-links">
-                                @foreach($profile->social_links as $platform => $url)
-                                    <a href="{{ $url }}" target="_blank" rel="noopener" class="social-link">
-                                        <i class="fab fa-{{ $platform }}"></i>
-                                        {{ ucfirst($platform) }}
-                                    </a>
-                                @endforeach
-                            </div>
-                        @endif
                     </div>
                 </div>
 
@@ -285,13 +239,18 @@
                 </div>
 
                 <!-- Social Media Tab -->
-                <div id="social-tab" class="tab-pane">                        @if($profile->social_links && is_array($profile->social_links) && count($profile->social_links) > 0)
+                <div id="social-tab" class="tab-pane">
+                    <div class="social-section">
+                        <h3><i class="fas fa-share-alt"></i> Social Media Links</h3>
+                        @if($profile->social_links && is_array($profile->social_links) && count($profile->social_links) > 0)
                             <div class="social-links">
                                 @foreach($profile->social_links as $platform => $url)
-                                    <a href="{{ $url }}" target="_blank" rel="noopener" class="social-link">
-                                        <i class="fab fa-{{ $platform }}"></i>
-                                        {{ ucfirst($platform) }}
-                                    </a>
+                                    @if(!empty($url))
+                                        <a href="{{ $url }}" target="_blank" rel="noopener" class="social-link">
+                                            <i class="fab fa-{{ $platform }}"></i>
+                                            {{ ucfirst($platform) }}
+                                        </a>
+                                    @endif
                                 @endforeach
                             </div>
                         @else
@@ -310,6 +269,7 @@
                             </div>
                         @endif
                     </div>
+                </div>
             </div>
 
             <!-- Edit Form -->
@@ -400,45 +360,13 @@
                         </div>
                     </div>
 
-                    <!-- Interests & Skills -->
+                    <!-- Preferred Causes -->
                     <div class="form-section">
-                        <h3><i class="fas fa-heart"></i> Interests & Skills</h3>
-                        <div class="input-group">
-                            <label>Interests</label>
-                            <div class="tags-input-container">
-                                <input type="text" id="interests-input" placeholder="Add interests (press Enter to add)">
-                                <div id="interests-display" class="tags-display">
-                                    @if($profile->interests && is_array($profile->interests))
-                                        @foreach($profile->interests as $interest)
-                                            <span class="tag editable" data-value="{{ $interest }}">
-                                                {{ $interest }}
-                                                <button type="button" onclick="removeTag(this, 'interests')">&times;</button>
-                                            </span>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Skills</label>
-                            <div class="tags-input-container">
-                                <input type="text" id="skills-input" placeholder="Add skills (press Enter to add)">
-                                <div id="skills-display" class="tags-display">
-                                    @if($profile->skills && is_array($profile->skills))
-                                        @foreach($profile->skills as $skill)
-                                            <span class="tag editable" data-value="{{ $skill }}">
-                                                {{ $skill }}
-                                                <button type="button" onclick="removeTag(this, 'skills')">&times;</button>
-                                            </span>
-                                        @endforeach
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
+                        <h3><i class="fas fa-heart"></i> Preferred Causes</h3>
                         <div class="input-group">
                             <label>Preferred Causes</label>
+                            <!-- Hidden field to ensure preferred_causes is always sent -->
+                            <input type="hidden" name="preferred_causes[]" value="">
                             <div class="checkbox-group">
                                 @php
                                     $causes = ['Climate Action', 'Waste Reduction', 'Recycling', 'Community Clean-up', 'Environmental Education', 'Sustainable Living', 'Ocean Conservation', 'Green Energy'];
@@ -535,8 +463,6 @@
     <script src="{{ asset('js/appbar.js') }}"></script>
     <script>
         // Global variables
-        let interests = @json(is_array($profile->interests ?? []) ? $profile->interests : []);
-        let skills = @json(is_array($profile->skills ?? []) ? $profile->skills : []);
         let selectedImageFile = null;
 
         // Image Upload Modal Functions
@@ -712,71 +638,6 @@
                 };
                 reader.readAsDataURL(this.files[0]);
             }
-        });
-
-        // Tags input functionality
-        function setupTagsInput(inputId, displayId, arrayName) {
-            const input = document.getElementById(inputId);
-            const display = document.getElementById(displayId);
-            
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const value = this.value.trim();
-                    if (value && !window[arrayName].includes(value)) {
-                        window[arrayName].push(value);
-                        addTagToDisplay(display, value, arrayName);
-                        this.value = '';
-                        updateHiddenInputs(arrayName);
-                    }
-                }
-            });
-        }
-
-        function addTagToDisplay(display, value, arrayName) {
-            const tag = document.createElement('span');
-            tag.className = 'tag editable';
-            tag.dataset.value = value;
-            tag.innerHTML = `${value} <button type="button" onclick="removeTag(this, '${arrayName}')">&times;</button>`;
-            display.appendChild(tag);
-        }
-
-        function removeTag(button, arrayName) {
-            const tag = button.parentElement;
-            const value = tag.dataset.value;
-            const index = window[arrayName].indexOf(value);
-            if (index > -1) {
-                window[arrayName].splice(index, 1);
-            }
-            tag.remove();
-            updateHiddenInputs(arrayName);
-        }
-
-        function updateHiddenInputs(arrayName) {
-            // Remove existing hidden inputs
-            document.querySelectorAll(`input[name="${arrayName}[]"]`).forEach(input => {
-                if (input.type === 'hidden') input.remove();
-            });
-            
-            // Add new hidden inputs
-            const form = document.querySelector('.edit-form');
-            window[arrayName].forEach(value => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = `${arrayName}[]`;
-                input.value = value;
-                form.appendChild(input);
-            });
-        }
-
-        // Initialize tags input
-        document.addEventListener('DOMContentLoaded', function() {
-            setupTagsInput('interests-input', 'interests-display', 'interests');
-            setupTagsInput('skills-input', 'skills-display', 'skills');
-            
-            // Initialize hidden inputs
-            updateHiddenInputs('interests');
-            updateHiddenInputs('skills');
         });
 
         // Auto-hide notifications

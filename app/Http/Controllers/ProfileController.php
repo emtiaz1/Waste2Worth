@@ -44,8 +44,6 @@ class ProfileController extends Controller
             'organization' => 'nullable|string|max:255',
             'website' => 'nullable|url|max:255',
             'social_links' => 'nullable|array',
-            'interests' => 'nullable|array',
-            'skills' => 'nullable|array',
             'achievements' => 'nullable|string|max:1000',
             'contribution' => 'nullable|string|max:1000',
             'total_token' => 'nullable|integer|min:0',
@@ -61,18 +59,22 @@ class ProfileController extends Controller
             'profile_public' => 'nullable|boolean',
         ]);
 
-        // Convert arrays to JSON for storage
+        // Remove empty social links
         if (isset($validatedData['social_links'])) {
-            $validatedData['social_links'] = json_encode($validatedData['social_links']);
+            $validatedData['social_links'] = array_filter($validatedData['social_links'], function($value) {
+                return !empty($value);
+            });
         }
-        if (isset($validatedData['interests'])) {
-            $validatedData['interests'] = json_encode($validatedData['interests']);
-        }
-        if (isset($validatedData['skills'])) {
-            $validatedData['skills'] = json_encode($validatedData['skills']);
-        }
+        
+        // Handle preferred_causes - filter out empty values and ensure it's an array
         if (isset($validatedData['preferred_causes'])) {
-            $validatedData['preferred_causes'] = json_encode($validatedData['preferred_causes']);}
+            $validatedData['preferred_causes'] = array_filter($validatedData['preferred_causes'], function($value) {
+                return !empty($value);
+            });
+        } else {
+            $validatedData['preferred_causes'] = [];
+        }
+        
         // Update user's basic info if first_name and last_name are provided
         if (!empty($validatedData['first_name']) || !empty($validatedData['last_name'])) {
             $user->update([

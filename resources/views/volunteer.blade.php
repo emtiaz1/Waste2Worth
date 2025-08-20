@@ -68,9 +68,7 @@
               <button onclick="window.location.href='{{ route('event') }}'" class="btn-events">
                 <i class="fas fa-calendar"></i> View All Events
               </button>
-              <button onclick="resetRegistration()" class="btn-reset">
-                <i class="fas fa-refresh"></i> Reset Registration
-              </button>
+
             </div>
           </div>
           <div class="back-btn">
