@@ -40,7 +40,7 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('admin.purchases') }}" class="nav-link text-white">
                     <i class="fas fa-shopping-cart me-2"></i> Purchases
                 </a>
             </li>

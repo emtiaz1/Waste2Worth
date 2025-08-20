@@ -61,4 +61,5 @@ class LoginController extends Controller
 
         return redirect()->intended('/home')->with('success', 'Signed in successfully!');
     }
+
 }

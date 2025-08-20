@@ -29,8 +29,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/home', [AdminController::class, 'home'])->name('home');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
         Route::match(['get', 'post'], '/products', [AdminController::class, 'productStore'])->name('products');
+        Route::get('/purchases', [AdminController::class, 'showPurchases'])->name('purchases');
+        Route::post('/purchases/update-status', [AdminController::class, 'updatePurchaseStatus'])->name('purchases.update-status');
+        Route::post('/purchases/{purchase}/confirm', [AdminController::class, 'confirmPurchase'])->name('purchases.confirm');
     });
 });
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
 
 Route::post('/logout', function () {
     Auth::logout();
@@ -38,9 +44,8 @@ Route::post('/logout', function () {
     request()->session()->regenerateToken();
     return redirect('/login')->with('success', 'Logged out successfully!');
 })->name('logout');
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
+
+
 
 Route::post('/signup', [LoginController::class, 'signup'])->name('signup.store');
 Route::post('/signin', [LoginController::class, 'signin'])->name('signin');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Admin;
 use App\Models\Product;
+use App\Models\Purchase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -163,5 +164,20 @@ class AdminController extends Controller
 
         $products = Product::all();
         return view('admin.products', compact('products'));
+    }
+
+    public function showPurchases()
+    {
+        $purchases = Purchase::with(['user', 'product'])->orderBy('created_at', 'desc')->get();
+        return view('admin.purchase', compact('purchases'));
+    }
+
+    public function confirmPurchase($id)
+    {
+        $purchase = \App\Models\Purchase::findOrFail($id);
+        $purchase->status = 'confirmed';
+        $purchase->save();
+
+        return redirect()->route('admin.purchases')->with('success', 'Purchase confirmed!');
     }
 }

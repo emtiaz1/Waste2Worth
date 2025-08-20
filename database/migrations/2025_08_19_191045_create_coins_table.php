@@ -16,7 +16,6 @@ return new class extends Migration {
             $table->string('reason');
             $table->integer('eco_coin_value');
             $table->timestamps();
-
             $table->index('user_email');
         });
     }

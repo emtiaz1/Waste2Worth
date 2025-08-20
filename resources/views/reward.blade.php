@@ -75,117 +75,182 @@
             margin-bottom: 10px;
             border-radius: 4px;
         }
-        <style>
-            .modal {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.5);
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                z-index: 1000;
-            }
 
-            .modal.hidden {
-                display: none;
-            }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
 
-            .modal-content {
-                background: white;
-                padding: 30px;
-                border-radius: 10px;
-                max-width: 500px;
-                width: 90%;
-                max-height: 80vh;
-                overflow-y: auto;
-            }
+        .modal.hidden {
+            display: none;
+        }
 
-            .modal-header {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-            }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
 
-            .close-btn {
-                background: none;
-                border: none;
-                font-size: 24px;
-                cursor: pointer;
-                color: #666;
-            }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-            .order-summary {
-                background: #f5f5f5;
-                padding: 15px;
-                border-radius: 5px;
-                margin-bottom: 20px;
-            }
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
 
-            .product-info {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
+        .order-summary {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
 
-            .form-group {
-                margin-bottom: 15px;
-            }
+        .product-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-            .form-group label {
-                display: block;
-                margin-bottom: 5px;
-                font-weight: bold;
-            }
+        .form-group {
+            margin-bottom: 15px;
+        }
 
-            .form-control {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                font-size: 14px;
-            }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
 
-            .modal-actions {
-                display: flex;
-                gap: 10px;
-                justify-content: flex-end;
-                margin-top: 20px;
-            }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
 
-            .btn-primary,
-            .btn-secondary {
-                padding: 10px 20px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                font-size: 14px;
-            }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
 
-            .btn-primary {
-                background: #28a745;
-                color: white;
-            }
+        .btn-primary,
+        .btn-secondary {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
 
-            .btn-secondary {
-                background: #6c757d;
-                color: white;
-            }
+        .btn-primary {
+            background: #28a745;
+            color: white;
+        }
 
-            .success-message {
-                text-align: center;
-                padding: 20px;
-            }
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
 
-            .success-icon {
-                font-size: 48px;
-                color: #28a745;
-                margin-bottom: 20px;
-            }
-        </style>
+        .success-message {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .success-icon {
+            font-size: 48px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        .history-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .delivery-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .delivery-address {
+            display: flex;
+            flex-direction: column;
+            font-size: 0.9em;
+        }
+
+        .delivery-label {
+            color: #666;
+            font-size: 0.85em;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .status-confirmed {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .history-table th,
+        .history-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .history-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
     </style>
 </head>
 
@@ -229,7 +294,8 @@
                 <div class="rewards-grid" id="rewardsGrid">
                     @forelse($products as $product)
                         <div class="reward-item" data-product-id="{{ $product->id }}">
-                            <img src="{{ asset('frontend/productimage/' . basename($product->image)) }}" alt="{{ $product->name }}" class="reward-image">
+                            <img src="{{ asset('frontend/productimage/' . basename($product->image)) }}"
+                                alt="{{ $product->name }}" class="reward-image">
                             <div class="reward-info">
                                 <h4 class="reward-name">{{ $product->name }}</h4>
                                 <p class="reward-description">{{ $product->description }}</p>
@@ -261,35 +327,50 @@
                     </div>
                 @else
                     <div class="history-items">
-                        @foreach($purchaseHistory as $purchase)
-                            <div class="history-item">
-                                <div class="history-header">
-                                    <span class="order-id">Order #{{ $purchase->id }}</span>
-                                    <span class="order-date">{{ $purchase->created_at->format('M d, Y') }}</span>
-                                </div>
-                                <div class="history-products">
-                                    <div class="history-product">
-                                        <img src="{{ asset('frontend/productimage/' . basename($purchase->product->image)) }}" alt="{{ $purchase->product->name }}"
-                                            class="history-product-image">
-                                        <div class="history-product-info">
-                                            <h4>{{ $purchase->product->name }}</h4>
-                                            <div class="product-details">
-                                                <span>Price: {{ $purchase->eco_coins_spent }} EcoCoins</span>
+                        <table class="history-table">
+                            <thead>
+                                <tr>
+                                    <th>Order Info</th>
+                                    <th>Product Details</th>
+                                    <th>Delivery Address</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($purchaseHistory as $purchase)
+                                    <tr>
+                                        <td>
+                                            <div>Order #{{ $purchase->id }}</div>
+                                            <div style="font-size: 0.85em; color: #666;">
+                                                {{ $purchase->created_at->format('M d, Y g:i A') }}
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="history-footer">
-                                    <div class="delivery-info">
-                                        <i class="fas fa-map-marker-alt"></i>
-                                        <span>Delivered to: {{ $purchase->name }}, {{ $purchase->address }}</span>
-                                    </div>
-                                    <div class="order-total">
-                                        <strong>Total: {{ $purchase->eco_coins_spent }} EcoCoins</strong>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
+                                        </td>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <img src="{{ asset('frontend/productimage/' . basename($purchase->product->image)) }}"
+                                                    alt="{{ $purchase->product->name }}"
+                                                    style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                                <div>
+                                                    <div>{{ $purchase->product->name }}</div>
+                                                    <div style="color: #666;">{{ $purchase->eco_coins_spent }} EcoCoins</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>{{ $purchase->name }}</div>
+                                            <div style="color: #666;">{{ $purchase->address }}</div>
+                                            <div style="color: #666;">{{ $purchase->mobile }}</div>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="status-badge {{ $purchase->status === 'confirmed' ? 'status-confirmed' : 'status-pending' }}">
+                                                {{ ucfirst($purchase->status) }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 @endif
             </section>

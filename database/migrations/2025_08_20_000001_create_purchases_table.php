@@ -16,6 +16,7 @@ class CreatePurchasesTable extends Migration
             $table->string('address');
             $table->string('mobile');
             $table->integer('eco_coins_spent');
+            $table->string('status')->default('pending');
             $table->timestamps();
         });
     }
