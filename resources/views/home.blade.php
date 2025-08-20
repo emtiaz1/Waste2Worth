@@ -843,37 +843,6 @@
                             @endforelse
                         </div>
                         
-                        @if(count($dashboardData['recent_community_activity'] ?? []) > 0)
-                        <div class="activity-summary-simple mt-3 p-3 bg-light rounded">
-                            <h6><i class="fas fa-chart-bar"></i> Today's Summary</h6>
-                            <div class="row g-2">
-                                <div class="col-6 col-md-3">
-                                    <div class="summary-stat-simple">
-                                        <div class="stat-number-simple text-primary">{{ collect($dashboardData['recent_community_activity'])->where('status', 'available')->count() }}</div>
-                                        <div class="stat-label-simple">Available</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="summary-stat-simple">
-                                        <div class="stat-number-simple text-warning">{{ collect($dashboardData['recent_community_activity'])->where('status', 'assigned')->count() }}</div>
-                                        <div class="stat-label-simple">Assigned</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="summary-stat-simple">
-                                        <div class="stat-number-simple text-success">{{ collect($dashboardData['recent_community_activity'])->where('status', 'collected')->count() }}</div>
-                                        <div class="stat-label-simple">Collected</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="summary-stat-simple">
-                                        <div class="stat-number-simple text-danger">{{ collect($dashboardData['recent_community_activity'])->where('status', 'cancelled')->count() }}</div>
-                                        <div class="stat-label-simple">Cancelled</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @endif
                     </div>
                 </div>
                 
