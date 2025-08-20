@@ -34,13 +34,7 @@
               <p>Thank you for registering as a volunteer. You can join additional events below.</p>
             </div>
             
-            <!-- Display all events with registration status -->
-            <div class="registered-events">
-              <h3>Available Events:</h3>
-              <div class="event-list">
-                <!-- Events will be populated by JavaScript -->
-              </div>
-            </div>
+            <!-- Display all events with registration status removed as requested -->
             
             <!-- Action buttons -->
             <div class="action-buttons">

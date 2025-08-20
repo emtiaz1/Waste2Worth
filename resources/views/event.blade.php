@@ -15,65 +15,137 @@
   <div class="layout" id="mainLayout">
     <div class="main-content">
       <div class="container" style="max-width: 1200px; background: transparent; box-shadow: none; padding: 20px;">
-        <h1>Upcoming Cleanup Events</h1>
-
+  <h1>Upcoming Cleanup Events</h1>
+        <div id="eventSignupFormSection" style="margin-bottom:32px;display:none;">
+          <div style="background:#f8f9fa;border-radius:16px;box-shadow:0 2px 16px rgba(44,62,80,0.08);padding:32px 24px;max-width:520px;margin:auto;">
+            <h2 style="text-align:center;color:#2196F3;margin-bottom:24px;font-size:2rem;font-weight:700;letter-spacing:1px;">Sign Up for an Event</h2>
+            <form id="eventSignupForm">
+              <div style="margin-bottom:18px;">
+                <label for="eventSelect" style="font-weight:600;color:#333;">Select Event:</label>
+                <select id="eventSelect" name="event" required style="width:100%;padding:10px;border-radius:8px;border:1px solid #bdbdbd;margin-top:6px;">
+                  <option value="">-- Choose an Event --</option>
+                  <option value="park-cleanup">Sher-e-Bangla Park Cleanup</option>
+                  <option value="beach-cleanup">Cox's Bazar Beach Cleanup</option>
+                  <option value="city-street">Mirpur-1 Street Cleaning</option>
+                  <option value="riverbank-cleanup">Turag River Bank Cleanup</option>
+                </select>
+              </div>
+              <div style="display:flex;gap:12px;margin-bottom:18px;">
+                <input type="text" name="name" placeholder="Full Name" required style="flex:1;padding:10px;border-radius:8px;border:1px solid #bdbdbd;" />
+                <input type="email" name="email" placeholder="Email Address" required style="flex:1;padding:10px;border-radius:8px;border:1px solid #bdbdbd;" />
+              </div>
+              <div style="display:flex;gap:12px;margin-bottom:18px;">
+                <input type="tel" name="phone" placeholder="Phone Number" required style="flex:1;padding:10px;border-radius:8px;border:1px solid #bdbdbd;" />
+                <input type="text" name="address" placeholder="Present Address" required style="flex:1;padding:10px;border-radius:8px;border:1px solid #bdbdbd;" />
+              </div>
+              <div style="margin-bottom:18px;">
+                <textarea name="tools" placeholder="Any special skills or tools you'll bring?" rows="3" style="width:100%;padding:10px;border-radius:8px;border:1px solid #bdbdbd;"></textarea>
+              </div>
+              <button type="submit" style="width:100%;margin-top:8px;padding:12px 0;font-size:1.1em;border-radius:8px;background:#4CAF50;color:#fff;border:none;cursor:pointer;font-weight:600;letter-spacing:1px;transition:background 0.2s;">Sign Up</button>
+            </form>
+            <div id="eventSignupMsg" style="margin-top:16px;color:#388e3c;font-weight:bold;text-align:center;"></div>
+          </div>
+        </div>
+        <button id="showEventSignupBtn" style="margin-bottom:24px;padding:10px 24px;font-size:1.1em;border-radius:8px;background:#2196F3;color:#fff;border:none;cursor:pointer;">Sign Up for an Event</button>
         <div class="event-grid">
-          <!-- Event Card 1 -->
+          @foreach($events as $event)
           <div class="event-card">
-            <img src="{{ asset('frontend/image/clean1.jpg') }}" alt="Park Cleanup">
-            <h2>Sher-e-Bangla Park Cleanup</h2>
+            <img src="{{ asset($event->image) }}" alt="{{ $event->name }}">
+            <h2>{{ $event->name }}</h2>
             <div class="event-details">
-              <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Sher-e-Bangla Nagar Park, Agargaon</p>
-              <p><i class="fas fa-clock"></i> <strong>Time:</strong> 8:00 AM - 12:00 PM</p>
-              <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> August 15, 2025</p>
+              <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> {{ \Carbon\Carbon::parse($event->date)->format('F d, Y') }}</p>
             </div>
-            <p>Join us to restore the natural beauty of Sher-e-Bangla Park. Gloves and bags provided.</p>
-            <button onclick="location.href='{{ route('volunteer') }}?event=park-cleanup'">Sign Up</button>
+            <button class="more-info-btn" data-event-id="{{ $event->id }}">More Info</button>
           </div>
-
-          <!-- Event Card 2 -->
-          <div class="event-card">
-            <img src="{{ asset('frontend/image/clean2.png') }}" alt="Beach Cleanup">
-            <h2>Cox's Bazar Beach Cleanup</h2>
-            <div class="event-details">
-              <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Cox's Bazar Sea Beach, Laboni Point</p>
-              <p><i class="fas fa-clock"></i> <strong>Time:</strong> 6:00 AM - 10:00 AM</p>
-              <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> August 20, 2025</p>
-            </div>
-            <p>Help protect marine life by removing litter from Cox's Bazar beach. Volunteers welcome!</p>
-            <button onclick="location.href='{{ route('volunteer') }}?event=beach-cleanup'">Sign Up</button>
-          </div>
-
-          <!-- Event Card 3 -->
-          <div class="event-card">
-            <img src="{{ asset('frontend/image/clean3.png') }}" alt="City Street Cleaning">
-            <h2>Mirpur-1 Street Cleaning</h2>
-            <div class="event-details">
-              <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Mirpur-1, Section-2, Main Road</p>
-              <p><i class="fas fa-clock"></i> <strong>Time:</strong> 7:00 AM - 11:00 AM</p>
-              <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> August 25, 2025</p>
-            </div>
-            <p>Make our city cleaner! Join others in a fun and impactful community effort in Mirpur.</p>
-            <button onclick="location.href='{{ route('volunteer') }}?event=city-street'">Sign Up</button>
-          </div>
-
-          <!-- Event Card 4 -->
-          <div class="event-card">
-            <img src="{{ asset('frontend/image/clean4.jpg') }}" alt="Riverbank Cleanup">
-            <h2>Turag River Bank Cleanup</h2>
-            <div class="event-details">
-              <p><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> Turag River, Uttara Sector-18</p>
-              <p><i class="fas fa-clock"></i> <strong>Time:</strong> 7:30 AM - 11:30 AM</p>
-              <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> August 30, 2025</p>
-            </div>
-            <p>Support local ecology by cleaning up along the Turag riverbank trail. All ages welcome.</p>
-            <button onclick="location.href='{{ route('volunteer') }}?event=riverbank-cleanup'">Sign Up</button>
+          @endforeach
+        </div>
+        <div style="margin-top:40px;">
+          <button id="showStatusBtn" class="status-btn">Show Other Events & Sign Up Status</button>
+          <div id="eventStatusWrapper" style="display:none;">
+            <h2 style="text-align:center;color:#4CAF50;margin-bottom:24px;font-size:1.7rem;font-weight:700;letter-spacing:1px;">Other Events & Sign Up Status</h2>
+            <div id="eventStatusSection" class="event-status-grid"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
   <script src="{{ asset('js/appbar.js') }}"></script>
+  <script src="{{ asset('js/eventStatus.js') }}"></script>
+  <style>
+    .event-modal-bg {position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(44,62,80,0.45);z-index:999;display:flex;align-items:center;justify-content:center;}
+    .event-modal {background:#fff;border-radius:16px;box-shadow:0 2px 24px rgba(44,62,80,0.18);padding:32px 28px;max-width:420px;width:90vw;position:relative;}
+    .event-modal h3 {margin-top:0;color:#2196F3;font-size:1.5rem;}
+    .event-modal p {margin-bottom:10px;}
+    .event-modal .close-btn {position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.5rem;color:#888;cursor:pointer;}
+
+    .status-btn {
+      padding:12px 32px;font-size:1.15em;border-radius:10px;background:#4CAF50;color:#fff;border:none;cursor:pointer;font-weight:600;box-shadow:0 2px 8px rgba(44,62,80,0.08);transition:background 0.2s;
+    }
+    .status-btn:hover {background:#388e3c;}
+    .event-status-grid {
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:32px;
+    }
+    .event-status-card {
+      background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(44,62,80,0.10);padding:24px 18px;display:flex;align-items:center;gap:18px;transition:box-shadow 0.2s,transform 0.2s;
+    }
+    .event-status-card:hover {
+      box-shadow:0 4px 24px rgba(44,62,80,0.18);transform:translateY(-2px) scale(1.02);
+    }
+    .event-status-card img {
+      width:80px;height:60px;border-radius:8px;object-fit:cover;box-shadow:0 2px 8px rgba(44,62,80,0.08);
+    }
+    .event-status-card .event-info {
+      flex:1;
+    }
+    .event-status-card h4 {
+      margin:0 0 6px 0;font-size:1.15rem;color:#2196F3;font-weight:700;
+    }
+    .event-status-card p {
+      margin:0;font-size:0.98em;color:#444;
+    }
+    .event-status-card .status {
+      display:inline-block;padding:6px 18px;border-radius:8px;background:#e8f5e9;color:#388e3c;font-weight:600;margin-top:8px;font-size:0.98em;
+    }
+    .event-status-card .join-btn {
+      padding:7px 18px;border-radius:8px;background:#2196F3;color:#fff;border:none;cursor:pointer;font-weight:600;margin-top:8px;font-size:0.98em;transition:background 0.2s;
+    }
+    .event-status-card .join-btn:hover {background:#1565c0;}
+  </style>
+  <script>
+    document.getElementById('showStatusBtn').addEventListener('click', function() {
+      document.getElementById('eventStatusWrapper').style.display = 'block';
+      this.style.display = 'none';
+    });
+    document.getElementById('showEventSignupBtn').addEventListener('click', function() {
+      document.getElementById('eventSignupFormSection').style.display = 'block';
+      this.style.display = 'none';
+    });
+
+    // Pass PHP event data to JS
+    const eventsData = @json($events);
+    document.querySelectorAll('.more-info-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const eventId = this.getAttribute('data-event-id');
+        const info = eventsData.find(e => e.id == eventId);
+        const modalBg = document.createElement('div');
+        modalBg.className = 'event-modal-bg';
+        modalBg.innerHTML = `
+          <div class='event-modal'>
+            <button class='close-btn'>&times;</button>
+            <h3>${info.name}</h3>
+            <p><strong>Location:</strong> ${info.location}</p>
+            <p><strong>Time:</strong> ${info.time}</p>
+            <p><strong>Date:</strong> ${new Date(info.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            <p>${info.description}</p>
+          </div>
+        `;
+        document.body.appendChild(modalBg);
+        modalBg.querySelector('.close-btn').onclick = function() {
+          document.body.removeChild(modalBg);
+        };
+      });
+    });
+  </script>
 </body>
 
 </html>

@@ -33,6 +33,7 @@ Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 // All other routes require authentication
+Route::get('/event', [App\Http\Controllers\EventController::class, 'index'])->name('event');
 Route::middleware(['auth'])->group(function () {
     // Reward products routes
     Route::get('/reward', [App\Http\Controllers\RewardController::class, 'index'])->name('reward');
@@ -53,9 +54,6 @@ Route::middleware(['auth'])->group(function () {
         return view('volunteer');
     })->name('volunteer');
 
-    Route::get('event', function () {
-        return view('event');
-    })->name('event');
 
     Route::get('/help', function () {
         return view('help');
@@ -76,9 +74,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/leaderboard/user-rank', [LeaderboardController::class, 'getUserRank'])->name('leaderboard.user.rank');
     Route::post('/leaderboard/update-score', [LeaderboardController::class, 'updatePerformanceScore'])->name('leaderboard.update.score');
 
-    Route::get('/event', function () {
-        return view('event');
-    })->name('event');
 
     Route::get('/reward', [App\Http\Controllers\RewardController::class, 'index'])->name('reward.index');
     Route::post('/reward/add-coins', [App\Http\Controllers\RewardController::class, 'addCoins'])->name('reward.add.coins');
