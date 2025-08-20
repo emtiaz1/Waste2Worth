@@ -30,6 +30,8 @@ class WasteReportController extends Controller
             'location' => $data['location'],
             'description' => $data['description'] ?? null,
             'image_path' => $data['image_path'] ?? null,
+            'user_email' => auth()->user()->email, // Fix: Add current user's email
+            'status' => 'pending' // Fix: Set default status
         ]);
 
         return response()->json(['success' => true, 'report' => $report]);
@@ -37,45 +39,54 @@ class WasteReportController extends Controller
 
     public function recent()
     {
-        $reports = WasteReport::orderBy('created_at', 'desc')->take(10)->get();
+        // Fix: Only show current user's recent reports
+        $userEmail = auth()->user()->email;
+        $reports = WasteReport::where('user_email', $userEmail)
+            ->orderBy('created_at', 'desc')
+            ->take(10)
+            ->get();
         return response()->json($reports);
     }
 
     public function stats()
     {
-        $total = WasteReport::sum('amount');
+        // Fix: Only show current user's stats
+        $userEmail = auth()->user()->email;
+        $total = WasteReport::where('user_email', $userEmail)->sum('amount');
         $mostType = WasteReport::select('waste_type', DB::raw('COUNT(*) as count'))
+            ->where('user_email', $userEmail)
             ->groupBy('waste_type')
             ->orderByDesc('count')
             ->first();
 
-        // Get waste breakdown by type for environmental impact calculations
+        // Get waste breakdown by type for environmental impact calculations (USER SPECIFIC)
         $wasteByType = WasteReport::select('waste_type', DB::raw('SUM(amount) as total_amount'))
+            ->where('user_email', $userEmail)
             ->groupBy('waste_type')
             ->pluck('total_amount', 'waste_type')
             ->toArray();
 
-        // Community Activity Metrics - Database Driven
+        // USER SPECIFIC Activity Metrics - Database Driven
         
-        // Today's reports count
-        $todayReports = WasteReport::whereDate('created_at', today())->count();
+        // Today's reports count (USER SPECIFIC)
+        $todayReports = WasteReport::where('user_email', $userEmail)
+            ->whereDate('created_at', today())
+            ->count();
         
-        // Active contributors today (unique users who reported today)
-        $activeContributors = WasteReport::whereDate('created_at', today())
-            ->distinct('location') // Using location as user identifier for now
-            ->count('location');
-        
-        // This week's reports for goal tracking
+        // This week's reports for goal tracking (USER SPECIFIC)
         $startOfWeek = now()->startOfWeek();
         $endOfWeek = now()->endOfWeek();
-        $weeklyReports = WasteReport::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
+        $weeklyReports = WasteReport::where('user_email', $userEmail)
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])
+            ->count();
         
         // Weekly goal (can be made configurable)
-        $weeklyGoal = 50;
+        $weeklyGoal = 10; // Individual user goal
         $weeklyProgress = min($weeklyReports, $weeklyGoal);
         
-        // This month's total for monthly tracking
-        $monthlyReports = WasteReport::whereYear('created_at', now()->year)
+        // This month's total for monthly tracking (USER SPECIFIC)
+        $monthlyReports = WasteReport::where('user_email', $userEmail)
+            ->whereYear('created_at', now()->year)
             ->whereMonth('created_at', now()->month)
             ->count();
         
@@ -105,43 +116,50 @@ class WasteReportController extends Controller
 
     public function communityActivity()
     {
-        // Real-time community metrics from database
+        $userEmail = auth()->user()->email;
         
-        // Today's statistics
+        // Today's statistics (user-specific)
         $today = today();
-        $todayReports = WasteReport::whereDate('created_at', $today)->count();
-        $todayWasteAmount = WasteReport::whereDate('created_at', $today)->sum('amount');
+        $todayReports = WasteReport::where('user_email', $userEmail)
+            ->whereDate('created_at', $today)->count();
+        $todayWasteAmount = WasteReport::where('user_email', $userEmail)
+            ->whereDate('created_at', $today)->sum('amount');
         
-        // This week's statistics
+        // This week's statistics (user-specific)
         $startOfWeek = now()->startOfWeek();
         $endOfWeek = now()->endOfWeek();
-        $weeklyReports = WasteReport::whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
+        $weeklyReports = WasteReport::where('user_email', $userEmail)
+            ->whereBetween('created_at', [$startOfWeek, $endOfWeek])->count();
         
-        // Active contributors (unique locations today - in real app, would be user_id)
-        $activeContributors = WasteReport::whereDate('created_at', $today)
+        // User's unique locations reported today
+        $activeContributors = WasteReport::where('user_email', $userEmail)
+            ->whereDate('created_at', $today)
             ->distinct('location')
             ->count('location');
         
-        // Hourly activity today for activity tracking
-        $hourlyActivity = WasteReport::whereDate('created_at', $today)
+        // Hourly activity today for this user
+        $hourlyActivity = WasteReport::where('user_email', $userEmail)
+            ->whereDate('created_at', $today)
             ->select(DB::raw('HOUR(created_at) as hour'), DB::raw('COUNT(*) as count'))
             ->groupBy(DB::raw('HOUR(created_at)'))
             ->orderBy('hour')
             ->get();
         
-        // Recent top contributors by location
-        $topContributors = WasteReport::select('location', DB::raw('COUNT(*) as report_count'))
+        // User's top locations by report count (last 7 days)
+        $topContributors = WasteReport::where('user_email', $userEmail)
+            ->select('location', DB::raw('COUNT(*) as report_count'))
             ->whereBetween('created_at', [now()->subDays(7), now()])
             ->groupBy('location')
             ->orderByDesc('report_count')
             ->limit(5)
             ->get();
         
-        // Daily trend (last 7 days)
+        // Daily trend for this user (last 7 days)
         $dailyTrend = [];
         for ($i = 6; $i >= 0; $i--) {
             $date = now()->subDays($i);
-            $count = WasteReport::whereDate('created_at', $date)->count();
+            $count = WasteReport::where('user_email', $userEmail)
+                ->whereDate('created_at', $date)->count();
             $dailyTrend[] = [
                 'date' => $date->format('M d'),
                 'count' => $count
@@ -153,7 +171,7 @@ class WasteReportController extends Controller
             'todayWasteAmount' => round($todayWasteAmount, 1),
             'activeContributors' => $activeContributors,
             'weeklyReports' => $weeklyReports,
-            'weeklyGoal' => 50, // Configurable goal
+            'weeklyGoal' => 10, // Individual user goal
             'hourlyActivity' => $hourlyActivity,
             'topContributors' => $topContributors,
             'dailyTrend' => $dailyTrend,
