@@ -122,90 +122,90 @@
 <body>
     @include('layouts.appbar')
 
-    <div class="help-header" style="">
-        <h1>How can we help you?</h1>
+    <div class="layout" id="mainLayout">
+        <div class="main-content">
+            <div class="help-grid">
+                <div class="help-card">
+                    <i class="fas fa-recycle"></i>
+                    <h3>Waste Management</h3>
+                    <p>Learn how to properly segregate and report waste for maximum eco-coins.</p>
+                </div>
+
+                <div class="help-card">
+                    <i class="fas fa-coins"></i>
+                    <h3>Eco-Coins System</h3>
+                    <p>Understand how to earn and redeem eco-coins through various activities.</p>
+                </div>
+
+                <div class="help-card">
+                    <i class="fas fa-gift"></i>
+                    <h3>Rewards Program</h3>
+                    <p>Discover exciting rewards and learn how to redeem them with your eco-coins.</p>
+                </div>
+
+                <div class="help-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Community Guidelines</h3>
+                    <p>Read our community guidelines and best practices for participation.</p>
+                </div>
+            </div>
+
+
+            <section class="faq-section">
+                <h2>Frequently Asked Questions</h2>
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How do I start earning eco-coins?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Start earning eco-coins by:
+                        <ul>
+                            <li>Reporting waste collection through our app</li>
+                            <li>Participating in community clean-up events</li>
+                            <li>Referring friends to join Waste2Worth</li>
+                            <li>Completing educational modules about waste management</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        How does the reward system work?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        Our reward system converts your environmental efforts into eco-coins. These coins can be redeemed for
+                        various sustainable products in our marketplace. The more waste you manage responsibly, the more coins
+                        you earn!
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        What types of waste can I report?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        You can report various types of waste including:
+                        <ul>
+                            <li>Plastic waste</li>
+                            <li>Paper and cardboard</li>
+                            <li>Electronic waste</li>
+                            <li>Metal waste</li>
+                            <li>Glass waste</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section class="contact-section">
+                <h2>Still need help?</h2>
+                <p>Our support team is always here to help you with any questions or concerns.</p>
+                <a href="{{ url('/contact') }}" class="btn-contact">Contact Support</a>
+            </section>
+        </div>
     </div>
-
-    <div class="help-grid">
-        <div class="help-card">
-            <i class="fas fa-recycle"></i>
-            <h3>Waste Management</h3>
-            <p>Learn how to properly segregate and report waste for maximum eco-coins.</p>
-        </div>
-
-        <div class="help-card">
-            <i class="fas fa-coins"></i>
-            <h3>Eco-Coins System</h3>
-            <p>Understand how to earn and redeem eco-coins through various activities.</p>
-        </div>
-
-        <div class="help-card">
-            <i class="fas fa-gift"></i>
-            <h3>Rewards Program</h3>
-            <p>Discover exciting rewards and learn how to redeem them with your eco-coins.</p>
-        </div>
-
-        <div class="help-card">
-            <i class="fas fa-users"></i>
-            <h3>Community Guidelines</h3>
-            <p>Read our community guidelines and best practices for participation.</p>
-        </div>
-    </div>
-
-
-    <section class="faq-section">
-        <h2>Frequently Asked Questions</h2>
-        <div class="faq-item">
-            <div class="faq-question">
-                How do I start earning eco-coins?
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="faq-answer">
-                Start earning eco-coins by:
-                <ul>
-                    <li>Reporting waste collection through our app</li>
-                    <li>Participating in community clean-up events</li>
-                    <li>Referring friends to join Waste2Worth</li>
-                    <li>Completing educational modules about waste management</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question">
-                How does the reward system work?
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="faq-answer">
-                Our reward system converts your environmental efforts into eco-coins. These coins can be redeemed for
-                various sustainable products in our marketplace. The more waste you manage responsibly, the more coins
-                you earn!
-            </div>
-        </div>
-
-        <div class="faq-item">
-            <div class="faq-question">
-                What types of waste can I report?
-                <i class="fas fa-chevron-down"></i>
-            </div>
-            <div class="faq-answer">
-                You can report various types of waste including:
-                <ul>
-                    <li>Plastic waste</li>
-                    <li>Paper and cardboard</li>
-                    <li>Electronic waste</li>
-                    <li>Metal waste</li>
-                    <li>Glass waste</li>
-                </ul>
-            </div>
-        </div>
-    </section>
-
-    <section class="contact-section">
-        <h2>Still need help?</h2>
-        <p>Our support team is always here to help you with any questions or concerns.</p>
-        <a href="{{ url('/contact') }}" class="btn-contact">Contact Support</a>
-    </section>
 
     <script>
         document.querySelectorAll('.faq-question').forEach(question => {
