@@ -42,16 +42,17 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
         Route::match(['get', 'post'], '/products', [AdminController::class, 'productStore'])->name('products');
         Route::get('/volunteers', [\App\Http\Controllers\VolunteerController::class, 'index'])->name('volunteers');
+        Route::get('/contact-messages', [\App\Http\Controllers\AdminMessageController::class, 'index'])->name('contact.messages');
         Route::get('/user-details', [AdminController::class, 'showUserDetails'])->name('user.details');
         Route::get('/user-detail/{id}', [AdminController::class, 'showUserDetail'])->name('user.detail');
-    Route::get('/events', [\App\Http\Controllers\AdminEventController::class, 'index'])->name('events');
-    Route::post('/events', [\App\Http\Controllers\AdminEventController::class, 'store'])->name('events.store');
-    Route::put('/events/{id}', [\App\Http\Controllers\AdminEventController::class, 'update'])->name('events.update');
-    Route::delete('/events/{id}', [\App\Http\Controllers\AdminEventController::class, 'destroy'])->name('events.delete');
-    Route::get('/home', [AdminController::class, 'home'])->name('home');
-    Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
-    Route::match(['get', 'post'], '/products', [AdminController::class, 'productStore'])->name('products');
-    Route::get('/volunteers', [\App\Http\Controllers\VolunteerController::class, 'index'])->name('volunteers');
+        Route::get('/events', [\App\Http\Controllers\AdminEventController::class, 'index'])->name('events');
+        Route::post('/events', [\App\Http\Controllers\AdminEventController::class, 'store'])->name('events.store');
+        Route::put('/events/{id}', [\App\Http\Controllers\AdminEventController::class, 'update'])->name('events.update');
+        Route::delete('/events/{id}', [\App\Http\Controllers\AdminEventController::class, 'destroy'])->name('events.delete');
+        Route::get('/home', [AdminController::class, 'home'])->name('home');
+        Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+        Route::match(['get', 'post'], '/products', [AdminController::class, 'productStore'])->name('products');
+        Route::get('/volunteers', [\App\Http\Controllers\VolunteerController::class, 'index'])->name('volunteers');
     });
 });
 Route::get('/login', function () {

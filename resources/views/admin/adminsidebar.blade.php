@@ -53,7 +53,7 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('admin.contact.messages') }}" class="nav-link text-white">
                     <i class="fas fa-envelope me-2"></i> Contact Messages
                 </a>
             </li>
