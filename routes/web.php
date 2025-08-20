@@ -9,10 +9,26 @@ use App\Http\Controllers\WasteReportController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\RewardController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+// Admin Routes
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::middleware(['guest:admin'])->group(function () {
+        Route::get('/login', [AdminController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AdminController::class, 'login']);
+        Route::get('/register', [AdminController::class, 'showRegisterForm'])->name('register');
+        Route::post('/register', [AdminController::class, 'register']);
+    });
+
+    Route::middleware(['auth:admin'])->group(function () {
+        Route::get('/home', [AdminController::class, 'home'])->name('home');
+        Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+    });
 });
 
 Route::post('/logout', function () {
@@ -33,6 +49,7 @@ Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
 // All other routes require authentication
+Route::get('/event', [App\Http\Controllers\EventController::class, 'index'])->name('event');
 Route::middleware(['auth'])->group(function () {
     // Reward products routes
     Route::get('/reward', [App\Http\Controllers\RewardController::class, 'index'])->name('reward');
@@ -53,9 +70,6 @@ Route::middleware(['auth'])->group(function () {
         return view('volunteer');
     })->name('volunteer');
 
-    Route::get('event', function () {
-        return view('event');
-    })->name('event');
 
     Route::get('/help', function () {
         return view('help');
@@ -79,9 +93,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/leaderboard/user-rank', [LeaderboardController::class, 'getUserRank'])->name('leaderboard.user.rank');
     Route::post('/leaderboard/update-score', [LeaderboardController::class, 'updatePerformanceScore'])->name('leaderboard.update.score');
 
-    Route::get('/event', function () {
-        return view('event');
-    })->name('event');
 
     Route::get('/reward', [App\Http\Controllers\RewardController::class, 'index'])->name('reward.index');
     Route::post('/reward/add-coins', [App\Http\Controllers\RewardController::class, 'addCoins'])->name('reward.add.coins');
