@@ -32,6 +32,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/purchases', [AdminController::class, 'showPurchases'])->name('purchases');
         Route::post('/purchases/update-status', [AdminController::class, 'updatePurchaseStatus'])->name('purchases.update-status');
         Route::post('/purchases/{purchase}/confirm', [AdminController::class, 'confirmPurchase'])->name('purchases.confirm');
+    Route::get('/events', [\App\Http\Controllers\AdminEventController::class, 'index'])->name('events');
+    Route::post('/events', [\App\Http\Controllers\AdminEventController::class, 'store'])->name('events.store');
+    Route::put('/events/{id}', [\App\Http\Controllers\AdminEventController::class, 'update'])->name('events.update');
+    Route::delete('/events/{id}', [\App\Http\Controllers\AdminEventController::class, 'destroy'])->name('events.delete');
+    Route::get('/home', [AdminController::class, 'home'])->name('home');
+    Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+    Route::match(['get', 'post'], '/products', [AdminController::class, 'productStore'])->name('products');
+    Route::get('/volunteers', [\App\Http\Controllers\VolunteerController::class, 'index'])->name('volunteers');
     });
 });
 Route::get('/login', function () {
@@ -79,6 +87,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('volunteer', function () {
         return view('volunteer');
     })->name('volunteer');
+    Route::post('volunteer', [\App\Http\Controllers\VolunteerController::class, 'store'])->name('volunteer.store');
 
 
     Route::get('/help', function () {
