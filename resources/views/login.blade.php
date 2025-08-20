@@ -55,14 +55,6 @@
                         </div>
 
                         <div class="actual-form">
-                            @if($errors->any())
-                                <div class="notification error" role="alert">
-                                    <span class="notification-icon">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                    </span>
-                                    {{ $errors->first() }}
-                                </div>
-                            @endif
 
                             <div class="input-wrap">
                                 <input type="email" name="email" class="input-field" autocomplete="off" required />

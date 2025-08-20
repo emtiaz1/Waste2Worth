@@ -9,21 +9,15 @@
     <div class="appbar-right">
         @php
             $user = Auth::user();
-            $profile = null;
             $displayName = 'Guest';
             if ($user) {
-                $profile = App\Models\Profile::where('email', $user->email)->first();
-                if ($profile) {
-                    if ($profile->username) {
-                        $displayName = $profile->username;
-                    } elseif ($profile->first_name || $profile->last_name) {
-                        $displayName = trim(($profile->first_name ?? '') . ' ' . ($profile->last_name ?? ''));
-                    } else {
-                        $displayName = $profile->email;
-                    }
-                } else {
-                    $displayName = $user->name ?? $user->email ?? 'User';
-                }
+                $displayName = $user->username ?? $user->email ?? 'User';
+                \Log::info('Display name in appbar:', [
+                    'user_id' => $user->id,
+                    'username' => $user->username,
+                    'email' => $user->email,
+                    'display_name' => $displayName
+                ]);
             }
         @endphp
         <span class="appbar-username">{{ $displayName }}</span>
@@ -42,28 +36,22 @@
         <div class="sidebar-profile">
             <div class="sidebar-profile-picture-container">
                 @if($profile && $profile->profile_picture)
-                    <img src="{{ asset('storage/' . $profile->profile_picture) }}?t={{ time() }}" 
-                         alt="Profile Picture" class="sidebar-profile-picture">
+                    <img src="{{ asset('storage/' . $profile->profile_picture) }}?t={{ time() }}" alt="Profile Picture"
+                        class="sidebar-profile-picture">
                 @else
-                    <img src="{{ asset('frontend/image/dp.jpg') }}" 
-                         alt="Default Profile" class="sidebar-profile-picture">
+                    <img src="{{ asset('frontend/image/dp.jpg') }}" alt="Default Profile" class="sidebar-profile-picture">
                 @endif
                 <div class="online-indicator"></div>
             </div>
             <div class="sidebar-profile-info">
                 @php
-                    $sidebarDisplayName = 'User';
-                    if ($profile) {
-                        if ($profile->username) {
-                            $sidebarDisplayName = $profile->username;
-                        } elseif ($profile->first_name || $profile->last_name) {
-                            $sidebarDisplayName = trim(($profile->first_name ?? '') . ' ' . ($profile->last_name ?? ''));
-                        } else {
-                            $sidebarDisplayName = $profile->email;
-                        }
-                    } elseif ($user) {
-                        $sidebarDisplayName = $user->name ?? $user->email ?? 'User';
-                    }
+                    $sidebarDisplayName = $user ? ($user->username ?? $user->email ?? 'User') : 'User';
+                    \Log::info('Display name in sidebar:', [
+                        'user_id' => $user ? $user->id : null,
+                        'username' => $user ? $user->username : null,
+                        'email' => $user ? $user->email : null,
+                        'display_name' => $sidebarDisplayName
+                    ]);
                 @endphp
                 <h4 class="sidebar-username">{{ $sidebarDisplayName }}</h4>
                 <p class="sidebar-user-status">{{ $profile->status ?? 'Making a difference' }}</p>
