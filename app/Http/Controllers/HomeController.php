@@ -241,6 +241,11 @@ class HomeController extends Controller
     private function getRecentCommunityActivity($currentUserEmail)
     {
         try {
+            // Get IDs of waste reports that are already assigned
+            $assignedWasteIds = WasteCollection::where('status', '!=', 'cancelled')
+                ->pluck('waste_report_id')
+                ->toArray();
+
             return WasteReport::select('id', 'waste_type', 'amount', 'location', 'user_email', 'created_at', 'status')
                 ->whereNotNull('user_email')
                 ->where('user_email', '!=', $currentUserEmail) // Exclude current user's reports
@@ -248,7 +253,8 @@ class HomeController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->limit(8)
                 ->get()
-                ->map(function($report) {
+                ->map(function($report) use ($assignedWasteIds) {
+                    $isAssigned = in_array($report->id, $assignedWasteIds);
                     return [
                         'id' => $report->id,
                         'type' => $report->waste_type,
@@ -256,8 +262,9 @@ class HomeController extends Controller
                         'location' => $report->location,
                         'reporter_email' => $report->user_email,
                         'time_ago' => $report->created_at->diffForHumans(),
-                        'needs_collection' => true,
-                        'can_collect' => true
+                        'needs_collection' => !$isAssigned,
+                        'can_collect' => !$isAssigned,
+                        'status' => $isAssigned ? 'assigned' : 'available'
                     ];
                 });
         } catch (\Exception $e) {
@@ -529,7 +536,14 @@ class HomeController extends Controller
             // Update waste report status
             $wasteReport->update(['status' => 'assigned']);
             
-            \Log::info('Waste report status updated to assigned');
+            // Award 5 eco coins to the original reporter when someone requests to collect their waste
+            \App\Models\Coin::create([
+                'user_email' => $wasteReport->user_email,
+                'reason' => 'Your waste report was assigned for collection - ' . $wasteReport->amount . 'kg ' . $wasteReport->waste_type,
+                'eco_coin_value' => 5
+            ]);
+            
+            \Log::info('Waste report status updated to assigned. 5 coins awarded to reporter: ' . $wasteReport->user_email);
             
             return response()->json(['success' => true, 'message' => 'Collection request submitted successfully']);
             
@@ -600,17 +614,15 @@ class HomeController extends Controller
                 $collection->wasteReport->update(['status' => 'collected']);
             }
 
-            // Award eco coins to collector (e.g., based on weight collected)
-            $ecoCoinsEarned = floor($actualWeight * 2); // 2 coins per kg
-            if ($ecoCoinsEarned > 0) {
-                \App\Models\Coin::create([
-                    'user_email' => $user->email,
-                    'reason' => 'Waste collection completed - ' . $actualWeight . 'kg',
-                    'eco_coin_value' => $ecoCoinsEarned
-                ]);
-            }
+            // Award 10 eco coins to collector for completing collection
+            $ecoCoinsEarned = 10;
+            \App\Models\Coin::create([
+                'user_email' => $user->email,
+                'reason' => 'Waste collection completed - ' . $actualWeight . 'kg ' . ($collection->wasteReport->waste_type ?? 'waste'),
+                'eco_coin_value' => $ecoCoinsEarned
+            ]);
 
-            \Log::info('Collection completed successfully. Coins awarded: ' . $ecoCoinsEarned);
+            \Log::info('Collection completed successfully. 10 coins awarded to collector: ' . $user->email);
 
             return response()->json([
                 'success' => true, 

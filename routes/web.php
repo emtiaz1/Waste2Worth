@@ -48,6 +48,10 @@ Route::post('/signin', [LoginController::class, 'signin'])->name('signin');
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback'])->name('google.callback');
 
+// Public routes that don't require authentication
+Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
+Route::get('/leaderboard/api/data', [LeaderboardController::class, 'apiData'])->name('leaderboard.api');
+
 // All other routes require authentication
 Route::get('/event', [App\Http\Controllers\EventController::class, 'index'])->name('event');
 Route::middleware(['auth'])->group(function () {
@@ -88,8 +92,6 @@ Route::middleware(['auth'])->group(function () {
         return view('contact');
     });
 
-    Route::get('/leaderboard', [LeaderboardController::class, 'index'])->name('leaderboard.index');
-    Route::get('/leaderboard/api', [LeaderboardController::class, 'apiData'])->name('leaderboard.api');
     Route::get('/leaderboard/user-rank', [LeaderboardController::class, 'getUserRank'])->name('leaderboard.user.rank');
     Route::post('/leaderboard/update-score', [LeaderboardController::class, 'updatePerformanceScore'])->name('leaderboard.update.score');
 

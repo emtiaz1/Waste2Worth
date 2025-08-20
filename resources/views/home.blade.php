@@ -403,6 +403,10 @@
                                             <span class="collection-available">
                                                 <i class="fas fa-recycle text-success"></i> Available for Collection
                                             </span>
+                                        @else
+                                            <span class="collection-assigned">
+                                                <i class="fas fa-user-check text-warning"></i> Already Assigned
+                                            </span>
                                         @endif
                                     </div>
                                 </div>
@@ -411,6 +415,12 @@
                                     <button class="btn btn-sm btn-success collect-btn" data-waste-id="{{ $activity['id'] }}">
                                         <i class="fas fa-plus"></i> Collect
                                     </button>
+                                </div>
+                                @else
+                                <div class="activity-action">
+                                    <span class="badge bg-warning">
+                                        <i class="fas fa-clock"></i> Pending Collection
+                                    </span>
                                 </div>
                                 @endif
                             </div>
@@ -774,6 +784,11 @@
         
         .collection-available {
             color: #28a745;
+            font-weight: 500;
+        }
+        
+        .collection-assigned {
+            color: #ffc107;
             font-weight: 500;
         }
         

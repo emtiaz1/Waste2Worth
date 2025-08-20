@@ -15,19 +15,21 @@ class LeaderboardController extends Controller
     {
         $leaderboardData = $this->getLeaderboardData();
         $recentAchievements = $this->getRecentAchievements();
-        return view('leaderboard', compact('leaderboardData', 'recentAchievements'));
+        $statistics = $this->getStatistics();
+        return view('leaderboard', compact('leaderboardData', 'recentAchievements', 'statistics'));
     }
 
     public function getLeaderboardData()
     {
-        // Get comprehensive leaderboard data with performance scores
+        // Get comprehensive leaderboard data with real-time performance scores
         $leaderboard = DB::table('profiles as p')
             ->leftJoin('users as u', 'p.email', '=', 'u.email')
             ->leftJoin(DB::raw('(SELECT user_email, SUM(eco_coin_value) as total_coins FROM coins GROUP BY user_email) as c'), 'p.email', '=', 'c.user_email')
-            ->leftJoin(DB::raw('(SELECT location, COUNT(*) as waste_reports_count, SUM(amount) as total_waste_amount FROM wastereport GROUP BY location) as w'), 'p.location', '=', 'w.location')
+            ->leftJoin(DB::raw('(SELECT user_email, COUNT(*) as waste_reports_count, SUM(amount) as total_waste_amount FROM wastereport GROUP BY user_email) as w'), 'p.email', '=', 'w.user_email')
+            ->leftJoin(DB::raw('(SELECT collector_email, COUNT(*) as collections_completed FROM waste_collections WHERE status = "completed" GROUP BY collector_email) as wc'), 'p.email', '=', 'wc.collector_email')
             ->select([
                 'p.username',
-                'p.first_name',
+                'p.first_name', 
                 'p.last_name',
                 'p.email',
                 'p.location',
@@ -36,14 +38,17 @@ class LeaderboardController extends Controller
                 'p.contribution',
                 'p.total_token',
                 'p.achievements',
+                'p.created_at',
                 DB::raw('COALESCE(c.total_coins, 0) as eco_coins'),
                 DB::raw('COALESCE(w.waste_reports_count, 0) as reports_count'),
                 DB::raw('COALESCE(w.total_waste_amount, 0) as total_waste'),
+                DB::raw('COALESCE(wc.collections_completed, 0) as collections_completed'),
                 DB::raw('(
-                    COALESCE(c.total_coins, 0) * 0.4 + 
-                    COALESCE(w.waste_reports_count, 0) * 10 + 
-                    COALESCE(w.total_waste_amount, 0) * 2 + 
-                    COALESCE(p.points_earned, 0) * 0.5
+                    COALESCE(c.total_coins, 0) * 1.0 + 
+                    COALESCE(w.waste_reports_count, 0) * 15.0 + 
+                    COALESCE(w.total_waste_amount, 0) * 3.0 + 
+                    COALESCE(wc.collections_completed, 0) * 20.0 +
+                    COALESCE(p.points_earned, 0) * 1.0
                 ) as performance_score')
             ])
             ->whereNotNull('p.username')
@@ -66,13 +71,28 @@ class LeaderboardController extends Controller
     {
         $leaderboardData = $this->getLeaderboardData();
         
-        // Get additional statistics
+        // Get comprehensive real-time statistics
         $stats = [
             'total_participants' => Profile::whereNotNull('username')->count(),
             'total_eco_coins_distributed' => Coin::sum('eco_coin_value'),
             'total_waste_reports' => WasteReport::count(),
+            'total_waste_collected' => WasteReport::sum('amount'),
+            'active_collections' => \App\Models\WasteCollection::where('status', 'assigned')->count(),
+            'completed_collections' => \App\Models\WasteCollection::where('status', 'completed')->count(),
+            'pending_waste_reports' => WasteReport::whereIn('status', ['pending', 'reported'])->count(),
+            'this_week_reports' => WasteReport::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
+            'this_month_collections' => \App\Models\WasteCollection::where('status', 'completed')
+                ->whereBetween('created_at', [now()->startOfMonth(), now()->endOfMonth()])->count(),
             'top_performer' => $leaderboardData->first(),
-            'average_score' => $leaderboardData->avg('performance_score')
+            'average_score' => round($leaderboardData->avg('performance_score'), 2),
+            'total_weight_processed' => WasteReport::where('status', 'collected')->sum('amount'),
+            'environmental_impact' => [
+                'co2_saved' => round(WasteReport::where('status', 'collected')->sum('amount') * 0.5, 2), // kg of CO2 saved
+                'trees_equivalent' => round(WasteReport::where('status', 'collected')->sum('amount') * 0.02, 0), // trees saved
+                'recycling_rate' => WasteReport::where('status', 'collected')->count() > 0 
+                    ? round((WasteReport::where('status', 'collected')->count() / WasteReport::count()) * 100, 1) 
+                    : 0
+            ]
         ];
 
         return response()->json([
@@ -80,6 +100,21 @@ class LeaderboardController extends Controller
             'statistics' => $stats,
             'last_updated' => now()->toISOString()
         ]);
+    }
+
+    private function getStatistics()
+    {
+        return [
+            'total_participants' => Profile::whereNotNull('username')->count(),
+            'total_eco_coins' => Coin::sum('eco_coin_value'),
+            'total_waste_processed' => WasteReport::sum('amount'),
+            'total_collections' => \App\Models\WasteCollection::where('status', 'completed')->count(),
+            'active_users_today' => Profile::whereDate('updated_at', today())->count(),
+            'environmental_impact' => [
+                'co2_saved' => round(WasteReport::where('status', 'collected')->sum('amount') * 0.5, 2),
+                'trees_equivalent' => round(WasteReport::where('status', 'collected')->sum('amount') * 0.02, 0),
+            ]
+        ];
     }
 
     private function getBadge($rank, $score)
