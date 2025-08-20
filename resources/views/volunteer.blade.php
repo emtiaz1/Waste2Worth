@@ -25,6 +25,30 @@
             <textarea name="tools" placeholder="Any special skills or tools you'll bring?" rows="4"></textarea>
             <button type="submit" class="register-btn">Register</button>
           </form>
+          <script>
+          document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = new FormData(form);
+            fetch('/volunteer', {
+              method: 'POST',
+              headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+              },
+              body: data
+            })
+            .then(res => res.json())
+            .then(result => {
+              if(result.success) {
+                document.getElementById('successSection').style.display = 'block';
+                form.style.display = 'none';
+              } else {
+                alert('Registration failed. Please try again.');
+              }
+            })
+            .catch(() => alert('Registration failed. Please try again.'));
+          });
+          </script>
           <div id="eventMessage" style="display: none;"></div>
           
           <!-- Success message and events display -->

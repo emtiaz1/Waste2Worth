@@ -16,14 +16,14 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('admin.volunteers') }}" class="nav-link text-white">
                     <i class="fas fa-hands-helping me-2"></i> Volunteer Details
                 </a>
             </li>
 
             <!-- Content Management -->
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('admin.events') }}" class="nav-link text-white">
                     <i class="fas fa-calendar me-2"></i> Events
                 </a>
             </li>
@@ -33,7 +33,7 @@
                 </a>
             </li>
 
-            <!-- Product Management -->
+            
             <li class="nav-item mb-2">
                 <a href="{{ route('admin.products') }}" class="nav-link text-white">
                     <i class="fas fa-box me-2"></i> Products

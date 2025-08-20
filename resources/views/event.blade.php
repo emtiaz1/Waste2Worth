@@ -24,10 +24,9 @@
                 <label for="eventSelect" style="font-weight:600;color:#333;">Select Event:</label>
                 <select id="eventSelect" name="event" required style="width:100%;padding:10px;border-radius:8px;border:1px solid #bdbdbd;margin-top:6px;">
                   <option value="">-- Choose an Event --</option>
-                  <option value="park-cleanup">Sher-e-Bangla Park Cleanup</option>
-                  <option value="beach-cleanup">Cox's Bazar Beach Cleanup</option>
-                  <option value="city-street">Mirpur-1 Street Cleaning</option>
-                  <option value="riverbank-cleanup">Turag River Bank Cleanup</option>
+                  @foreach($events as $event)
+                    <option value="{{ $event->id }}">{{ $event->name }}</option>
+                  @endforeach
                 </select>
               </div>
               <div style="display:flex;gap:12px;margin-bottom:18px;">
@@ -50,7 +49,7 @@
         <div class="event-grid">
           @foreach($events as $event)
           <div class="event-card">
-            <img src="{{ asset($event->image) }}" alt="{{ $event->name }}">
+            <img src="{{ asset('storage/' . $event->image) }}" alt="{{ $event->name }}">
             <h2>{{ $event->name }}</h2>
             <div class="event-details">
               <p><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> {{ \Carbon\Carbon::parse($event->date)->format('F d, Y') }}</p>
@@ -70,7 +69,7 @@
     </div>
   </div>
   <script src="{{ asset('js/appbar.js') }}"></script>
-  <script src="{{ asset('js/eventStatus.js') }}"></script>
+  <!-- Remove static eventStatus.js, use dynamic rendering below -->
   <style>
     .event-modal-bg {position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(44,62,80,0.45);z-index:999;display:flex;align-items:center;justify-content:center;}
     .event-modal {background:#fff;border-radius:16px;box-shadow:0 2px 24px rgba(44,62,80,0.18);padding:32px 28px;max-width:420px;width:90vw;position:relative;}
@@ -83,28 +82,75 @@
     }
     .status-btn:hover {background:#388e3c;}
     .event-status-grid {
-      display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:32px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 32px;
+      margin-top: 18px;
     }
     .event-status-card {
-      background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(44,62,80,0.10);padding:24px 18px;display:flex;align-items:center;gap:18px;transition:box-shadow 0.2s,transform 0.2s;
+      background: linear-gradient(135deg, #e3f2fd 0%, #fce4ec 100%);
+      border-radius: 18px;
+      box-shadow: 0 4px 18px rgba(44,62,80,0.13);
+      padding: 28px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: box-shadow 0.2s, transform 0.2s;
+      position: relative;
+      min-height: 120px;
     }
     .event-status-card:hover {
-      box-shadow:0 4px 24px rgba(44,62,80,0.18);transform:translateY(-2px) scale(1.02);
-    }
-    .event-status-card img {
-      width:80px;height:60px;border-radius:8px;object-fit:cover;box-shadow:0 2px 8px rgba(44,62,80,0.08);
+      box-shadow: 0 8px 32px rgba(44,62,80,0.22);
+      transform: translateY(-3px) scale(1.03);
     }
     .event-status-card .event-info {
-      flex:1;
+      flex: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
     .event-status-card h4 {
-      margin:0 0 6px 0;font-size:1.15rem;color:#2196F3;font-weight:700;
+      margin: 0 0 8px 0;
+      font-size: 1.25rem;
+      color: #1976D2;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .event-status-card h4 .fa-calendar-alt {
+      color: #388e3c;
+      font-size: 1.1em;
     }
     .event-status-card p {
-      margin:0;font-size:0.98em;color:#444;
+      margin: 0 0 8px 0;
+      font-size: 1.05em;
+      color: #555;
+      font-weight: 500;
+      letter-spacing: 0.2px;
     }
     .event-status-card .status {
-      display:inline-block;padding:6px 18px;border-radius:8px;background:#e8f5e9;color:#388e3c;font-weight:600;margin-top:8px;font-size:0.98em;
+      display: inline-block;
+      padding: 8px 22px;
+      border-radius: 12px;
+      font-weight: 700;
+      margin-top: 10px;
+      font-size: 1.05em;
+      box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+      transition: background 0.2s, color 0.2s;
+    }
+    .event-status-card .status.signedup {
+      background: #c8e6c9;
+      color: #2e7d32;
+      border: 1px solid #81c784;
+    }
+    .event-status-card .status.notsignedup {
+      background: #ffcdd2;
+      color: #c62828;
+      border: 1px solid #e57373;
     }
     .event-status-card .join-btn {
       padding:7px 18px;border-radius:8px;background:#2196F3;color:#fff;border:none;cursor:pointer;font-weight:600;margin-top:8px;font-size:0.98em;transition:background 0.2s;
@@ -144,6 +190,68 @@
           document.body.removeChild(modalBg);
         };
       });
+    });
+
+    // Dynamic Other Events & Sign Up Status rendering
+    function renderEventStatus() {
+      const statusSection = document.getElementById('eventStatusSection');
+      if (!statusSection) return;
+      statusSection.innerHTML = '';
+      let signedUpEvents = JSON.parse(localStorage.getItem('signedUpEvents') || '[]');
+      eventsData.forEach(event => {
+        const isSignedUp = signedUpEvents.includes(String(event.id));
+        const card = document.createElement('div');
+        card.className = 'event-status-card';
+        card.innerHTML = `
+          <div class='event-info'>
+            <h4><i class="fas fa-calendar-alt"></i> ${event.name}</h4>
+            <p>${new Date(event.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
+            <span class="status ${isSignedUp ? 'signedup' : 'notsignedup'}">${isSignedUp ? '<i class="fas fa-check-circle"></i> Signed Up' : '<i class="fas fa-times-circle"></i> Not Signed Up'}</span>
+          </div>
+        `;
+        statusSection.appendChild(card);
+      });
+    }
+    document.getElementById('showStatusBtn').addEventListener('click', function() {
+      document.getElementById('eventStatusWrapper').style.display = 'block';
+      this.style.display = 'none';
+      renderEventStatus();
+    });
+    document.addEventListener('click', function (e) {
+      if (e.target.classList.contains('join-btn')) {
+        const key = e.target.getAttribute('data-key');
+        let signedUpEvents = JSON.parse(localStorage.getItem('signedUpEvents') || '[]');
+        if (!signedUpEvents.includes(key)) {
+          signedUpEvents.push(key);
+          localStorage.setItem('signedUpEvents', JSON.stringify(signedUpEvents));
+          renderEventStatus();
+        }
+      }
+    });
+
+    // Dynamic event select for sign up form
+    document.getElementById('eventSignupForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      var form = e.target;
+      var eventId = form.event.value;
+      var name = form.name.value;
+      var email = form.email.value;
+      var phone = form.phone.value;
+      var address = form.address.value;
+      var tools = form.tools.value;
+      // Save signup data to localStorage
+      var signupData = { eventId, name, email, phone, address, tools };
+      var allSignups = JSON.parse(localStorage.getItem('eventSignups') || '[]');
+      allSignups.push(signupData);
+      localStorage.setItem('eventSignups', JSON.stringify(allSignups));
+      // Mark event as signed up
+      var signedUpEvents = JSON.parse(localStorage.getItem('signedUpEvents') || '[]');
+      if (!signedUpEvents.includes(eventId)) {
+        signedUpEvents.push(eventId);
+        localStorage.setItem('signedUpEvents', JSON.stringify(signedUpEvents));
+      }
+      document.getElementById('eventSignupMsg').textContent = 'Successfully signed up for ' + eventsData.find(e => String(e.id) === eventId).name + '!';
+      form.reset();
     });
   </script>
 </body>
