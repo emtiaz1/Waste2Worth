@@ -386,6 +386,8 @@
                 });
             @endif
         </script>
+        <script src="https://cdn.jsdelivr.net/npm/font-awesome@6.0.0/js/all.min.js"></script>
+        <script src="{{ asset('js/appbar.js') }}"></script>
 </body>
 
 </html>
