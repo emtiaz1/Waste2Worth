@@ -12,7 +12,6 @@ use App\Models\Purchase;
 use App\Models\ForumDiscussion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -185,14 +184,12 @@ class HomeController extends Controller
         try {
             return [
                 'community_stats' => $this->getCommunityStats(),
-                'available_collections' => $this->getAvailableCollections($userEmail), // Other users' waste reports
-                'my_collection_requests' => $this->getMyCollectionRequests($userEmail), // Current user's collection assignments
+                'pending_collections' => $this->getPendingCollections(),
                 'collection_stats' => $this->getCollectionStats(),
-                'recent_community_activity' => $this->getRecentCommunityActivity($userEmail),
+                'recent_activity' => $this->getRecentCommunityActivity(),
                 'ongoing_events' => $this->getOngoingEvents(),
                 'global_impact' => $this->getGlobalImpact(),
-                'recent_discussions' => $this->getRecentDiscussions(),
-                'my_waste_reports' => $this->getMyWasteReports($userEmail) // Current user's reports
+                'recent_discussions' => $this->getRecentDiscussions()
             ];
         } catch (\Exception $e) {
             return $this->getDefaultDashboardData();
@@ -222,6 +219,15 @@ class HomeController extends Controller
         }
     }
     
+    private function getPendingCollections()
+    {
+        try {
+            return WasteCollection::getPendingCollections(5);
+        } catch (\Exception $e) {
+            return collect([]);
+        }
+    }
+    
     private function getCollectionStats()
     {
         try {
@@ -238,15 +244,13 @@ class HomeController extends Controller
         }
     }
     
-    private function getRecentCommunityActivity($currentUserEmail)
+    private function getRecentCommunityActivity()
     {
         try {
-            return WasteReport::select('id', 'waste_type', 'amount', 'location', 'user_email', 'created_at', 'status')
+            return WasteReport::select('id', 'waste_type', 'amount', 'location', 'user_email', 'created_at')
                 ->whereNotNull('user_email')
-                ->where('user_email', '!=', $currentUserEmail) // Exclude current user's reports
-                ->where('status', '!=', 'collected') // Show only uncollected waste
                 ->orderBy('created_at', 'desc')
-                ->limit(8)
+                ->limit(10)
                 ->get()
                 ->map(function($report) {
                     return [
@@ -254,133 +258,14 @@ class HomeController extends Controller
                         'type' => $report->waste_type,
                         'amount' => $report->amount,
                         'location' => $report->location,
-                        'reporter_email' => $report->user_email,
+                        'user_email' => $report->user_email,
                         'time_ago' => $report->created_at->diffForHumans(),
-                        'needs_collection' => true,
-                        'can_collect' => true
+                        'needs_collection' => true
                     ];
                 });
         } catch (\Exception $e) {
             return collect([]);
         }
-    }
-    
-    private function getAvailableCollections($currentUserEmail)
-    {
-        try {
-            // Get IDs of waste reports that are already assigned
-            $assignedWasteIds = WasteCollection::where('status', '!=', 'cancelled')
-                ->pluck('waste_report_id')
-                ->toArray();
-
-            return WasteReport::select('id', 'waste_type', 'amount', 'location', 'user_email', 'created_at', 'description')
-                ->whereNotNull('user_email')
-                ->where('user_email', '!=', $currentUserEmail) // Only show other users' reports
-                ->whereIn('status', ['pending', 'reported']) // Available for collection
-                ->whereNotIn('id', $assignedWasteIds) // Exclude already assigned reports
-                ->orderBy('created_at', 'desc')
-                ->limit(5)
-                ->get()
-                ->map(function($report) {
-                    return [
-                        'id' => $report->id,
-                        'type' => $report->waste_type,
-                        'amount' => $report->amount,
-                        'location' => $report->location,
-                        'description' => $report->description,
-                        'reported_by' => $this->getUsernameByEmail($report->user_email),
-                        'time_ago' => $report->created_at->diffForHumans(),
-                        'priority' => $this->calculateCollectionPriority($report)
-                    ];
-                });
-        } catch (\Exception $e) {
-            return collect([]);
-        }
-    }
-    
-    private function getMyCollectionRequests($userEmail)
-    {
-        try {
-            return WasteCollection::where('collector_email', $userEmail)
-                ->with('wasteReport')
-                ->orderBy('created_at', 'desc')
-                ->limit(5)
-                ->get()
-                ->map(function($collection) {
-                    return [
-                        'id' => $collection->id,
-                        'collection_id' => $collection->id, // For the submit button
-                        'waste_report_id' => $collection->waste_report_id,
-                        'status' => $collection->status,
-                        'assigned_date' => $collection->created_at->format('M j, Y'),
-                        'expected_weight' => $collection->expected_weight,
-                        'actual_weight' => $collection->actual_weight,
-                        'location' => $collection->wasteReport->location ?? 'N/A',
-                        'waste_type' => $collection->wasteReport->waste_type ?? 'Unknown'
-                    ];
-                });
-        } catch (\Exception $e) {
-            return collect([]);
-        }
-    }
-    
-    private function getMyWasteReports($userEmail)
-    {
-        try {
-            return WasteReport::where('user_email', $userEmail)
-                ->orderBy('created_at', 'desc')
-                ->limit(5)
-                ->get()
-                ->map(function($report) {
-                    return [
-                        'id' => $report->id,
-                        'type' => $report->waste_type,
-                        'amount' => $report->amount,
-                        'location' => $report->location,
-                        'status' => $report->status ?? 'pending',
-                        'created_at' => $report->created_at->format('M j, Y'),
-                        'time_ago' => $report->created_at->diffForHumans(),
-                        'is_collected' => in_array($report->status, ['collected', 'completed'])
-                    ];
-                });
-        } catch (\Exception $e) {
-            return collect([]);
-        }
-    }
-    
-    private function getUsernameByEmail($email)
-    {
-        try {
-            $profile = Profile::where('email', $email)->first();
-            return $profile ? $profile->username : 'Anonymous User';
-        } catch (\Exception $e) {
-            return 'Anonymous User';
-        }
-    }
-    
-    private function calculateCollectionPriority($report)
-    {
-        // Calculate priority based on waste type, amount, and age
-        $priorities = [
-            'Electronic' => 5,
-            'Chemical' => 5,
-            'Medical' => 4,
-            'Plastic' => 3,
-            'Metal' => 3,
-            'Glass' => 2,
-            'Paper' => 2,
-            'Organic' => 1
-        ];
-        
-        $typePriority = $priorities[$report->waste_type] ?? 2;
-        $agePriority = $report->created_at->diffInDays() > 7 ? 2 : 1;
-        $amountPriority = $report->amount > 10 ? 2 : 1;
-        
-        $totalPriority = $typePriority + $agePriority + $amountPriority;
-        
-        if ($totalPriority >= 7) return 'High';
-        if ($totalPriority >= 5) return 'Medium';
-        return 'Low';
     }
     
     private function getOngoingEvents()
@@ -477,153 +362,6 @@ class HomeController extends Controller
         return min($wasteScore + $activityScore + $consistencyScore, 100);
     }
     
-    // New method to handle collection requests
-    public function requestCollection(Request $request)
-    {
-        try {
-            $user = Auth::user();
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-            
-            $wasteReportId = $request->input('waste_report_id');
-            \Log::info('Collection request for waste report ID: ' . $wasteReportId . ' by user: ' . $user->email);
-            
-            $wasteReport = WasteReport::find($wasteReportId);
-            
-            if (!$wasteReport) {
-                \Log::error('Waste report not found: ' . $wasteReportId);
-                return response()->json(['error' => 'Waste report not found'], 404);
-            }
-            
-            // Prevent users from collecting their own waste
-            if ($wasteReport->user_email === $user->email) {
-                \Log::info('User tried to collect own waste: ' . $user->email);
-                return response()->json(['error' => 'Cannot collect your own waste report'], 400);
-            }
-            
-            // Check if already assigned
-            $existingCollection = WasteCollection::where('waste_report_id', $wasteReportId)
-                ->where('status', '!=', 'cancelled')
-                ->first();
-                
-            if ($existingCollection) {
-                \Log::info('Waste already assigned: ' . $wasteReportId);
-                return response()->json(['error' => 'This waste is already assigned for collection'], 400);
-            }
-            
-            // Create collection request
-            $collection = WasteCollection::create([
-                'waste_report_id' => $wasteReportId,
-                'requester_email' => $wasteReport->user_email, // Person who reported the waste
-                'collector_email' => $user->email, // Person who wants to collect it
-                'expected_weight' => $wasteReport->amount,
-                'status' => 'assigned',
-                'requested_at' => now(),
-                'assigned_at' => now(),
-                'assigned_date' => now()
-            ]);
-            
-            \Log::info('Collection created with ID: ' . $collection->id);
-            
-            // Update waste report status
-            $wasteReport->update(['status' => 'assigned']);
-            
-            \Log::info('Waste report status updated to assigned');
-            
-            return response()->json(['success' => true, 'message' => 'Collection request submitted successfully']);
-            
-        } catch (\Exception $e) {
-            \Log::error('Collection request failed: ' . $e->getMessage() . ' Line: ' . $e->getLine() . ' File: ' . $e->getFile());
-            return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
-        }
-    }
-
-    public function submitCollection(Request $request)
-    {
-        try {
-            $user = Auth::user();
-            if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
-            }
-
-            // Validate request
-            $request->validate([
-                'collection_id' => 'required|exists:waste_collections,id',
-                'actual_weight' => 'required|numeric|min:0',
-                'collection_notes' => 'nullable|string|max:1000',
-                'collection_photos.*' => 'nullable|image|max:2048'
-            ]);
-
-            $collectionId = $request->input('collection_id');
-            $actualWeight = $request->input('actual_weight');
-            $collectionNotes = $request->input('collection_notes');
-
-            \Log::info('Collection submission for ID: ' . $collectionId . ' by user: ' . $user->email);
-
-            // Find the collection and verify ownership
-            $collection = WasteCollection::find($collectionId);
-            
-            if (!$collection) {
-                return response()->json(['error' => 'Collection not found'], 404);
-            }
-
-            if ($collection->collector_email !== $user->email) {
-                return response()->json(['error' => 'Unauthorized to submit this collection'], 403);
-            }
-
-            if ($collection->status !== 'assigned') {
-                return response()->json(['error' => 'Collection is not in assigned status'], 400);
-            }
-
-            // Handle photo uploads
-            $photosPaths = [];
-            if ($request->hasFile('collection_photos')) {
-                foreach ($request->file('collection_photos') as $photo) {
-                    $filename = time() . '_' . uniqid() . '.' . $photo->getClientOriginalExtension();
-                    $path = $photo->storeAs('collection_photos', $filename, 'public');
-                    $photosPaths[] = $path;
-                }
-            }
-
-            // Update collection with submission data
-            $collection->update([
-                'actual_weight' => $actualWeight,
-                'collection_notes' => $collectionNotes,
-                'collection_photos' => $photosPaths,
-                'status' => 'completed',
-                'collected_at' => now()
-            ]);
-
-            // Update the related waste report status
-            if ($collection->wasteReport) {
-                $collection->wasteReport->update(['status' => 'collected']);
-            }
-
-            // Award eco coins to collector (e.g., based on weight collected)
-            $ecoCoinsEarned = floor($actualWeight * 2); // 2 coins per kg
-            if ($ecoCoinsEarned > 0) {
-                \App\Models\Coin::create([
-                    'user_email' => $user->email,
-                    'reason' => 'Waste collection completed - ' . $actualWeight . 'kg',
-                    'eco_coin_value' => $ecoCoinsEarned
-                ]);
-            }
-
-            \Log::info('Collection completed successfully. Coins awarded: ' . $ecoCoinsEarned);
-
-            return response()->json([
-                'success' => true, 
-                'message' => 'Collection submitted successfully!',
-                'coins_earned' => $ecoCoinsEarned
-            ]);
-
-        } catch (\Exception $e) {
-            \Log::error('Collection submission failed: ' . $e->getMessage() . ' Line: ' . $e->getLine() . ' File: ' . $e->getFile());
-            return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
-        }
-    }
-    
     // Default data methods
     private function getDefaultPersonalStats()
     {
@@ -671,8 +409,7 @@ class HomeController extends Controller
                 'this_week_reports' => 0,
                 'this_month_reports' => 0
             ],
-            'available_collections' => collect([]),
-            'my_collection_requests' => collect([]),
+            'pending_collections' => collect([]),
             'collection_stats' => [
                 'pending' => 0,
                 'assigned' => 0,
@@ -681,7 +418,7 @@ class HomeController extends Controller
                 'total_weight_collected' => 0,
                 'today_collections' => 0
             ],
-            'recent_community_activity' => collect([]),
+            'recent_activity' => collect([]),
             'ongoing_events' => [
                 [
                     'name' => 'Community Cleanup Drive',
@@ -698,8 +435,7 @@ class HomeController extends Controller
                 'carbon_saved' => '0',
                 'trees_equivalent' => '0'
             ],
-            'recent_discussions' => collect([]),
-            'my_waste_reports' => collect([])
+            'recent_discussions' => collect([])
         ];
     }
 }

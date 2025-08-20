@@ -80,6 +80,9 @@ Route::middleware(['auth'])->group(function () {
     })->name('reportWaste');
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/home/dashboard-data', [HomeController::class, 'getDashboardApiData'])->name('home.dashboard.data');
+    Route::post('/request-collection', [HomeController::class, 'requestCollection'])->name('collection.request');
+    Route::post('/submit-collection', [HomeController::class, 'submitCollection'])->name('collection.submit');
 
     Route::get('/contact', function () {
         return view('contact');

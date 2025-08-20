@@ -11,6 +11,14 @@ class WasteReport extends Model
     protected $table = 'wastereport';
 
     protected $fillable = [
-        'waste_type', 'amount', 'unit', 'location', 'description', 'image_path'
+        'waste_type', 'amount', 'unit', 'location', 'description', 'image_path', 'user_email', 'status'
     ];
+
+    /**
+     * Get the waste collection associated with this report
+     */
+    public function wasteCollection()
+    {
+        return $this->hasOne(WasteCollection::class, 'waste_report_id');
+    }
 }
