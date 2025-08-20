@@ -32,6 +32,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/purchases', [AdminController::class, 'showPurchases'])->name('purchases');
         Route::post('/purchases/update-status', [AdminController::class, 'updatePurchaseStatus'])->name('purchases.update-status');
         Route::post('/purchases/{purchase}/confirm', [AdminController::class, 'confirmPurchase'])->name('purchases.confirm');
+        Route::get('/user-details', [AdminController::class, 'showUserDetails'])->name('user.details');
+        Route::get('/user-detail/{id}', [AdminController::class, 'showUserDetail'])->name('user.detail');
     Route::get('/events', [\App\Http\Controllers\AdminEventController::class, 'index'])->name('events');
     Route::post('/events', [\App\Http\Controllers\AdminEventController::class, 'store'])->name('events.store');
     Route::put('/events/{id}', [\App\Http\Controllers\AdminEventController::class, 'update'])->name('events.update');

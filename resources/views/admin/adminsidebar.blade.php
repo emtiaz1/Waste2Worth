@@ -11,7 +11,8 @@
 
             <!-- User Management -->
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('admin.user.details') }}"
+                    class="nav-link text-white {{ request()->routeIs('admin.user.details') || request()->routeIs('admin.user.detail') ? 'active bg-secondary' : '' }}">
                     <i class="fas fa-users me-2"></i> User Details
                 </a>
             </li>
