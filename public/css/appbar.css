@@ -29,6 +29,7 @@
     font-size: 1.3rem;
     font-weight: 600;
     letter-spacing: 1px;
+    color: inherit !important;
 }
 .appbar-menu-btn {
     background: none;
@@ -287,24 +288,12 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .sidebar-profile {
-        flex-direction: column;
-        text-align: center;
-        gap: 0.8rem;
-    }
-
-    .sidebar-username {
-        font-size: 0.9rem;
-    }
-
-    .sidebar-user-status {
-        font-size: 0.75rem;
-    }
-
-    .sidebar-quick-stats {
-        justify-content: center;
-        gap: 1rem;
-    }
+/* Prevent blue color on click/focus for the logo/title link */
+.appbar-left a,
+.appbar-left a:visited,
+.appbar-left a:active,
+.appbar-left a:focus {
+    color: inherit !important;
+    outline: none;
+    box-shadow: none;
 }

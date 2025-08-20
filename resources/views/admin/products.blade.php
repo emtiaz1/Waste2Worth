@@ -72,10 +72,16 @@
                 </div>
             @endif
 
+            <div class="mb-3 position-relative" style="max-width: 350px;">
+                <span class="position-absolute" style="left: 15px; top: 50%; transform: translateY(-50%); color: #aaa; z-index: 2;">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" id="productSearch" class="form-control bg-secondary text-white ps-5" placeholder="Search products..." style="padding-left: 2.2rem;">
+            </div>
             <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table">
+                        <table class="table" id="productsTable">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -91,16 +97,16 @@
                             </thead>
                             <tbody>
                                 @foreach($products as $product)
-                                    <tr>
-                                        <td>{{ $product['id'] }}</td>
+                                    <tr class="product-row">
+                                        <td class="product-id">{{ $product['id'] }}</td>
                                         <td>
                                             <img src="{{ asset($product['image']) }}"
                                                 alt="{{ $product['name'] }}" class="product-image">
                                         </td>
-                                        <td>{{ $product['name'] }}</td>
-                                        <td>{{ $product['stock'] }}</td>
-                                        <td>{{ $product['eco_coin_value'] }}</td>
-                                        <td>{{ Str::limit($product['description'], 50) }}</td>
+                                        <td class="product-name">{{ $product['name'] }}</td>
+                                        <td class="product-stock">{{ $product['stock'] }}</td>
+                                        <td class="product-eco">{{ $product['eco_coin_value'] }}</td>
+                                        <td class="product-desc">{{ Str::limit($product['description'], 50) }}</td>
                                         <td>{{ $product['created_at'] }}</td>
                                         <td>{{ $product['updated_at'] }}</td>
                                         <td>
@@ -236,6 +242,26 @@
             document.getElementById('edit_eco_coin_value').value = product.eco_coin_value;
             document.getElementById('edit_description').value = product.description;
         }
+        // Product search functionality
+        document.getElementById('productSearch').addEventListener('input', function() {
+            const search = this.value.toLowerCase();
+            document.querySelectorAll('.product-row').forEach(function(row) {
+                const name = row.querySelector('.product-name').textContent.toLowerCase();
+                const desc = row.querySelector('.product-desc').textContent.toLowerCase();
+                const eco = row.querySelector('.product-eco').textContent.toLowerCase();
+                const stock = row.querySelector('.product-stock').textContent.toLowerCase();
+                if (
+                    name.includes(search) ||
+                    desc.includes(search) ||
+                    eco.includes(search) ||
+                    stock.includes(search)
+                ) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 

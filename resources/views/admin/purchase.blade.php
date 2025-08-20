@@ -62,6 +62,26 @@
             background-color: #28a745;
             color: #fff;
         }
+
+        .stats-card {
+            background-color: #1a1d20;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .stats-label {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 
@@ -85,6 +105,28 @@
                     {{ session('error') }}
                 </div>
             @endif
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-number">{{ $totalPurchases ?? 0 }}</div>
+                        <div class="stats-label">Total Purchase Requests</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-number text-warning">{{ $pendingCount ?? 0 }}</div>
+                        <div class="stats-label">Pending Requests</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="stats-card">
+                        <div class="stats-number text-success">{{ $completedCount ?? 0 }}</div>
+                        <div class="stats-label">Delivery Completed</div>
+                    </div>
+                </div>
+            </div>
 
             <div class="card">
                 <div class="card-body">
