@@ -110,10 +110,6 @@
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <div class="logo-container">
-                    <i class="fas fa-user-shield"></i>
-                    <h2 class="text-light">Admin Portal</h2>
-                </div>
                 <div class="card">
                     <div class="card-header">
                         <i class="fas fa-user-plus me-2"></i>Admin Registration

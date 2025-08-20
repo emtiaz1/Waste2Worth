@@ -9,7 +9,7 @@
     <link rel="shortcut icon" href="/frontend/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="{{ asset('css/appbar.css') }}">
     <link rel="stylesheet" href="{{ asset('css/reward.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" rel="stylesheet">
     <style>
         .product-grid {
             display: grid;
@@ -251,6 +251,28 @@
             font-weight: 600;
             color: #333;
         }
+
+        .search-container {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-input {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #28a745;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.3);
+        }
     </style>
 </head>
 
@@ -291,14 +313,22 @@
             <!-- Rewards Marketplace -->
             <section class="card rewards-marketplace">
                 <h3><i class="fas fa-gift"></i> Rewards Marketplace</h3>
+
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchRewards" placeholder="Search rewards..."
+                        oninput="filterRewards(this.value)">
+                </div>
+
                 <div class="rewards-grid" id="rewardsGrid">
                     @forelse($products as $product)
-                        <div class="reward-item" data-product-id="{{ $product->id }}">
+                        <div class="reward-item" data-product-id="{{ $product->id }}"
+                            data-product-name="{{ strtolower($product->name) }}"
+                            data-product-description="{{ strtolower($product->description) }}">
                             <img src="{{ asset('frontend/productimage/' . basename($product->image)) }}"
                                 alt="{{ $product->name }}" class="reward-image">
                             <div class="reward-info">
                                 <h4 class="reward-name">{{ $product->name }}</h4>
-                                <p class="reward-description">{{ $product->description }}</p>
+                                <p class="reward-description" style="margin: 0;">{{ $product->description }}</p>
                                 <div class="reward-price">{{ $product->eco_coin_value }} EcoCoins</div>
                                 <div class="reward-stock">Stock: {{ $product->stock }}</div>
                                 <button class="btn-primary order-btn"
@@ -316,7 +346,6 @@
                 </div>
             </section>
 
-            <!-- History Section -->
             <!-- Purchase History Section -->
             <section class="card history-section">
                 <h3><i class="fas fa-history"></i> Purchase History</h3>
@@ -458,6 +487,37 @@
             function closeSuccessModal() {
                 document.getElementById('successModal').classList.add('hidden');
                 location.reload(); // Refresh to show updated data
+            }
+
+            function filterRewards(searchTerm) {
+                searchTerm = searchTerm.toLowerCase();
+                const rewards = document.querySelectorAll('.reward-item');
+                let hasVisibleItems = false;
+
+                rewards.forEach(reward => {
+                    const name = reward.getAttribute('data-product-name');
+                    const description = reward.getAttribute('data-product-description');
+
+                    if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                        reward.style.display = 'block';
+                        hasVisibleItems = true;
+                    } else {
+                        reward.style.display = 'none';
+                    }
+                });
+
+                // Show/hide no results message
+                let noResultsDiv = document.querySelector('.no-results');
+                if (!hasVisibleItems) {
+                    if (!noResultsDiv) {
+                        noResultsDiv = document.createElement('div');
+                        noResultsDiv.className = 'no-results';
+                        noResultsDiv.innerHTML = '<p>No matching rewards found</p>';
+                        document.getElementById('rewardsGrid').appendChild(noResultsDiv);
+                    }
+                } else if (noResultsDiv) {
+                    noResultsDiv.remove();
+                }
             }
 
             // Show success modal if there's a success message

@@ -3,8 +3,10 @@
         <button id="sidebarToggle" class="appbar-menu-btn">
             <i class="fas fa-ellipsis-v"></i>
         </button>
-        <img src="{{ asset('frontend/image/logo.png') }}" alt="Waste2Worth" class="appbar-logo">
-        <span class="appbar-title">Waste2Worth</span>
+        <a href="{{ url('/home') }}" style="display: flex; align-items: center; text-decoration: none;">
+            <img src="{{ asset('frontend/image/logo.png') }}" alt="Waste2Worth" class="appbar-logo">
+            <span class="appbar-title" style="margin-left: 8px;">Waste2Worth</span>
+        </a>
     </div>
     <div class="appbar-right">
         @php

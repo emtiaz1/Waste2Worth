@@ -29,6 +29,7 @@
       <div class="auth-links">
         <a href="{{ url('/login') }}?mode=signin" class="login">Log In</a>
         <a href="{{ url('/login') }}?mode=signup" class="signup">Sign Up</a>
+        <a href="{{ url('/admin/login') }}" class="admin-login"><i class="fas fa-user-shield"></i> Admin</a>
       </div>
     </div>
   </header>
@@ -123,10 +124,10 @@
     <section id="join" class="join">
       <selection id="login">
         <div class="container">
-        <h2>Ready to Make a Difference?</h2>
-        <p>Join thousands of people around the world creating a cleaner tomorrow.</p>
-        <a href="{{ url('/login') }}?mode=signin" class="cta"><i class="fas fa-users"></i> Join the Movement</a>
-      </div>
+          <h2>Ready to Make a Difference?</h2>
+          <p>Join thousands of people around the world creating a cleaner tomorrow.</p>
+          <a href="{{ url('/login') }}?mode=signin" class="cta"><i class="fas fa-users"></i> Join the Movement</a>
+        </div>
       </selection>
     </section>
 
