@@ -31,8 +31,15 @@
         @php
             $user = Auth::user();
             $profile = null;
+            $totalCoins = 0;
+
             if ($user) {
                 $profile = App\Models\Profile::where('email', $user->email)->first();
+
+                // Calculate total coins from coins table
+                $totalCoins = DB::table('coins')
+                    ->where('user_email', $user->email)
+                    ->sum('eco_coin_value');
             }
         @endphp
         <div class="sidebar-profile">
@@ -52,7 +59,8 @@
                         'user_id' => $user ? $user->id : null,
                         'username' => $user ? $user->username : null,
                         'email' => $user ? $user->email : null,
-                        'display_name' => $sidebarDisplayName
+                        'display_name' => $sidebarDisplayName,
+                        'total_coins' => $totalCoins
                     ]);
                 @endphp
                 <h4 class="sidebar-username">{{ $sidebarDisplayName }}</h4>
@@ -60,7 +68,7 @@
                 <div class="sidebar-quick-stats">
                     <div class="quick-stat">
                         <i class="fas fa-coins"></i>
-                        <span>{{ $profile->total_token ?? 0 }} Eco Coins</span>
+                        <span>{{ number_format($totalCoins) }} Eco Coins</span>
                     </div>
                 </div>
             </div>

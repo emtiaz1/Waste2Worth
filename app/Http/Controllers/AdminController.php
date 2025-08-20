@@ -173,8 +173,18 @@ class AdminController extends Controller
 
     public function showPurchases()
     {
-        $purchases = Purchase::with(['user', 'product'])->orderBy('created_at', 'desc')->get();
-        return view('admin.purchase', compact('purchases'));
+        // Get purchase statistics
+        $totalPurchases = Purchase::count();
+        $pendingCount = Purchase::where('status', 'pending')->count();
+        $completedCount = Purchase::where('status', 'confirmed')->count();
+
+        // Get purchases ordered by status (pending first) then by date
+        $purchases = Purchase::with(['user', 'product'])
+            ->orderByRaw("CASE WHEN status = 'pending' THEN 0 ELSE 1 END")
+            ->orderBy('created_at', 'asc')
+            ->get();
+
+        return view('admin.purchase', compact('purchases', 'totalPurchases', 'pendingCount', 'completedCount'));
     }
 
     public function confirmPurchase($id)
