@@ -35,7 +35,7 @@
 
             <!-- Product Management -->
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('admin.products') }}" class="nav-link text-white">
                     <i class="fas fa-box me-2"></i> Products
                 </a>
             </li>

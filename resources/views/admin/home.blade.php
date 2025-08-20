@@ -92,7 +92,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="stats-card text-center">
-                        <i class="fas fa-calendar-event text-info"></i>
+                        <i class="fas fa-calendar text-info"></i>
                         <h4>Events</h4>
                         <h3>0</h3>
                     </div>
@@ -103,8 +103,7 @@
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">Welcome, Admin!</h5>
-                            <p class="card-text">You are logged in as: {{ Auth::guard('admin')->user()->email }}</p>
+                            <h5 class="card-title">Welcome, {{ Auth::guard('admin')->user()->email }}!</h5>
                         </div>
                     </div>
                 </div>
