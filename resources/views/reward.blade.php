@@ -229,7 +229,7 @@
                 <div class="rewards-grid" id="rewardsGrid">
                     @forelse($products as $product)
                         <div class="reward-item" data-product-id="{{ $product->id }}">
-                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="reward-image">
+                            <img src="{{ asset('frontend/productimage/' . basename($product->image)) }}" alt="{{ $product->name }}" class="reward-image">
                             <div class="reward-info">
                                 <h4 class="reward-name">{{ $product->name }}</h4>
                                 <p class="reward-description">{{ $product->description }}</p>
@@ -269,7 +269,7 @@
                                 </div>
                                 <div class="history-products">
                                     <div class="history-product">
-                                        <img src="{{ asset($purchase->product->image) }}" alt="{{ $purchase->product->name }}"
+                                        <img src="{{ asset('frontend/productimage/' . basename($purchase->product->image)) }}" alt="{{ $purchase->product->name }}"
                                             class="history-product-image">
                                         <div class="history-product-info">
                                             <h4>{{ $purchase->product->name }}</h4>

@@ -28,6 +28,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth:admin'])->group(function () {
         Route::get('/home', [AdminController::class, 'home'])->name('home');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+        Route::match(['get', 'post'], '/products', [AdminController::class, 'productStore'])->name('products');
     });
 });
 
