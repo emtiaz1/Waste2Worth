@@ -16,11 +16,10 @@ body {
 
 .main-content {
     flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    margin-top: 5px;
     padding: 32px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .leaderboard-card {
