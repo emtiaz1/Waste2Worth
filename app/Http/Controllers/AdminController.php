@@ -379,42 +379,80 @@ class AdminController extends Controller
 
             // Update collection status
             $collection->update([
-                'status' => 'confirmed',
+                'status' => 'completed', // Changed from 'confirmed' to 'completed'
                 'actual_weight' => $request->confirmed_weight,
                 'collection_notes' => ($collection->collection_notes ?? '') . 
                     "\n\nAdmin Confirmation: " . ($request->admin_notes ?? 'Confirmed by admin'),
                 'updated_at' => now()
             ]);
 
-            // Update waste report status
+            // Update waste report status to confirmed
             $wasteReport->update([
-                'status' => 'collected',
+                'status' => 'confirmed',
                 'updated_at' => now()
             ]);
 
-            // Award coins to reporter (5 coins per kg)
+            // Only award coins if not already awarded
+            // Award coins to reporter (5 coins per kg) 
             $reporterCoins = round($request->confirmed_weight * 5);
-            Coin::create([
-                'user_email' => $wasteReport->user_email,
-                'reason' => "Waste collection confirmed by admin - {$request->confirmed_weight}kg of {$wasteReport->waste_type}",
-                'eco_coin_value' => $reporterCoins
-            ]);
-
+            $existingReporterCoins = Coin::where('user_email', $wasteReport->user_email)
+                ->where('reason', 'like', '%Collection confirmed%')
+                ->where('reason', 'like', '%' . $wasteReport->waste_type . '%')
+                ->first();
+                
+            if (!$existingReporterCoins) {
+                Coin::create([
+                    'user_email' => $wasteReport->user_email,
+                    'reason' => "Collection confirmed by admin - {$request->confirmed_weight}kg of {$wasteReport->waste_type}",
+                    'eco_coin_value' => $reporterCoins
+                ]);
+            }
+            
             // Award coins to collector (10 coins per kg)
             $collectorCoins = round($request->confirmed_weight * 10);
-            Coin::create([
-                'user_email' => $collection->collector_email,
-                'reason' => "Collection completed and confirmed - {$request->confirmed_weight}kg of {$wasteReport->waste_type}",
-                'eco_coin_value' => $collectorCoins
-            ]);
+            
+            // Check if collector coins already awarded
+            $existingCollectorCoins = Coin::where('user_email', $collection->requester_email)
+                ->where('reason', 'like', '%Collection completed and confirmed%')
+                ->where('reason', 'like', '%' . $wasteReport->waste_type . '%')
+                ->first();
+                
+            if (!$existingCollectorCoins) {
+                Coin::create([
+                    'user_email' => $collection->requester_email,
+                    'reason' => "Collection completed and confirmed - {$request->confirmed_weight}kg of {$wasteReport->waste_type}",
+                    'eco_coin_value' => $collectorCoins
+                ]);
+                
+                // Update collector's profile stats with total coins
+                $collectorProfile = Profile::where('email', $collection->requester_email)->first();
+                if ($collectorProfile) {
+                    $collectorProfile->total_token = Coin::getTotalCoinsForUser($collection->requester_email);
+                    $collectorProfile->contribution = WasteCollection::where('requester_email', $collection->requester_email)
+                        ->where('status', 'completed')->count();
+                    $collectorProfile->carbon_footprint_saved = WasteCollection::where('requester_email', $collection->requester_email)
+                        ->where('status', 'completed')->sum('actual_weight') * 2.5;
+                    $collectorProfile->save();
+                }
+            }
+            
+            // Update reporter's profile stats
+            $reporterProfile = Profile::where('email', $wasteReport->user_email)->first();
+            if ($reporterProfile) {
+                $reporterProfile->total_token = Coin::getTotalCoinsForUser($wasteReport->user_email);
+                $reporterProfile->save();
+            }
 
             DB::commit();
 
+            $reporterCoinsAwarded = $existingReporterCoins ? 0 : $reporterCoins;
+            $collectorCoinsAwarded = $existingCollectorCoins ? 0 : $collectorCoins;
+            
             return response()->json([
                 'success' => true,
-                'message' => "Collection confirmed! Reporter earned {$reporterCoins} coins, Collector earned {$collectorCoins} coins.",
-                'reporter_coins' => $reporterCoins,
-                'collector_coins' => $collectorCoins
+                'message' => "Collection confirmed! Reporter earned {$reporterCoinsAwarded} coins, Collector earned {$collectorCoinsAwarded} coins.",
+                'reporter_coins' => $reporterCoinsAwarded,
+                'collector_coins' => $collectorCoinsAwarded
             ]);
 
         } catch (\Exception $e) {

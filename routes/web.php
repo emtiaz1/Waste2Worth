@@ -13,9 +13,7 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ContactController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WasteReportController::class, 'index'])->name('dashboard');
 
 
 // Admin Routes
@@ -118,15 +116,7 @@ Route::middleware(['auth'])->group(function () {
         return view('help');
     })->name('help');
 
-    Route::get('/reportWaste', function () {
-        return view('reportWaste');
-    })->name('reportWaste');
-
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
-    Route::get('/home/dashboard-data', [HomeController::class, 'getDashboardApiData'])->name('home.dashboard.data');
-    Route::get('/home/community-activity', [HomeController::class, 'getCommunityActivity'])->name('home.community.activity');
-    Route::post('/request-collection', [HomeController::class, 'requestCollection'])->name('collection.request');
-    Route::post('/submit-collection', [HomeController::class, 'submitCollection'])->name('collection.submit');
+    Route::get('/reportWaste', [WasteReportController::class, 'create'])->name('reportWaste');
 
     Route::get('/contact', function () {
         return view('contact');
@@ -145,8 +135,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/contact', [ContactController::class, 'showForm'])->name('contact');
     Route::post('/contact', [ContactController::class, 'submit'])->name('contact.submit');
 
-    Route::post('/wastereport', [WasteReportController::class, 'store'])->name('wastereport.store');
-    Route::get('/wastereport/recent', [WasteReportController::class, 'recent'])->name('wastereport.recent');
-    Route::get('/wastereport/stats', [WasteReportController::class, 'stats'])->name('wastereport.stats');
-    Route::get('/wastereport/community-activity', [WasteReportController::class, 'communityActivity'])->name('wastereport.community');
+    Route::get('/home', [WasteReportController::class, 'index'])->name('home');
+    Route::get('/home/dashboard-data', [WasteReportController::class, 'getDashboardApiData'])->name('home.dashboard.data');
+    Route::get('/home/community-activity', [WasteReportController::class, 'communityActivity'])->name('home.community.activity');
+    Route::post('/waste-report', [WasteReportController::class, 'store'])->name('waste-report.store');
+    Route::get('/wastereport/recent', [WasteReportController::class, 'getRecentReports']);
+    Route::get('/wastereport/stats', [WasteReportController::class, 'getWasteStats']);
+    Route::post('/request-collection', [WasteReportController::class, 'requestCollection']);
+    Route::post('/submit-collection', [WasteReportController::class, 'submitCollection']);
 });

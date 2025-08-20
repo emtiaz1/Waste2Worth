@@ -12,35 +12,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const todayAmount = document.getElementById('todayAmount');
     const lastUpdate = document.getElementById('lastUpdate');
 
-    // Submit form and save to database
+    // Note: Form submission is handled by Laravel, no need to prevent default
+    // Just load initial data
     form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        const formData = new FormData(form);
-
-        fetch('/wastereport', {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: formData
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                form.reset();
-                loadReports();
-                loadStats();
-                loadCommunityActivity(); // Refresh community activity after new report
-                alert('Report submitted successfully!');
-            } else {
-                alert('Failed to submit report.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to submit report.');
-        });
+        // Let Laravel handle the form submission naturally
+        // No e.preventDefault() - let the form submit normally
     });
 
     // Fetch recent reports from database

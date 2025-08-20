@@ -20,7 +20,20 @@
             <main class="main-content">
                 <section class="card">
                     <h2>Report Waste</h2>
-                    <form id="wasteForm" enctype="multipart/form-data">
+                    @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                    @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                    @endif
+                    <form id="wasteForm" method="POST" action="{{ route('waste-report.store') }}" enctype="multipart/form-data">
+                        @csrf
                         <label>Waste Type
                             <select id="wasteType" name="waste_type" required>
                                 <option>Plastic</option>
