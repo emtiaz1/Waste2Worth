@@ -8,7 +8,7 @@ class AdminEventController extends Controller
 {
     public function index()
     {
-        $events = Event::all();
+    $events = Event::orderBy('date')->get();
         return view('admin.events', compact('events'));
     }
 
