@@ -24,7 +24,7 @@
             <section class="dashboard-header">
                 <div class="row g-4">
                     <!-- User Profile Overview -->
-                    <div class="col-lg-8">
+                    <div class="col-12">
                         <div class="card user-overview-card">
                             <div class="user-overview">
                                 <div class="user-avatar">
@@ -53,7 +53,7 @@
                                     <a href="{{ route('reportWaste') }}" class="btn btn-primary">
                                         <i class="fas fa-plus"></i> Report Waste
                                     </a>
-                                    <a href="{{ route('profile.show') }}" class="btn btn-outline-secondary">
+                                    <a href="{{ route('profile.show') }}" class="btn btn-light">
                                         <i class="fas fa-user-edit"></i> Profile
                                     </a>
                                 </div>
@@ -61,39 +61,45 @@
                         </div>
                     </div>
                     
-                    <!-- Quick Stats Cards -->
-                    <div class="col-lg-4">
-                        <div class="quick-stats">
-                            <div class="stat-card eco-coins">
-                                <div class="stat-icon">
-                                    <i class="fas fa-coins"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <h3>{{ $profile->personal_stats['coins_available'] ?? 0 }}</h3>
-                                    <p>Available Eco Coins</p>
-                                    <small class="text-success">+{{ $profile->personal_stats['monthly_coins'] ?? 0 }} this month</small>
-                                </div>
-                            </div>
-                            
-                            <div class="stat-card waste-reports">
-                                <div class="stat-icon">
-                                    <i class="fas fa-recycle"></i>
-                                </div>
-                                <div class="stat-content">
-                                    <h3>{{ $profile->personal_stats['total_reports'] ?? 0 }}</h3>
-                                    <p>Reports Submitted</p>
-                                    <small class="text-info">{{ $profile->personal_stats['weekly_reports'] ?? 0 }} this week</small>
+                    <!-- Quick Stats Cards - Now in Flex Row Below Welcome Card -->
+                    <div class="col-12">
+                        <div class="row g-3">
+                            <div class="col-lg-4 col-md-6">
+                                <div class="stat-card eco-coins">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-coins"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3>{{ $profile->personal_stats['coins_available'] ?? 0 }}</h3>
+                                        <p>Available Eco Coins</p>
+                                        <small class="text-success">+{{ $profile->personal_stats['monthly_coins'] ?? 0 }} this month</small>
+                                    </div>
                                 </div>
                             </div>
                             
-                            <div class="stat-card community-rank">
-                                <div class="stat-icon">
-                                    <i class="fas fa-trophy"></i>
+                            <div class="col-lg-4 col-md-6">
+                                <div class="stat-card waste-reports">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-recycle"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3>{{ $profile->personal_stats['total_reports'] ?? 0 }}</h3>
+                                        <p>Reports Submitted</p>
+                                        <small class="text-info">{{ $profile->personal_stats['weekly_reports'] ?? 0 }} this week</small>
+                                    </div>
                                 </div>
-                                <div class="stat-content">
-                                    <h3>#{{ $profile->community_rank['rank'] ?? 'N/A' }}</h3>
-                                    <p>Community Rank</p>
-                                    <small class="text-warning">Top {{ $profile->community_rank['percentile'] ?? 0 }}%</small>
+                            </div>
+                            
+                            <div class="col-lg-4 col-md-12">
+                                <div class="stat-card community-rank">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-trophy"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3>#{{ $profile->community_rank['rank'] ?? 'N/A' }}</h3>
+                                        <p>Community Rank</p>
+                                        <small class="text-warning">Top {{ $profile->community_rank['percentile'] ?? 0 }}%</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -128,23 +134,6 @@
                             </div>
                         </div>
                         
-                        <div class="environmental-score">
-                            <h5>Environmental Score</h5>
-                            <div class="progress mb-2">
-                                <div class="progress-bar bg-success" role="progressbar" 
-                                     style="width: {{ $profile->waste_impact['environmental_score'] ?? 0 }}%"></div>
-                            </div>
-                            <small>{{ $profile->waste_impact['environmental_score'] ?? 0 }}/100 - Keep up the great work!</small>
-                        </div>
-                        
-                        @if(($profile->waste_impact['recent_reports_30_days'] ?? 0) > 0)
-                        <div class="recent-activity mt-3">
-                            <p class="text-success">
-                                <i class="fas fa-calendar-check"></i>
-                                {{ $profile->waste_impact['recent_reports_30_days'] }} reports in last 30 days
-                            </p>
-                        </div>
-                        @endif
                     </div>
                 </div>
                 
@@ -256,13 +245,10 @@
                 <!-- My Waste Reports -->
                 <div class="col-lg-6">
                     <div class="card my-reports-card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="card-header">
                             <h3 class="mb-0">
                                 <i class="fas fa-file-alt"></i> My Waste Reports
                             </h3>
-                            <a href="/wastereport" class="btn btn-sm btn-outline-success">
-                                <i class="fas fa-plus"></i> New Report
-                            </a>
                         </div>
                         <div class="card-body">
                             @forelse($dashboardData['my_waste_reports'] ?? [] as $report)
@@ -285,9 +271,9 @@
                             </div>
                             @empty
                             <div class="empty-state-small">
-                                <i class="fas fa-plus-circle text-muted"></i>
+                                <i class="fas fa-info-circle text-muted"></i>
                                 <p>No waste reports yet</p>
-                                <a href="/wastereport" class="btn btn-sm btn-success mt-2">Report Waste</a>
+                                <small class="text-muted">Your reported waste will appear here</small>
                             </div>
                             @endforelse
                         </div>
@@ -379,59 +365,90 @@
                 <div class="col-lg-8">
                     <div class="card activity-feed-card">
                         <h3 class="card-title">
-                            <i class="fas fa-activity"></i> Recent Community Activity
+                            <i class="fas fa-history"></i> Today's Community Activity History
+                            <small class="text-muted">({{ now()->format('F j, Y') }})</small>
                         </h3>
                         
-                        <div class="activity-feed" id="activityFeed">
+                        <div class="activity-feed-simple" id="activityFeed">
                             @forelse($dashboardData['recent_community_activity'] ?? [] as $activity)
-                            <div class="activity-item">
-                                <div class="activity-icon {{ $activity['can_collect'] ? 'needs-collection' : 'processed' }}">
-                                    <i class="fas {{ $activity['can_collect'] ? 'fa-exclamation-triangle' : 'fa-check-circle' }}"></i>
+                            <div class="activity-item-simple">
+                                <div class="activity-status-icon status-{{ $activity['status'] }}">
+                                    <i class="{{ $activity['icon'] }}"></i>
                                 </div>
-                                <div class="activity-content">
-                                    <p>
-                                        <strong>{{ $activity['reporter_email'] ? Str::mask($activity['reporter_email'], '*', 3) : 'Anonymous' }}</strong> 
-                                        reported <strong>{{ $activity['amount'] }}kg</strong> of 
-                                        <strong>{{ $activity['type'] }}</strong> waste
-                                    </p>
-                                    <div class="activity-meta">
-                                        <span class="location">
+                                <div class="activity-content-main">
+                                    <div class="activity-header-simple">
+                                        <span class="status-badge badge-{{ $activity['color'] }}">
+                                            {{ ucfirst($activity['status']) }}
+                                        </span>
+                                        <span class="activity-time-simple">{{ $activity['time_ago'] }}</span>
+                                    </div>
+                                    <p class="activity-message-main">{{ $activity['message'] }}</p>
+                                    <div class="activity-details-simple">
+                                        <span class="location-info">
                                             <i class="fas fa-map-marker-alt"></i> {{ $activity['location'] }}
                                         </span>
-                                        <span class="time">{{ $activity['time_ago'] }}</span>
-                                        @if($activity['can_collect'])
-                                            <span class="collection-available">
-                                                <i class="fas fa-recycle text-success"></i> Available for Collection
-                                            </span>
-                                        @else
-                                            <span class="collection-assigned">
-                                                <i class="fas fa-user-check text-warning"></i> Already Assigned
+                                        <span class="amount-info">
+                                            <i class="fas fa-weight"></i> {{ $activity['amount'] }}kg
+                                        </span>
+                                        <span class="waste-type-info">
+                                            <i class="fas fa-recycle"></i> {{ $activity['waste_type'] }}
+                                        </span>
+                                        @if($activity['collector_name'])
+                                            <span class="collector-info">
+                                                <i class="fas fa-user"></i> {{ $activity['collector_name'] }}
                                             </span>
                                         @endif
                                     </div>
                                 </div>
                                 @if($activity['can_collect'])
-                                <div class="activity-action">
+                                <div class="activity-action-simple">
                                     <button class="btn btn-sm btn-success collect-btn" data-waste-id="{{ $activity['id'] }}">
                                         <i class="fas fa-plus"></i> Collect
                                     </button>
                                 </div>
-                                @else
-                                <div class="activity-action">
-                                    <span class="badge bg-warning">
-                                        <i class="fas fa-clock"></i> Pending Collection
-                                    </span>
-                                </div>
                                 @endif
                             </div>
                             @empty
-                            <div class="empty-state">
-                                <i class="fas fa-leaf text-success"></i>
-                                <p>No recent community activity</p>
-                                <small class="text-muted">Community members' waste reports will appear here</small>
+                            <div class="empty-state-simple">
+                                <i class="fas fa-calendar-day text-muted"></i>
+                                <h5>No Activity Today</h5>
+                                <p class="text-muted">No waste reports have been made today.</p>
+                                <small class="text-muted">Be the first to report waste and help your community!</small>
                             </div>
                             @endforelse
                         </div>
+                        
+                        @if(count($dashboardData['recent_community_activity'] ?? []) > 0)
+                        <div class="activity-summary-simple mt-3 p-3 bg-light rounded">
+                            <h6><i class="fas fa-chart-bar"></i> Today's Summary</h6>
+                            <div class="row g-2">
+                                <div class="col-6 col-md-3">
+                                    <div class="summary-stat-simple">
+                                        <div class="stat-number-simple text-primary">{{ collect($dashboardData['recent_community_activity'])->where('status', 'available')->count() }}</div>
+                                        <div class="stat-label-simple">Available</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="summary-stat-simple">
+                                        <div class="stat-number-simple text-warning">{{ collect($dashboardData['recent_community_activity'])->where('status', 'assigned')->count() }}</div>
+                                        <div class="stat-label-simple">Assigned</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="summary-stat-simple">
+                                        <div class="stat-number-simple text-success">{{ collect($dashboardData['recent_community_activity'])->where('status', 'collected')->count() }}</div>
+                                        <div class="stat-label-simple">Collected</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="summary-stat-simple">
+                                        <div class="stat-number-simple text-danger">{{ collect($dashboardData['recent_community_activity'])->where('status', 'cancelled')->count() }}</div>
+                                        <div class="stat-label-simple">Cancelled</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
                 
@@ -597,33 +614,55 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
                         },
                         body: JSON.stringify({
                             waste_report_id: wasteId
                         })
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        const contentType = response.headers.get('content-type');
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        if (!contentType || !contentType.includes('application/json')) {
+                            return response.text().then(text => {
+                                console.error('Received non-JSON response:', text);
+                                throw new Error('Server returned an error page instead of JSON response');
+                            });
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         if (data.success) {
                             // Update button to show success
                             btn.innerHTML = '<i class="fas fa-check"></i> Requested';
                             btn.classList.remove('btn-success');
                             btn.classList.add('btn-secondary');
+                            btn.disabled = true;
                             
                             // Show success message
-                            showNotification('Collection request submitted successfully!', 'success');
+                            showNotification(data.message || 'Collection request submitted successfully!', 'success');
                             
-                            // Optionally hide the item or refresh section
-                            setTimeout(() => {
-                                const item = btn.closest('.collection-item, .activity-item');
-                                if (item) {
-                                    item.style.transition = 'opacity 0.5s';
-                                    item.style.opacity = '0.5';
-                                }
-                            }, 1000);
+                            // Update the activity item to show assigned status
+                            const activityItem = btn.closest('.activity-item-simple');
+                            if (activityItem) {
+                                const statusIcon = activityItem.querySelector('.activity-status-icon');
+                                const statusBadge = activityItem.querySelector('.status-badge');
+                                
+                                // Update visual status
+                                statusIcon.classList.remove('status-available');
+                                statusIcon.classList.add('status-assigned');
+                                statusBadge.classList.remove('badge-primary');
+                                statusBadge.classList.add('badge-warning');
+                                statusBadge.textContent = 'ASSIGNED';
+                                
+                                // Remove collect button completely
+                                btn.parentElement.remove();
+                            }
                         } else {
-                            throw new Error(data.error || 'Something went wrong');
+                            throw new Error(data.error || data.message || 'Something went wrong');
                         }
                     })
                     .catch(error => {
@@ -746,6 +785,269 @@
             border-radius: 12px;
             font-size: 0.75rem;
             font-weight: 500;
+        }
+        
+        /* Enhanced Activity Feed Styles - Simplified */
+        .activity-feed-simple {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        .activity-item-simple {
+            display: flex;
+            align-items: flex-start;
+            padding: 1rem;
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.2s ease;
+        }
+        
+        .activity-item-simple:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .activity-item-simple:last-child {
+            border-bottom: none;
+        }
+        
+        .activity-status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .activity-status-icon.status-available { background-color: #0d6efd; }
+        .activity-status-icon.status-assigned { background-color: #fd7e14; }
+        .activity-status-icon.status-collected { background-color: #198754; }
+        .activity-status-icon.status-cancelled { background-color: #dc3545; }
+        
+        .activity-content-main {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .activity-header-simple {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.badge-primary { background-color: #0d6efd; color: white; }
+        .status-badge.badge-warning { background-color: #ffc107; color: #212529; }
+        .status-badge.badge-success { background-color: #198754; color: white; }
+        .status-badge.badge-danger { background-color: #dc3545; color: white; }
+        
+        .activity-time-simple {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .activity-message-main {
+            margin-bottom: 0.75rem;
+            color: #495057;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+        
+        .activity-details-simple {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .activity-details-simple span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .activity-details-simple i {
+            width: 14px;
+            color: #9c9c9c;
+        }
+        
+        .activity-action-simple {
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+        
+        .activity-summary-simple {
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .summary-stat-simple {
+            text-align: center;
+            padding: 0.5rem;
+        }
+        
+        .stat-number-simple {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-label-simple {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+        
+        .empty-state-simple {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+        
+        .empty-state-simple i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+        
+        .empty-state-simple h5 {
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+        
+        /* Enhanced Stat Cards in Flex Layout */
+        .stat-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            border-color: #198754;
+        }
+        
+        .stat-card.eco-coins:hover {
+            border-color: #ffc107;
+        }
+        
+        .stat-card.waste-reports:hover {
+            border-color: #0d6efd;
+        }
+        
+        .stat-card.community-rank:hover {
+            border-color: #fd7e14;
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .stat-card.eco-coins .stat-icon {
+            background: linear-gradient(135deg, #ffc107, #ffca28);
+            color: white;
+        }
+        
+        .stat-card.waste-reports .stat-icon {
+            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+            color: white;
+        }
+        
+        .stat-card.community-rank .stat-icon {
+            background: linear-gradient(135deg, #fd7e14, #e55a0e);
+            color: white;
+        }
+        
+        .stat-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .stat-content h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 0.25rem 0;
+            color: #212529;
+        }
+        
+        .stat-content p {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #6c757d;
+        }
+        
+        .stat-content small {
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        /* Mobile responsiveness for stat cards */
+        @media (max-width: 768px) {
+            .stat-card {
+                padding: 1rem;
+                gap: 0.75rem;
+            }
+            
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .stat-content h3 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .activity-item-simple {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .activity-status-icon {
+                align-self: flex-start;
+                margin-bottom: 1rem;
+                margin-right: 0;
+            }
+            
+            .activity-action-simple {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+            
+            .activity-details-simple {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
         }
         
         .collection-item {

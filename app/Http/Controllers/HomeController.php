@@ -13,6 +13,7 @@ use App\Models\ForumDiscussion;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
@@ -241,33 +242,83 @@ class HomeController extends Controller
     private function getRecentCommunityActivity($currentUserEmail)
     {
         try {
-            // Get IDs of waste reports that are already assigned
-            $assignedWasteIds = WasteCollection::where('status', '!=', 'cancelled')
-                ->pluck('waste_report_id')
-                ->toArray();
-
-            return WasteReport::select('id', 'waste_type', 'amount', 'location', 'user_email', 'created_at', 'status')
-                ->whereNotNull('user_email')
-                ->where('user_email', '!=', $currentUserEmail) // Exclude current user's reports
-                ->where('status', '!=', 'collected') // Show only uncollected waste
+            // Get today's date
+            $today = Carbon::today();
+            
+            // Get all waste reports from today
+            $todaysReports = WasteReport::select('id', 'waste_type', 'amount', 'location', 'user_email', 'created_at', 'status')
+                ->whereDate('created_at', $today)
                 ->orderBy('created_at', 'desc')
-                ->limit(8)
-                ->get()
-                ->map(function($report) use ($assignedWasteIds) {
-                    $isAssigned = in_array($report->id, $assignedWasteIds);
-                    return [
-                        'id' => $report->id,
-                        'type' => $report->waste_type,
-                        'amount' => $report->amount,
-                        'location' => $report->location,
-                        'reporter_email' => $report->user_email,
-                        'time_ago' => $report->created_at->diffForHumans(),
-                        'needs_collection' => !$isAssigned,
-                        'can_collect' => !$isAssigned,
-                        'status' => $isAssigned ? 'assigned' : 'available'
-                    ];
-                });
+                ->get();
+
+            $activity = collect();
+
+            foreach ($todaysReports as $report) {
+                $reporterName = $this->getUsernameByEmail($report->user_email);
+                
+                // Get the latest collection status for this report
+                $latestCollection = WasteCollection::where('waste_report_id', $report->id)
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+
+                // Determine current status and details
+                $currentStatus = 'available';
+                $statusMessage = "{$reporterName} reported {$report->amount}kg of {$report->waste_type}";
+                $statusColor = 'primary';
+                $statusIcon = 'fas fa-plus-circle';
+                $collectorName = null;
+                $latestTime = $report->created_at;
+
+                if ($latestCollection) {
+                    $collectorName = $this->getUsernameByEmail($latestCollection->collector_email);
+                    
+                    if ($latestCollection->status === 'collected') {
+                        $currentStatus = 'collected';
+                        $actualWeight = $latestCollection->actual_weight ?: $report->amount;
+                        $statusMessage = "{$collectorName} collected " . $actualWeight . "kg of {$report->waste_type} (reported by {$reporterName})";
+                        $statusColor = 'success';
+                        $statusIcon = 'fas fa-check-circle';
+                        $latestTime = Carbon::parse($latestCollection->collected_at ?: $latestCollection->updated_at);
+                    } elseif ($latestCollection->status === 'cancelled') {
+                        $currentStatus = 'cancelled';
+                        $statusMessage = "Collection cancelled for {$report->amount}kg of {$report->waste_type} (reported by {$reporterName})";
+                        $statusColor = 'danger';
+                        $statusIcon = 'fas fa-times-circle';
+                        $latestTime = $latestCollection->updated_at;
+                    } else {
+                        // assigned status
+                        $currentStatus = 'assigned';
+                        $statusMessage = "{$collectorName} is assigned to collect {$report->amount}kg of {$report->waste_type} (reported by {$reporterName})";
+                        $statusColor = 'warning';
+                        $statusIcon = 'fas fa-user-check';
+                        $latestTime = Carbon::parse($latestCollection->assigned_at ?: $latestCollection->created_at);
+                    }
+                }
+
+                // Add single entry for this report with latest status
+                $activity->push([
+                    'id' => $report->id,
+                    'waste_type' => $report->waste_type,
+                    'amount' => $report->amount,
+                    'location' => $report->location,
+                    'reporter_email' => $report->user_email,
+                    'reporter_name' => $reporterName,
+                    'collector_name' => $collectorName,
+                    'time' => $latestTime,
+                    'time_ago' => $latestTime->diffForHumans(),
+                    'status' => $currentStatus,
+                    'message' => $statusMessage,
+                    'icon' => $statusIcon,
+                    'color' => $statusColor,
+                    'can_collect' => ($currentStatus === 'available' && $report->user_email !== $currentUserEmail)
+                ]);
+            }
+
+            // Sort by latest time and limit to 15 items
+            return $activity->sortByDesc('time')->take(15)->values();
+
         } catch (\Exception $e) {
+            \Log::error('Error getting recent community activity: ' . $e->getMessage());
             return collect([]);
         }
     }
@@ -488,9 +539,14 @@ class HomeController extends Controller
     public function requestCollection(Request $request)
     {
         try {
+            // Validate request
+            $request->validate([
+                'waste_report_id' => 'required|integer|exists:wastereport,id'
+            ]);
+
             $user = Auth::user();
             if (!$user) {
-                return response()->json(['error' => 'Unauthorized'], 401);
+                return response()->json(['success' => false, 'error' => 'Unauthorized'], 401);
             }
             
             $wasteReportId = $request->input('waste_report_id');
@@ -501,6 +557,12 @@ class HomeController extends Controller
             if (!$wasteReport) {
                 \Log::error('Waste report not found: ' . $wasteReportId);
                 return response()->json(['error' => 'Waste report not found'], 404);
+            }
+            
+            // Check if waste report has a status column and is still available
+            if (isset($wasteReport->status) && $wasteReport->status !== 'pending') {
+                \Log::info('Waste report already processed: ' . $wasteReportId . ' - Status: ' . $wasteReport->status);
+                return response()->json(['error' => 'This waste report is no longer available for collection'], 400);
             }
             
             // Prevent users from collecting their own waste
@@ -520,36 +582,58 @@ class HomeController extends Controller
             }
             
             // Create collection request
-            $collection = WasteCollection::create([
-                'waste_report_id' => $wasteReportId,
-                'requester_email' => $wasteReport->user_email, // Person who reported the waste
-                'collector_email' => $user->email, // Person who wants to collect it
-                'expected_weight' => $wasteReport->amount,
-                'status' => 'assigned',
-                'requested_at' => now(),
-                'assigned_at' => now(),
-                'assigned_date' => now()
-            ]);
+            try {
+                $collection = WasteCollection::create([
+                    'waste_report_id' => $wasteReportId,
+                    'requester_email' => $wasteReport->user_email, // Person who reported the waste
+                    'collector_email' => $user->email, // Person who wants to collect it
+                    'expected_weight' => $wasteReport->amount,
+                    'status' => 'assigned',
+                    'requested_at' => now(),
+                    'assigned_at' => now(),
+                    'assigned_date' => now()
+                ]);
+                \Log::info('Collection created with ID: ' . $collection->id);
+            } catch (\Exception $collectionError) {
+                \Log::error('Failed to create collection: ' . $collectionError->getMessage());
+                return response()->json(['error' => 'Failed to create collection request'], 500);
+            }
             
-            \Log::info('Collection created with ID: ' . $collection->id);
-            
-            // Update waste report status
-            $wasteReport->update(['status' => 'assigned']);
+            // Update waste report status (if status column exists)
+            try {
+                if (Schema::hasColumn('wastereport', 'status')) {
+                    $wasteReport->update(['status' => 'assigned']);
+                    \Log::info('Waste report status updated to assigned');
+                }
+            } catch (\Exception $updateError) {
+                \Log::error('Failed to update waste report status: ' . $updateError->getMessage());
+                // Don't fail the request if status update fails
+            }
             
             // Award 5 eco coins to the original reporter when someone requests to collect their waste
-            \App\Models\Coin::create([
-                'user_email' => $wasteReport->user_email,
-                'reason' => 'Your waste report was assigned for collection - ' . $wasteReport->amount . 'kg ' . $wasteReport->waste_type,
-                'eco_coin_value' => 5
+            try {
+                \App\Models\Coin::create([
+                    'user_email' => $wasteReport->user_email,
+                    'reason' => 'Your waste report was assigned for collection - ' . $wasteReport->amount . 'kg ' . $wasteReport->waste_type,
+                    'eco_coin_value' => 5
+                ]);
+                \Log::info('5 coins awarded to reporter: ' . $wasteReport->user_email);
+            } catch (\Exception $coinError) {
+                \Log::error('Failed to award coins: ' . $coinError->getMessage());
+                // Don't fail the entire request if coin creation fails
+            }
+            
+            return response()->json([
+                'success' => true, 
+                'message' => 'Collection request submitted successfully! You will earn 10 eco coins when you complete the collection.'
             ]);
-            
-            \Log::info('Waste report status updated to assigned. 5 coins awarded to reporter: ' . $wasteReport->user_email);
-            
-            return response()->json(['success' => true, 'message' => 'Collection request submitted successfully']);
             
         } catch (\Exception $e) {
             \Log::error('Collection request failed: ' . $e->getMessage() . ' Line: ' . $e->getLine() . ' File: ' . $e->getFile());
-            return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
+            return response()->json([
+                'success' => false,
+                'error' => 'Something went wrong. Please try again later.'
+            ], 500);
         }
     }
 
