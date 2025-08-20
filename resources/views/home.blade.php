@@ -72,7 +72,15 @@
                                     <div class="stat-content">
                                         <h3>{{ $profile->personal_stats['coins_available'] ?? 0 }}</h3>
                                         <p>Available Eco Coins</p>
-                                        <small class="text-success">+{{ $profile->personal_stats['monthly_coins'] ?? 0 }} this month</small>
+                                        <div class="coin-details">
+                                            <small class="text-success">+{{ $profile->personal_stats['monthly_coins'] ?? 0 }} this month</small>
+                                            @if(($profile->personal_stats['total_eco_coins'] ?? 0) > 0)
+                                                <br><small class="text-muted">{{ $profile->personal_stats['total_eco_coins'] ?? 0 }} total earned</small>
+                                            @endif
+                                            @if(($profile->personal_stats['coins_spent'] ?? 0) > 0)
+                                                <br><small class="text-warning">{{ $profile->personal_stats['coins_spent'] ?? 0 }} spent on purchases</small>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -124,13 +132,21 @@
                             </div>
                             
                             <div class="metric">
+                                <div class="metric-value">{{ $profile->waste_impact['total_waste_collected'] ?? '0' }} kg</div>
+                                <div class="metric-label">Total Waste Collected</div>
+                            </div>
+                            
+                            <div class="metric">
                                 <div class="metric-value">{{ $profile->waste_impact['carbon_footprint_saved'] ?? '0' }} kg</div>
                                 <div class="metric-label">CO₂ Equivalent Saved</div>
                             </div>
                             
                             <div class="metric">
-                                <div class="metric-value">{{ $profile->waste_impact['most_reported_type'] ?? 'None' }}</div>
-                                <div class="metric-label">Most Reported Type</div>
+                                <div class="metric-value">
+                                    <span class="badge bg-primary">{{ $profile->waste_impact['today_reports'] ?? 0 }}</span>
+                                    <span class="badge bg-success">{{ $profile->waste_impact['today_collections'] ?? 0 }}</span>
+                                </div>
+                                <div class="metric-label">Today: Reports | Collections</div>
                             </div>
                         </div>
                         
@@ -367,6 +383,9 @@
                         <h3 class="card-title">
                             <i class="fas fa-history"></i> Today's Community Activity History
                             <small class="text-muted">({{ now()->format('F j, Y') }})</small>
+                            <small id="refreshIndicator" class="text-success ms-2" style="display: none;">
+                                <i class="fas fa-sync fa-spin"></i> Updating...
+                            </small>
                         </h3>
                         
                         <div class="activity-feed-simple" id="activityFeed">
@@ -473,6 +492,14 @@
                                 <div class="metric-details">
                                     <div class="metric-value">{{ $dashboardData['global_impact']['total_collected'] ?? '0' }}kg</div>
                                     <div class="metric-label">Successfully Collected</div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric global">
+                                <div class="metric-icon"><i class="fas fa-calendar-day"></i></div>
+                                <div class="metric-details">
+                                    <div class="metric-value">{{ $dashboardData['global_impact']['today_collected'] ?? '0' }}kg</div>
+                                    <div class="metric-label">Today's Collections</div>
                                 </div>
                             </div>
                             
@@ -724,6 +751,15 @@
                 const formData = new FormData(this);
                 const submitBtn = this.querySelector('button[type="submit"]');
                 
+                // Debug logging
+                console.log('Form data entries:');
+                for (let [key, value] of formData.entries()) {
+                    console.log(key, value);
+                }
+                
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                console.log('CSRF Token:', csrfToken);
+                
                 // Disable submit button
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
@@ -731,11 +767,31 @@
                 fetch('/submit-collection', {
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
                     },
                     body: formData
                 })
-                .then(response => response.json())
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    console.log('Response headers:', response.headers.get('content-type'));
+                    
+                    // Check if response is OK and has JSON content type
+                    if (!response.ok) {
+                        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    const contentType = response.headers.get('content-type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        // Log response text for debugging
+                        return response.text().then(text => {
+                            console.log('Non-JSON response:', text);
+                            throw new Error('Server returned non-JSON response. Please check if you are logged in.');
+                        });
+                    }
+                    
+                    return response.json();
+                })
                 .then(data => {
                     if (data.success) {
                         // Close modal
@@ -743,7 +799,7 @@
                         modal.hide();
                         
                         // Show success message
-                        showNotification('Collection submitted successfully!', 'success');
+                        showNotification('Collection submitted successfully! You earned ' + (data.coins_earned || 10) + ' eco coins!', 'success');
                         
                         // Refresh the page after a short delay to show updated status
                         setTimeout(() => {
@@ -824,6 +880,7 @@
         
         .activity-status-icon.status-available { background-color: #0d6efd; }
         .activity-status-icon.status-assigned { background-color: #fd7e14; }
+        .activity-status-icon.status-submitted { background-color: #0dcaf0; }
         .activity-status-icon.status-collected { background-color: #198754; }
         .activity-status-icon.status-cancelled { background-color: #dc3545; }
         
@@ -849,6 +906,7 @@
         
         .status-badge.badge-primary { background-color: #0d6efd; color: white; }
         .status-badge.badge-warning { background-color: #ffc107; color: #212529; }
+        .status-badge.badge-info { background-color: #0dcaf0; color: #212529; }
         .status-badge.badge-success { background-color: #198754; color: white; }
         .status-badge.badge-danger { background-color: #dc3545; color: white; }
         
@@ -1081,6 +1139,7 @@
         
         .status-pending { background-color: #fff3cd; color: #856404; }
         .status-assigned { background-color: #cff4fc; color: #055160; }
+        .status-submitted { background-color: #e2e3e5; color: #383d41; }
         .status-collected { background-color: #d1e7dd; color: #0a3622; }
         .status-completed { background-color: #d1e7dd; color: #0a3622; }
         
@@ -1139,12 +1198,15 @@
     <script>
         // Real-time dashboard updates
         document.addEventListener('DOMContentLoaded', function () {
-            // Auto-refresh activity feed every 5 minutes
+            // Auto-refresh activity feed every 30 seconds for real-time updates
             setInterval(function() {
                 if (document.hasFocus()) {
                     refreshActivityFeed();
                 }
-            }, 300000); // 5 minutes
+            }, 30000); // 30 seconds
+            
+            // Initial setup
+            attachCollectButtonListeners();
             
             // Animate progress bars
             animateProgressBars();
@@ -1152,10 +1214,171 @@
             // Animate counters
             animateCounters();
         });
+
+        function attachCollectButtonListeners() {
+            // Remove existing listeners to prevent duplicates
+            document.querySelectorAll('.collect-btn').forEach(btn => {
+                btn.replaceWith(btn.cloneNode(true));
+            });
+            
+            // Attach collect button functionality
+            document.querySelectorAll('.collect-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const wasteId = this.getAttribute('data-waste-id');
+                    if (wasteId) {
+                        requestCollection(wasteId, this);
+                    }
+                });
+            });
+        }
+
+        function requestCollection(wasteId, button) {
+            // Disable button and show loading
+            button.disabled = true;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            
+            fetch('/request-collection', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    waste_report_id: wasteId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Collection request submitted successfully!', 'success');
+                    // Refresh activity feed to show updated status
+                    setTimeout(() => {
+                        refreshActivityFeed();
+                    }, 1000);
+                } else {
+                    showNotification(data.error || 'Failed to request collection', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('An error occurred while requesting collection', 'error');
+            })
+            .finally(() => {
+                // Re-enable button
+                button.disabled = false;
+                button.innerHTML = originalText;
+            });
+        }
         
         function refreshActivityFeed() {
-            // This would make an AJAX call to refresh the activity feed
             console.log('Refreshing activity feed...');
+            
+            // Show refresh indicator
+            const refreshIndicator = document.getElementById('refreshIndicator');
+            if (refreshIndicator) {
+                refreshIndicator.style.display = 'inline';
+            }
+            
+            fetch('/home/community-activity', {
+                method: 'GET',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    updateActivityFeed(data.activity);
+                    console.log('Activity feed updated successfully');
+                } else {
+                    console.error('Failed to refresh activity feed:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error refreshing activity feed:', error);
+            })
+            .finally(() => {
+                // Hide refresh indicator
+                if (refreshIndicator) {
+                    setTimeout(() => {
+                        refreshIndicator.style.display = 'none';
+                    }, 500);
+                }
+            });
+        }
+
+        function updateActivityFeed(activities) {
+            const activityFeed = document.getElementById('activityFeed');
+            if (!activityFeed) return;
+
+            if (activities.length === 0) {
+                activityFeed.innerHTML = `
+                    <div class="empty-state-simple">
+                        <i class="fas fa-calendar-day text-muted"></i>
+                        <h5>No Activity Today</h5>
+                        <p class="text-muted">No waste reports have been made today.</p>
+                        <small class="text-muted">Be the first to report waste and help your community!</small>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            activities.forEach(activity => {
+                html += `
+                    <div class="activity-item-simple">
+                        <div class="activity-status-icon status-${activity.status}">
+                            <i class="${activity.icon}"></i>
+                        </div>
+                        <div class="activity-content-main">
+                            <div class="activity-header-simple">
+                                <span class="status-badge badge-${activity.color}">
+                                    ${activity.status.charAt(0).toUpperCase() + activity.status.slice(1)}
+                                </span>
+                                <span class="activity-time-simple">${activity.time_ago}</span>
+                            </div>
+                            <p class="activity-message-main">${activity.message}</p>
+                            <div class="activity-details-simple">
+                                <span class="location-info">
+                                    <i class="fas fa-map-marker-alt"></i> ${activity.location}
+                                </span>
+                                <span class="amount-info">
+                                    <i class="fas fa-weight"></i> ${activity.amount}kg
+                                </span>
+                                <span class="waste-type-info">
+                                    <i class="fas fa-recycle"></i> ${activity.waste_type}
+                                </span>
+                                ${activity.collector_name ? `
+                                <span class="collector-info">
+                                    <i class="fas fa-user"></i> ${activity.collector_name}
+                                </span>
+                                ` : ''}
+                            </div>
+                        </div>
+                        ${activity.can_collect ? `
+                        <div class="activity-action-simple">
+                            <button class="btn btn-sm btn-success collect-btn" data-waste-id="${activity.id}">
+                                <i class="fas fa-plus"></i> Collect
+                            </button>
+                        </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+
+            activityFeed.innerHTML = html;
+            
+            // Reattach event listeners for collect buttons
+            attachCollectButtonListeners();
         }
         
         function animateProgressBars() {

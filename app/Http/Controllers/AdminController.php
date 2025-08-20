@@ -271,4 +271,184 @@ class AdminController extends Controller
 
         return view('admin.user-detail', compact('user', 'coinTransactions', 'purchases', 'wasteReports', 'wasteByType'));
     }
+
+    public function wasteReports()
+    {
+        try {
+            // Get all waste reports with their collection details and collector profiles
+            $wasteReports = WasteReport::with(['collections' => function($query) {
+                $query->with('collectorProfile')->orderBy('created_at', 'desc');
+            }])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+            // Transform data for admin view
+            $reportsData = $wasteReports->map(function($report) {
+                $latestCollection = $report->collections->first();
+                
+                // Get reporter profile info
+                $reporterProfile = \App\Models\Profile::where('email', $report->user_email)->first();
+                $reporterName = 'Unknown User';
+                
+                if ($reporterProfile) {
+                    $firstName = trim($reporterProfile->first_name ?? '');
+                    $lastName = trim($reporterProfile->last_name ?? '');
+                    if ($firstName || $lastName) {
+                        $reporterName = trim($firstName . ' ' . $lastName);
+                    } elseif ($reporterProfile->username) {
+                        $reporterName = $reporterProfile->username;
+                    }
+                } else {
+                    // Fallback: try to get username from email (before @)
+                    $reporterName = explode('@', $report->user_email)[0];
+                }
+                
+                return [
+                    'report_id' => $report->id,
+                    'waste_type' => $report->waste_type,
+                    'amount' => $report->amount,
+                    'location' => $report->location,
+                    'description' => $report->description,
+                    'reporter_email' => $report->user_email,
+                    'reporter_name' => $reporterName,
+                    'reported_at' => $report->created_at,
+                    'status' => $report->status ?? 'pending',
+                    'collection' => $latestCollection ? [
+                        'id' => $latestCollection->id,
+                        'collector_email' => $latestCollection->collector_email,
+                        'collector_name' => $latestCollection->collector_name ?: 
+                            ($latestCollection->collectorProfile ? 
+                                trim($latestCollection->collectorProfile->first_name . ' ' . $latestCollection->collectorProfile->last_name) : 
+                                'Unknown User'),
+                        'collector_contact' => $latestCollection->collector_contact ?: 
+                            ($latestCollection->collectorProfile ? 
+                                $latestCollection->collectorProfile->phone : 
+                                null),
+                        'status' => $latestCollection->status,
+                        'requested_at' => $latestCollection->requested_at,
+                        'assigned_at' => $latestCollection->assigned_at,
+                        'collected_at' => $latestCollection->collected_at,
+                        'estimated_weight' => $latestCollection->estimated_weight,
+                        'expected_weight' => $latestCollection->expected_weight,
+                        'actual_weight' => $latestCollection->actual_weight,
+                        'collection_notes' => $latestCollection->collection_notes,
+                        'collection_photos' => $latestCollection->collection_photos
+                    ] : null
+                ];
+            });
+
+            return view('admin.adminWasteReport', compact('reportsData'));
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error loading waste reports: ' . $e->getMessage());
+        }
+    }
+
+    public function confirmCollection(Request $request)
+    {
+        try {
+            $request->validate([
+                'collection_id' => 'required|exists:waste_collections,id',
+                'confirmed_weight' => 'required|numeric|min:0.1',
+                'admin_notes' => 'nullable|string|max:500'
+            ]);
+
+            $collection = WasteCollection::find($request->collection_id);
+            $wasteReport = WasteReport::find($collection->waste_report_id);
+
+            if (!$collection || !$wasteReport) {
+                return response()->json(['error' => 'Collection or waste report not found'], 404);
+            }
+
+            if ($collection->status === 'confirmed') {
+                return response()->json(['error' => 'Collection already confirmed'], 400);
+            }
+
+            // Start database transaction
+            DB::beginTransaction();
+
+            // Update collection status
+            $collection->update([
+                'status' => 'confirmed',
+                'actual_weight' => $request->confirmed_weight,
+                'collection_notes' => ($collection->collection_notes ?? '') . 
+                    "\n\nAdmin Confirmation: " . ($request->admin_notes ?? 'Confirmed by admin'),
+                'updated_at' => now()
+            ]);
+
+            // Update waste report status
+            $wasteReport->update([
+                'status' => 'collected',
+                'updated_at' => now()
+            ]);
+
+            // Award coins to reporter (5 coins per kg)
+            $reporterCoins = round($request->confirmed_weight * 5);
+            Coin::create([
+                'user_email' => $wasteReport->user_email,
+                'reason' => "Waste collection confirmed by admin - {$request->confirmed_weight}kg of {$wasteReport->waste_type}",
+                'eco_coin_value' => $reporterCoins
+            ]);
+
+            // Award coins to collector (10 coins per kg)
+            $collectorCoins = round($request->confirmed_weight * 10);
+            Coin::create([
+                'user_email' => $collection->collector_email,
+                'reason' => "Collection completed and confirmed - {$request->confirmed_weight}kg of {$wasteReport->waste_type}",
+                'eco_coin_value' => $collectorCoins
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => "Collection confirmed! Reporter earned {$reporterCoins} coins, Collector earned {$collectorCoins} coins.",
+                'reporter_coins' => $reporterCoins,
+                'collector_coins' => $collectorCoins
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error confirming collection: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function rejectCollection(Request $request)
+    {
+        try {
+            $request->validate([
+                'collection_id' => 'required|exists:waste_collections,id',
+                'rejection_reason' => 'required|string|max:500'
+            ]);
+
+            $collection = WasteCollection::find($request->collection_id);
+            $wasteReport = WasteReport::find($collection->waste_report_id);
+
+            if (!$collection || !$wasteReport) {
+                return response()->json(['error' => 'Collection or waste report not found'], 404);
+            }
+
+            // Update collection status
+            $collection->update([
+                'status' => 'rejected',
+                'collection_notes' => ($collection->collection_notes ?? '') . 
+                    "\n\nAdmin Rejection: " . $request->rejection_reason,
+                'updated_at' => now()
+            ]);
+
+            // Reset waste report status to available
+            $wasteReport->update([
+                'status' => 'pending',
+                'updated_at' => now()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Collection rejected and waste report made available again.'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error rejecting collection: ' . $e->getMessage()], 500);
+        }
+    }
 }

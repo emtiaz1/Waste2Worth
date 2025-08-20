@@ -40,6 +40,67 @@ class WasteCollection extends Model
     }
 
     /**
+     * Get the collector profile information
+     */
+    public function collectorProfile()
+    {
+        return $this->belongsTo(Profile::class, 'collector_email', 'email');
+    }
+
+    /**
+     * Get the requester profile information
+     */
+    public function requesterProfile()
+    {
+        return $this->belongsTo(Profile::class, 'requester_email', 'email');
+    }
+
+    /**
+     * Get the collector name with fallback to profile data
+     */
+    public function getCollectorNameAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        }
+
+        // Fallback to profile data if collector_name is not set
+        if ($this->collector_email && $this->collectorProfile) {
+            $profile = $this->collectorProfile;
+            
+            // Try to get full name first
+            $firstName = trim($profile->first_name ?? '');
+            $lastName = trim($profile->last_name ?? '');
+            
+            if ($firstName || $lastName) {
+                return trim($firstName . ' ' . $lastName);
+            } else {
+                // Fall back to username
+                return $profile->username ?: 'Unknown User';
+            }
+        }
+
+        return 'Unknown User';
+    }
+
+    /**
+     * Get the collector contact with fallback to profile data
+     */
+    public function getCollectorContactAttribute($value)
+    {
+        if ($value) {
+            return $value;
+        }
+
+        // Fallback to profile data if collector_contact is not set
+        if ($this->collector_email && $this->collectorProfile) {
+            return $this->collectorProfile->phone;
+        }
+
+        return null;
+    }
+
+    /**
      * Get pending collections for dashboard
      */
     public static function getPendingCollections($limit = 5)
@@ -59,12 +120,13 @@ class WasteCollection extends Model
         return [
             'pending' => self::where('status', 'pending')->count(),
             'assigned' => self::where('status', 'assigned')->count(),
-            'collected' => self::where('status', 'collected')->count(),
-            'completed' => self::where('status', 'completed')->count(),
-            'total_weight_collected' => self::where('status', 'completed')
+            'submitted' => self::where('status', 'submitted')->count(),
+            'collected' => self::whereIn('status', ['collected', 'confirmed'])->count(),
+            'completed' => self::whereIn('status', ['completed', 'confirmed'])->count(),
+            'total_weight_collected' => self::whereIn('status', ['completed', 'confirmed', 'collected'])
                 ->sum('actual_weight'),
-            'today_collections' => self::whereDate('collected_at', today())
-                ->where('status', 'completed')
+            'today_collections' => self::whereDate('updated_at', today())
+                ->whereIn('status', ['completed', 'confirmed', 'collected'])
                 ->count()
         ];
     }

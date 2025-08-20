@@ -72,6 +72,27 @@ class HomeController extends Controller
         return $profile;
     }
     
+    private function getCoinTransactionHistory($userEmail, $limit = 5)
+    {
+        try {
+            return Coin::where('user_email', $userEmail)
+                ->orderBy('created_at', 'desc')
+                ->limit($limit)
+                ->get(['reason', 'eco_coin_value', 'created_at'])
+                ->map(function($coin) {
+                    return [
+                        'reason' => $coin->reason,
+                        'amount' => $coin->eco_coin_value,
+                        'date' => $coin->created_at->format('M j, Y'),
+                        'time_ago' => $coin->created_at->diffForHumans()
+                    ];
+                });
+        } catch (\Exception $e) {
+            \Log::error("Error getting coin history for {$userEmail}: " . $e->getMessage());
+            return collect([]);
+        }
+    }
+    
     private function getPersonalStatistics($userEmail)
     {
         try {
@@ -84,15 +105,29 @@ class HomeController extends Controller
                 ->whereMonth('created_at', now()->month)
                 ->count();
                 
+            // Calculate Eco Coins from the coins table
             $totalEcoCoins = 0;
             $monthlyCoins = 0;
+            $weeklyCoins = 0;
             try {
+                // Get total coins earned by the user
                 $totalEcoCoins = Coin::where('user_email', $userEmail)->sum('eco_coin_value') ?? 0;
+                
+                // Get coins earned this month
                 $monthlyCoins = Coin::where('user_email', $userEmail)
                     ->whereMonth('created_at', now()->month)
+                    ->whereYear('created_at', now()->year)
                     ->sum('eco_coin_value') ?? 0;
+                    
+                // Get coins earned this week
+                $weeklyCoins = Coin::where('user_email', $userEmail)
+                    ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
+                    ->sum('eco_coin_value') ?? 0;
+                    
+                \Log::info("Coins calculated for {$userEmail}: Total={$totalEcoCoins}, Monthly={$monthlyCoins}, Weekly={$weeklyCoins}");
             } catch (\Exception $e) {
-                // Coins table might not exist
+                \Log::error("Error calculating coins for {$userEmail}: " . $e->getMessage());
+                // Coins table might not exist or have issues
             }
                 
             $totalPurchases = 0;
@@ -111,9 +146,10 @@ class HomeController extends Controller
                 'monthly_reports' => $monthlyReports,
                 'total_eco_coins' => $totalEcoCoins,
                 'monthly_coins' => $monthlyCoins,
+                'weekly_coins' => $weeklyCoins,
                 'total_purchases' => $totalPurchases,
                 'coins_spent' => $coinsSpent,
-                'coins_available' => $totalEcoCoins - $coinsSpent
+                'coins_available' => max(0, $totalEcoCoins - $coinsSpent) // Ensure non-negative
             ];
         } catch (\Exception $e) {
             return $this->getDefaultPersonalStats();
@@ -129,8 +165,15 @@ class HomeController extends Controller
                 ->orderByDesc('count')
                 ->first();
                 
-            $totalWaste = WasteReport::where('user_email', $userEmail)->sum('amount') ?? 0;
-            $carbonSaved = $this->calculateCarbonFootprintSaved($totalWaste, $mostReportedType);
+            $totalWasteReported = WasteReport::where('user_email', $userEmail)->sum('amount') ?? 0;
+            
+            // Get waste collected by user (as collector) - only confirmed collections
+            $totalWasteCollected = WasteCollection::where('collector_email', $userEmail)
+                ->whereIn('status', ['confirmed', 'completed', 'collected'])
+                ->sum('actual_weight') ?? 0;
+            
+            $totalWasteImpact = $totalWasteReported + $totalWasteCollected;
+            $carbonSaved = $this->calculateCarbonFootprintSaved($totalWasteImpact, $mostReportedType);
             
             $recentReports = WasteReport::where('user_email', $userEmail)
                 ->where('created_at', '>=', now()->subDays(30))
@@ -140,12 +183,20 @@ class HomeController extends Controller
                 ->whereDate('created_at', today())
                 ->count();
                 
+            $todayCollections = WasteCollection::where('collector_email', $userEmail)
+                ->whereIn('status', ['confirmed', 'completed', 'collected'])
+                ->whereDate('updated_at', today())
+                ->count();
+                
             return [
                 'most_reported_type' => $mostReportedType ? $mostReportedType->waste_type : 'None',
+                'total_waste_reported' => number_format($totalWasteReported, 1),
+                'total_waste_collected' => number_format($totalWasteCollected, 1),
                 'carbon_footprint_saved' => $carbonSaved,
                 'recent_reports_30_days' => $recentReports,
                 'today_reports' => $todayReports,
-                'environmental_score' => $this->calculateEnvironmentalScore($totalWaste, $recentReports)
+                'today_collections' => $todayCollections,
+                'environmental_score' => $this->calculateEnvironmentalScore($totalWasteImpact, $recentReports)
             ];
         } catch (\Exception $e) {
             return $this->getDefaultWasteImpact();
@@ -193,7 +244,8 @@ class HomeController extends Controller
                 'ongoing_events' => $this->getOngoingEvents(),
                 'global_impact' => $this->getGlobalImpact(),
                 'recent_discussions' => $this->getRecentDiscussions(),
-                'my_waste_reports' => $this->getMyWasteReports($userEmail) // Current user's reports
+                'my_waste_reports' => $this->getMyWasteReports($userEmail), // Current user's reports
+                'recent_coin_transactions' => $this->getCoinTransactionHistory($userEmail, 3) // Recent coin earnings
             ];
         } catch (\Exception $e) {
             return $this->getDefaultDashboardData();
@@ -258,7 +310,7 @@ class HomeController extends Controller
                 
                 // Get the latest collection status for this report
                 $latestCollection = WasteCollection::where('waste_report_id', $report->id)
-                    ->orderBy('created_at', 'desc')
+                    ->orderBy('updated_at', 'desc')
                     ->first();
 
                 // Determine current status and details
@@ -272,12 +324,19 @@ class HomeController extends Controller
                 if ($latestCollection) {
                     $collectorName = $this->getUsernameByEmail($latestCollection->collector_email);
                     
-                    if ($latestCollection->status === 'collected') {
+                    if ($latestCollection->status === 'collected' || $latestCollection->status === 'confirmed') {
                         $currentStatus = 'collected';
                         $actualWeight = $latestCollection->actual_weight ?: $report->amount;
-                        $statusMessage = "{$collectorName} collected " . $actualWeight . "kg of {$report->waste_type} (reported by {$reporterName})";
+                        $statusMessage = "{$collectorName} collected " . $actualWeight . "kg of {$report->waste_type} (reported by {$reporterName}) - ✅ Confirmed by admin";
                         $statusColor = 'success';
                         $statusIcon = 'fas fa-check-circle';
+                        $latestTime = Carbon::parse($latestCollection->collected_at ?: $latestCollection->updated_at);
+                    } elseif ($latestCollection->status === 'submitted') {
+                        $currentStatus = 'submitted';
+                        $actualWeight = $latestCollection->actual_weight ?: $report->amount;
+                        $statusMessage = "{$collectorName} submitted collection of " . $actualWeight . "kg of {$report->waste_type} (reported by {$reporterName}) - ⏳ Pending admin confirmation";
+                        $statusColor = 'info';
+                        $statusIcon = 'fas fa-clock';
                         $latestTime = Carbon::parse($latestCollection->collected_at ?: $latestCollection->updated_at);
                     } elseif ($latestCollection->status === 'cancelled') {
                         $currentStatus = 'cancelled';
@@ -467,9 +526,17 @@ class HomeController extends Controller
             $totalWasteReported = WasteReport::sum('amount') ?? 0;
             $totalReports = WasteReport::count();
             $totalCollected = 0;
+            $todayCollected = 0;
             
             try {
-                $totalCollected = WasteCollection::where('status', 'completed')->sum('actual_weight') ?? 0;
+                // Only include confirmed and completed collections (not submitted)
+                $totalCollected = WasteCollection::whereIn('status', ['confirmed', 'completed', 'collected'])
+                    ->sum('actual_weight') ?? 0;
+                
+                // Today's confirmed collections only
+                $todayCollected = WasteCollection::whereIn('status', ['confirmed', 'completed', 'collected'])
+                    ->whereDate('updated_at', today())
+                    ->sum('actual_weight') ?? 0;
             } catch (\Exception $e) {
                 // WasteCollection might not be available
             }
@@ -478,14 +545,16 @@ class HomeController extends Controller
                 'total_waste_reported' => number_format($totalWasteReported, 1),
                 'total_reports' => $totalReports,
                 'total_collected' => number_format($totalCollected, 1),
-                'carbon_saved' => number_format($totalWasteReported * 0.5, 1),
-                'trees_equivalent' => number_format($totalWasteReported * 0.02, 0),
+                'today_collected' => number_format($todayCollected, 1),
+                'carbon_saved' => number_format(($totalWasteReported + $totalCollected) * 0.5, 1),
+                'trees_equivalent' => number_format(($totalWasteReported + $totalCollected) * 0.02, 0),
             ];
         } catch (\Exception $e) {
             return [
                 'total_waste_reported' => '0',
                 'total_reports' => 0,
                 'total_collected' => '0',
+                'today_collected' => '0',
                 'carbon_saved' => '0',
                 'trees_equivalent' => '0'
             ];
@@ -581,19 +650,46 @@ class HomeController extends Controller
                 return response()->json(['error' => 'This waste is already assigned for collection'], 400);
             }
             
+            // Get collector profile information
+            $collectorProfile = \App\Models\Profile::where('email', $user->email)->first();
+            $collectorName = null;
+            $collectorContact = null;
+            
+            if ($collectorProfile) {
+                // Try to get full name first
+                $firstName = trim($collectorProfile->first_name ?? '');
+                $lastName = trim($collectorProfile->last_name ?? '');
+                
+                if ($firstName || $lastName) {
+                    $collectorName = trim($firstName . ' ' . $lastName);
+                } else {
+                    // Fall back to username
+                    $collectorName = $collectorProfile->username;
+                }
+                
+                $collectorContact = $collectorProfile->phone;
+            }
+            
+            // If profile info not available, use fallback from user model
+            if (!$collectorName) {
+                $collectorName = $user->name ?? 'Unknown User';
+            }
+            
             // Create collection request
             try {
                 $collection = WasteCollection::create([
                     'waste_report_id' => $wasteReportId,
                     'requester_email' => $wasteReport->user_email, // Person who reported the waste
                     'collector_email' => $user->email, // Person who wants to collect it
+                    'collector_name' => $collectorName,
+                    'collector_contact' => $collectorContact,
                     'expected_weight' => $wasteReport->amount,
                     'status' => 'assigned',
                     'requested_at' => now(),
                     'assigned_at' => now(),
                     'assigned_date' => now()
                 ]);
-                \Log::info('Collection created with ID: ' . $collection->id);
+                \Log::info('Collection created with ID: ' . $collection->id . ' - Collector: ' . $collectorName);
             } catch (\Exception $collectionError) {
                 \Log::error('Failed to create collection: ' . $collectionError->getMessage());
                 return response()->json(['error' => 'Failed to create collection request'], 500);
@@ -642,8 +738,12 @@ class HomeController extends Controller
         try {
             $user = Auth::user();
             if (!$user) {
+                \Log::warning('Unauthorized collection submission attempt');
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
+
+            \Log::info('Collection submission attempt by user: ' . $user->email);
+            \Log::info('Request data: ' . json_encode($request->all()));
 
             // Validate request
             $request->validate([
@@ -684,39 +784,62 @@ class HomeController extends Controller
                 }
             }
 
-            // Update collection with submission data
+            // Update collection with submission data - set to pending confirmation
             $collection->update([
                 'actual_weight' => $actualWeight,
                 'collection_notes' => $collectionNotes,
                 'collection_photos' => $photosPaths,
-                'status' => 'completed',
+                'status' => 'submitted', // Changed from 'collected' to 'submitted'
                 'collected_at' => now()
             ]);
 
-            // Update the related waste report status
+            // Update the related waste report status to submitted (not collected yet)
             if ($collection->wasteReport) {
-                $collection->wasteReport->update(['status' => 'collected']);
+                $collection->wasteReport->update(['status' => 'submitted']);
             }
 
-            // Award 10 eco coins to collector for completing collection
-            $ecoCoinsEarned = 10;
-            \App\Models\Coin::create([
-                'user_email' => $user->email,
-                'reason' => 'Waste collection completed - ' . $actualWeight . 'kg ' . ($collection->wasteReport->waste_type ?? 'waste'),
-                'eco_coin_value' => $ecoCoinsEarned
-            ]);
-
-            \Log::info('Collection completed successfully. 10 coins awarded to collector: ' . $user->email);
+            // Don't award coins yet - will be awarded by admin upon confirmation
+            
+            \Log::info('Collection submitted successfully and pending admin confirmation for user: ' . $user->email);
 
             return response()->json([
                 'success' => true, 
-                'message' => 'Collection submitted successfully!',
-                'coins_earned' => $ecoCoinsEarned
-            ]);
+                'message' => 'Collection submitted successfully! Pending admin confirmation.',
+                'coins_earned' => 0 // No coins until admin confirms
+            ])->header('Content-Type', 'application/json');
 
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::warning('Collection submission validation failed: ' . json_encode($e->errors()));
+            return response()->json([
+                'error' => 'Validation failed', 
+                'details' => $e->errors()
+            ], 422)->header('Content-Type', 'application/json');
         } catch (\Exception $e) {
             \Log::error('Collection submission failed: ' . $e->getMessage() . ' Line: ' . $e->getLine() . ' File: ' . $e->getFile());
-            return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500)->header('Content-Type', 'application/json');
+        }
+    }
+
+    public function getCommunityActivity()
+    {
+        try {
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+
+            $userEmail = $user->email;
+            $communityActivity = $this->getRecentCommunityActivity($userEmail);
+            
+            return response()->json([
+                'success' => true,
+                'activity' => $communityActivity,
+                'timestamp' => now()->toISOString()
+            ])->header('Content-Type', 'application/json');
+
+        } catch (\Exception $e) {
+            \Log::error('Community activity API error: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to load community activity'], 500)->header('Content-Type', 'application/json');
         }
     }
     
@@ -740,9 +863,12 @@ class HomeController extends Controller
     {
         return [
             'most_reported_type' => 'None',
+            'total_waste_reported' => '0',
+            'total_waste_collected' => '0',
             'carbon_footprint_saved' => '0',
             'recent_reports_30_days' => 0,
             'today_reports' => 0,
+            'today_collections' => 0,
             'environmental_score' => 0
         ];
     }

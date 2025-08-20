@@ -34,6 +34,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/purchases/{purchase}/confirm', [AdminController::class, 'confirmPurchase'])->name('purchases.confirm');
         Route::get('/user-details', [AdminController::class, 'showUserDetails'])->name('user.details');
         Route::get('/user-detail/{id}', [AdminController::class, 'showUserDetail'])->name('user.detail');
+        Route::get('/waste-reports', [AdminController::class, 'wasteReports'])->name('waste.reports');
+        Route::post('/confirm-collection', [AdminController::class, 'confirmCollection'])->name('confirm.collection');
+        Route::post('/reject-collection', [AdminController::class, 'rejectCollection'])->name('reject.collection');
     Route::get('/events', [\App\Http\Controllers\AdminEventController::class, 'index'])->name('events');
     Route::post('/events', [\App\Http\Controllers\AdminEventController::class, 'store'])->name('events.store');
     Route::put('/events/{id}', [\App\Http\Controllers\AdminEventController::class, 'update'])->name('events.update');
@@ -102,6 +105,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/home/dashboard-data', [HomeController::class, 'getDashboardApiData'])->name('home.dashboard.data');
+    Route::get('/home/community-activity', [HomeController::class, 'getCommunityActivity'])->name('home.community.activity');
     Route::post('/request-collection', [HomeController::class, 'requestCollection'])->name('collection.request');
     Route::post('/submit-collection', [HomeController::class, 'submitCollection'])->name('collection.submit');
 

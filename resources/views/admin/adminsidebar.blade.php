@@ -29,7 +29,8 @@
                 </a>
             </li>
             <li class="nav-item mb-2">
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('admin.waste.reports') }}"
+                    class="nav-link text-white {{ request()->routeIs('admin.waste.reports') ? 'active bg-secondary' : '' }}">
                     <i class="fas fa-recycle me-2"></i> Waste Reports
                 </a>
             </li>

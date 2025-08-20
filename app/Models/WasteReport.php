@@ -21,4 +21,12 @@ class WasteReport extends Model
     {
         return $this->hasOne(WasteCollection::class, 'waste_report_id');
     }
+
+    /**
+     * Get all waste collections associated with this report
+     */
+    public function collections()
+    {
+        return $this->hasMany(WasteCollection::class, 'waste_report_id');
+    }
 }
