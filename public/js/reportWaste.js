@@ -1,23 +1,106 @@
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('wasteForm');
     const recentReports = document.getElementById('recentReports');
-    const totalWaste = document.getElementById('totalWaste');
-    const mostType = document.getElementById('mostType');
-    
-    // Community Activity elements
-    const todayReports = document.getElementById('todayReports');
-    const activeUsers = document.getElementById('activeUsers');
-    const weeklyGoalFill = document.getElementById('weeklyGoalFill');
-    const goalText = document.getElementById('goalText');
-    const todayAmount = document.getElementById('todayAmount');
-    const lastUpdate = document.getElementById('lastUpdate');
 
-    // Note: Form submission is handled by Laravel, no need to prevent default
-    // Just load initial data
+    // Handle form submission with AJAX for popup and redirect
     form.addEventListener('submit', function (e) {
-        // Let Laravel handle the form submission naturally
-        // No e.preventDefault() - let the form submit normally
+        e.preventDefault(); // Prevent default form submission
+        
+        const formData = new FormData(form);
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        
+        // Get CSRF token
+        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+        if (!csrfToken) {
+            alert(' Error: CSRF token not found. Please refresh the page.');
+            return;
+        }
+        
+        // Show loading state
+        submitButton.textContent = 'Submitting...';
+        submitButton.disabled = true;
+        
+        // Debug: log form data
+        console.log('Submitting form with data:');
+        for (let pair of formData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
+        }
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken.getAttribute('content'),
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            console.log('Response status:', response.status);
+            console.log('Response headers:', response.headers);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            
+            if (data.success) {
+                // Show success popup
+                alert('✅ ' + data.message + '\n\nClick OK to go to the home page.');
+                
+                // Redirect to home page
+                window.location.href = '/';
+            } else {
+                // Show error message
+                alert('❌ Error: ' + (data.message || 'Failed to submit report'));
+                
+                // Reset button
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Error submitting form:', error);
+            
+            // More detailed error reporting
+            let errorMessage = 'Failed to submit report. ';
+            if (error.message) {
+                errorMessage += 'Details: ' + error.message;
+            }
+            errorMessage += '\n\nTrying alternative submission method...';
+            
+            alert(' AJAX Error: ' + errorMessage);
+            
+            // Show fallback button
+            const fallbackBtn = document.getElementById('fallbackSubmit');
+            if (fallbackBtn) {
+                fallbackBtn.style.display = 'inline-block';
+            }
+            
+            // Reset button
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+        });
     });
+
+    // Fallback submission using traditional form
+    const fallbackBtn = document.getElementById('fallbackSubmit');
+    if (fallbackBtn) {
+        fallbackBtn.addEventListener('click', function() {
+            if (confirm('This will submit the form using traditional method. Continue?')) {
+                // Remove the AJAX event listener temporarily
+                const newForm = form.cloneNode(true);
+                form.parentNode.replaceChild(newForm, form);
+                
+                // Submit traditionally
+                newForm.submit();
+            }
+        });
+    }
 
     // Fetch recent reports from database
     function loadReports() {
@@ -47,114 +130,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Fetch statistics from database
-    function loadStats() {
-        fetch('/wastereport/stats')
-            .then(res => res.json())
-            .then(stats => {
-                totalWaste.textContent = stats.total + ' kg';
-                mostType.textContent = stats.mostType;
-                
-                // Update community activity with real database data
-                if (stats.communityActivity) {
-                    updateCommunityActivity(stats.communityActivity);
-                } else {
-                    // Fallback for backward compatibility
-                    updateCommunityActivity({
-                        todayReports: 0,
-                        activeContributors: 0,
-                        weeklyReports: 0,
-                        weeklyGoal: 50
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error loading stats:', error);
-                totalWaste.textContent = '0 kg';
-                mostType.textContent = 'None';
-                resetCommunityActivity();
-            });
-    }
-
-    // Load detailed community activity from dedicated endpoint
-    function loadCommunityActivity() {
-        fetch('/wastereport/community-activity')
-            .then(res => res.json())
-            .then(data => {
-                updateCommunityActivity(data);
-                console.log('Community activity loaded:', data);
-            })
-            .catch(error => {
-                console.error('Error loading community activity:', error);
-            });
-    }
-
-    // Update community activity display with real database data
-    function updateCommunityActivity(data) {
-        // Update displays with real database values
-        todayReports.textContent = data.todayReports || 0;
-        activeUsers.textContent = data.activeContributors || 0;
-        todayAmount.textContent = (data.todayWasteAmount || 0) + ' kg';
-        
-        const weeklyProgress = data.weeklyReports || 0;
-        const weeklyGoal = data.weeklyGoal || 50;
-        const progressPercent = Math.min((weeklyProgress / weeklyGoal) * 100, 100);
-        
-        goalText.textContent = `${weeklyProgress}/${weeklyGoal} reports`;
-        
-        // Animate goal progress bar
-        setTimeout(() => {
-            weeklyGoalFill.style.width = progressPercent + '%';
-        }, 300);
-        
-        // Update last update time
-        if (data.lastUpdate) {
-            const updateTime = new Date(data.lastUpdate);
-            lastUpdate.textContent = `Last updated: ${updateTime.toLocaleTimeString()}`;
-        } else {
-            lastUpdate.textContent = 'Last updated: Just now';
-        }
-        
-        // Add visual feedback for active data with animations
-        animateCounterUpdate(todayReports, data.todayReports || 0);
-        animateCounterUpdate(activeUsers, data.activeContributors || 0);
-        
-        if (data.todayReports > 0) {
-            todayReports.style.color = '#2e7d32';
-            todayReports.style.fontWeight = '700';
-        }
-        
-        if (data.activeContributors > 0) {
-            activeUsers.style.color = '#2e7d32';
-            activeUsers.style.fontWeight = '700';
-        }
-    }
-    
-    // Animate counter updates
-    function animateCounterUpdate(element, newValue) {
-        element.style.transform = 'scale(1.2)';
-        element.style.transition = 'transform 0.3s ease';
-        
-        setTimeout(() => {
-            element.style.transform = 'scale(1)';
-        }, 300);
-    }
-
-    // Reset community activity
-    function resetCommunityActivity() {
-        todayReports.textContent = '0';
-        activeUsers.textContent = '0';
-        todayAmount.textContent = '0 kg';
-        goalText.textContent = '0/50 reports';
-        weeklyGoalFill.style.width = '0%';
-        lastUpdate.textContent = 'Last updated: Error loading data';
-    }
-
-    // Load data on page load
+    // Load recent reports on page load
     loadReports();
-    loadStats();
-    loadCommunityActivity();
-    
-    // Auto-refresh community activity every 30 seconds for real-time updates
-    setInterval(loadCommunityActivity, 30000);
 });

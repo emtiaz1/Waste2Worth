@@ -64,6 +64,7 @@
                             <input type="file" id="wasteImage" name="image" accept="image/*">
                         </label>
                         <button type="submit">Submit Report</button>
+                        <button type="button" id="fallbackSubmit" style="display:none; margin-left: 10px; background: #666;">Try Alternative Submit</button>
                     </form>
                 </section>
                 <section class="card">
@@ -71,69 +72,6 @@
                     <div id="recentReports"></div>
                 </section>
             </main>
-
-            <!-- Stats Bar -->
-            <aside class="stats-bar">
-                <h2>Waste Statistics</h2>
-                <div class="stat">
-                    <h3>Total Waste Reported</h3>
-                    <p id="totalWaste">0 kg</p>
-                    <p class="muted">All time</p>
-                </div>
-                <div class="stat">
-                    <h3>Most Reported Waste Type</h3>
-                    <p id="mostType">None</p>
-                </div>
-                <div class="stat">
-                    <h3>Community Activity <span class="live-indicator">●</span></h3>
-                    <div class="activity-feed">
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-plus-circle"></i>
-                            </div>
-                            <div class="activity-info">
-                                <span class="activity-text">Reports submitted today</span>
-                                <span class="activity-count" id="todayReports">0</span>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-users"></i>
-                            </div>
-                            <div class="activity-info">
-                                <span class="activity-text">Active contributors</span>
-                                <span class="activity-count" id="activeUsers">0</span>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-chart-line"></i>
-                            </div>
-                            <div class="activity-info">
-                                <span class="activity-text">This week's goal</span>
-                                <div class="goal-progress">
-                                    <div class="goal-bar">
-                                        <div class="goal-fill" id="weeklyGoalFill"></div>
-                                    </div>
-                                    <span class="goal-text" id="goalText">0/50 reports</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="activity-icon">
-                                <i class="fas fa-weight-hanging"></i>
-                            </div>
-                            <div class="activity-info">
-                                <span class="activity-text">Today's waste amount</span>
-                                <span class="activity-count" id="todayAmount">0 kg</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="last-update">
-                        <small id="lastUpdate">Last updated: Just now</small>
-                    </div>
-                </div>
-            </aside>
         </div>
         <script src="{{ asset('js/reportWaste.js') }}"></script>
         <script src="{{ asset('js/appbar.js') }}"></script>

@@ -69,7 +69,13 @@ class WasteReportController extends Controller
             // Community stats
             $communityStats = [
                 'total_reports' => WasteReport::count(),
-                'total_waste_reported' => WasteReport::sum('amount') ?: 0,
+                'total_waste_reported' => WasteReport::get()->sum(function ($report) {
+                    $amount = $report->amount;
+                    if (strtolower($report->unit ?? 'kg') === 'lbs') {
+                        $amount = $amount * 0.453592; // Convert lbs to kg
+                    }
+                    return $amount;
+                }),
                 'active_users' => WasteReport::distinct('user_email')->count(),
                 'today_reports' => WasteReport::whereDate('created_at', now())->count(),
                 'this_week_reports' => WasteReport::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
@@ -216,7 +222,13 @@ class WasteReportController extends Controller
                 'ongoing_events' => $this->getUpcomingEvents(),
                 // Add global impact calculations
                 'global_impact' => [
-                    'total_waste_reported' => WasteReport::sum('amount') ?: 0,
+                    'total_waste_reported' => WasteReport::get()->sum(function ($report) {
+                        $amount = $report->amount;
+                        if (strtolower($report->unit ?? 'kg') === 'lbs') {
+                            $amount = $amount * 0.453592; // Convert lbs to kg
+                        }
+                        return $amount;
+                    }),
                     'total_collected' => WasteCollection::where('status', 'completed')->sum('actual_weight') ?: 0,
                     'today_collected' => WasteCollection::where('status', 'completed')
                         ->whereDate('collected_at', now())
@@ -386,12 +398,29 @@ class WasteReportController extends Controller
     // Store new waste report
     public function store(Request $request)
     {
-        \Log::info('Waste report submission received', $request->all());
+        \Log::info('Waste report submission received', [
+            'method' => $request->method(),
+            'ajax' => $request->ajax(),
+            'json' => $request->expectsJson(),
+            'content_type' => $request->header('Content-Type'),
+            'user_authenticated' => auth()->check(),
+            'data' => $request->except(['_token', 'image'])
+        ]);
         
         try {
             // Check if user is authenticated
             if (!auth()->check()) {
-                return redirect()->route('login')->with('error', 'Please login to submit a waste report.');
+                $errorMessage = 'Please login to submit a waste report.';
+                \Log::warning('Unauthenticated waste report submission attempt');
+                
+                if ($request->expectsJson() || $request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => $errorMessage
+                    ], 401);
+                }
+                
+                return redirect()->route('login')->with('error', $errorMessage);
             }
 
             $request->validate([
@@ -434,14 +463,41 @@ class WasteReportController extends Controller
 
             $successMessage = "Waste report submitted successfully! Coins will be awarded after collection and admin verification.";
             
+            // Check if request expects JSON (AJAX)
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $successMessage,
+                    'report_id' => $wasteReport->id
+                ]);
+            }
+            
+            // Fallback for regular form submission
             return redirect()->back()->with('success', $successMessage);
             
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Validation error: ' . json_encode($e->errors()));
+            
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed: ' . implode(', ', array_flatten($e->errors())),
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            
             return redirect()->back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
             \Log::error('Error creating waste report: ' . $e->getMessage());
             \Log::error('Stack trace: ' . $e->getTraceAsString());
+            
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to submit report: ' . $e->getMessage()
+                ], 500);
+            }
+            
             return redirect()->back()->withErrors(['error' => 'Failed to submit report: ' . $e->getMessage()])->withInput();
         }
     }
@@ -686,39 +742,66 @@ class WasteReportController extends Controller
                     'amount' => $report->amount,
                     'unit' => $report->unit,
                     'location' => $report->location,
-                    'status' => $report->status,
-                    'created_at' => $report->created_at->format('M j, Y'),
                     'description' => $report->description,
+                    'image_path' => $report->image_path,
+                    'status' => $report->status,
+                    'created_at' => $report->created_at,
                 ];
             });
 
-        return response()->json(['success' => true, 'reports' => $reports]);
+        return response()->json($reports);
     }
 
     // AJAX: Get waste statistics for reportWaste page
     public function getWasteStats()
     {
-        $totalWaste = WasteReport::sum('amount');
+        // Calculate total waste in kg (convert lbs to kg if needed)
+        $totalWasteKg = WasteReport::get()->sum(function ($report) {
+            $amount = $report->amount;
+            // Convert lbs to kg if needed (1 lb = 0.453592 kg)
+            if (strtolower($report->unit) === 'lbs') {
+                $amount = $amount * 0.453592;
+            }
+            return $amount;
+        });
+
         $mostType = WasteReport::selectRaw('waste_type, COUNT(*) as count')
             ->groupBy('waste_type')
             ->orderBy('count', 'desc')
             ->first();
 
+        return response()->json([
+            'total' => round($totalWasteKg, 2),
+            'mostType' => $mostType ? $mostType->waste_type : 'None',
+        ]);
+    }
+
+    // AJAX: Get community activity data for reportWaste page
+    public function getCommunityActivity()
+    {
         $todayReports = WasteReport::whereDate('created_at', now())->count();
-        $activeUsers = WasteReport::distinct('user_email')->count();
+        $activeUsers = WasteReport::distinct('user_email')
+            ->whereDate('created_at', '>=', now()->subDays(7))
+            ->count();
         $thisWeekReports = WasteReport::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count();
-        $todayAmount = WasteReport::whereDate('created_at', now())->sum('amount');
+        
+        // Calculate today's waste amount in kg (convert lbs to kg if needed)
+        $todayWasteKg = WasteReport::whereDate('created_at', now())->get()->sum(function ($report) {
+            $amount = $report->amount;
+            // Convert lbs to kg if needed (1 lb = 0.453592 kg)
+            if (strtolower($report->unit) === 'lbs') {
+                $amount = $amount * 0.453592;
+            }
+            return $amount;
+        });
 
         return response()->json([
-            'success' => true,
-            'stats' => [
-                'total_waste' => $totalWaste,
-                'most_type' => $mostType ? $mostType->waste_type : 'None',
-                'today_reports' => $todayReports,
-                'active_users' => $activeUsers,
-                'weekly_reports' => $thisWeekReports,
-                'today_amount' => $todayAmount,
-            ]
+            'todayReports' => $todayReports,
+            'activeContributors' => $activeUsers,
+            'weeklyReports' => $thisWeekReports,
+            'weeklyGoal' => 50,
+            'todayWasteAmount' => round($todayWasteKg, 2),
+            'lastUpdate' => now()->toISOString(),
         ]);
     }
 }

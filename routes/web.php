@@ -141,6 +141,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/waste-report', [WasteReportController::class, 'store'])->name('waste-report.store');
     Route::get('/wastereport/recent', [WasteReportController::class, 'getRecentReports']);
     Route::get('/wastereport/stats', [WasteReportController::class, 'getWasteStats']);
+    Route::get('/wastereport/community-activity', [WasteReportController::class, 'getCommunityActivity']);
+    Route::get('/test-submission', function() {
+        return view('test-submission');
+    });
     Route::post('/request-collection', [WasteReportController::class, 'requestCollection']);
     Route::post('/submit-collection', [WasteReportController::class, 'submitCollection']);
 });
