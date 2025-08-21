@@ -13,7 +13,11 @@ use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ContactController;
 
-Route::get('/', [WasteReportController::class, 'index'])->name('dashboard');
+
+// Add welcome page route
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
 
 
 // Admin Routes
