@@ -878,31 +878,17 @@
                                 </div>
                             </div>
                             
-                            <div class="metric global">
-                                <div class="metric-icon"><i class="fas fa-cloud"></i></div>
-                                <div class="metric-details">
-                                    <div class="metric-value">{{ $dashboardData['global_impact']['carbon_saved'] ?? '0' }}kg</div>
-                                    <div class="metric-label">CO₂ Equivalent Saved</div>
-                                </div>
-                            </div>
-                            
-                            <div class="metric global">
-                                <div class="metric-icon"><i class="fas fa-tree"></i></div>
-                                <div class="metric-details">
-                                    <div class="metric-value">{{ $dashboardData['global_impact']['trees_equivalent'] ?? '0' }}</div>
-                                    <div class="metric-label">Trees Equivalent</div>
-                                </div>
-                            </div>
                         </div>
                         
-                        <div class="impact-message mt-4">
-                            <div class="alert alert-success">
+                        
+                    </div>
+                </div>
+                <div class="impact-message mt-4">
+                            <div class="alert alert-success" style="text-align: center;">
                                 <i class="fas fa-heart"></i>
                                 Together, we're making a difference! Every report counts towards a cleaner environment.
                             </div>
                         </div>
-                    </div>
-                </div>
             </div>
             
             @else
