@@ -746,14 +746,7 @@
                                     @if(isset($event['time']))
                                     <p><i class="fas fa-clock"></i> {{ date('g:i A', strtotime($event['time'])) }}</p>
                                     @endif
-                                    <small class="text-muted">{{ $event['participants'] }} participants registered</small>
-                                    @if(isset($event['days_until']) && $event['days_until'] == 0)
-                                    <div class="badge bg-success ms-2">Today!</div>
-                                    @elseif(isset($event['days_until']) && $event['days_until'] == 1)
-                                    <div class="badge bg-warning ms-2">Tomorrow</div>
-                                    @elseif(isset($event['days_until']) && $event['days_until'] <= 7)
-                                    <div class="badge bg-info ms-2">{{ $event['days_until'] }} days</div>
-                                    @endif
+                                    
                                 </div>
                                 <div class="event-actions">
                                     <a href="{{ route('event') }}" class="btn btn-outline-primary btn-sm">
