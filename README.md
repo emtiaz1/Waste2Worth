@@ -1,61 +1,241 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# 🌱 Waste2Worth
 
-## About Laravel
+A community-driven waste management platform that transforms environmental responsibility into rewarding experiences. Users can report waste locations, collect reported waste, and earn Eco Coins for their contributions to creating a cleaner environment.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Laravel](https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)
+![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🌟 Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🎯 Core Features
+- **Waste Reporting**: Users can report waste locations with photos, GPS coordinates, and detailed descriptions
+- **Collection System**: Community members can claim and collect reported waste
+- **Eco Coins Rewards**: Earn virtual currency for environmental contributions
+- **Real-time Dashboard**: Live activity feed and community statistics
+- **Leaderboard**: Community rankings based on environmental impact
+- **User Profiles**: Comprehensive profile management with impact tracking
 
-## Learning Laravel
+### 📊 Dashboard Features
+- Personal impact metrics (waste reported/collected, eco coins earned)
+- Available waste collections in your area
+- My collection assignments and status tracking
+- Recent community activity feed with real-time updates
+- Global impact statistics
+- Community events and challenges
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🏆 Gamification
+- **Eco Coins System**: Earn coins for reporting and collecting waste
+- **Achievement Badges**: Unlock badges for milestones (Eco Warrior, Top Contributor)
+- **Community Ranking**: Compete with other users for environmental impact
+- **Progress Tracking**: Monitor weekly and monthly goals
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🚀 Installation
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Prerequisites
+- PHP 8.1+
+- Composer
+- Node.js & npm
+- MySQL/PostgreSQL
+- Laravel 10.x
 
-## Laravel Sponsors
+### Setup Instructions
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/waste2worth.git
+   cd waste2worth
+   ```
 
-### Premium Partners
+2. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+3. **Install Node.js dependencies**
+   ```bash
+   npm install
+   ```
 
-## Contributing
+4. **Environment Configuration**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5. **Configure your `.env` file**
+   ```env
+   DB_CONNECTION=mysql
+   DB_HOST=127.0.0.1
+   DB_PORT=3306
+   DB_DATABASE=waste2worth
+   DB_USERNAME=your_username
+   DB_PASSWORD=your_password
+   
+   # File storage configuration
+   FILESYSTEM_DISK=public
+   
+   # Mail configuration (for notifications)
+   MAIL_MAILER=smtp
+   MAIL_HOST=your_smtp_host
+   MAIL_PORT=587
+   MAIL_USERNAME=your_email
+   MAIL_PASSWORD=your_password
+   ```
 
-## Code of Conduct
+6. **Database Setup**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7. **Create storage link**
+   ```bash
+   php artisan storage:link
+   ```
 
-## Security Vulnerabilities
+8. **Build assets**
+   ```bash
+   npm run build
+   # or for development
+   npm run dev
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+9. **Start the application**
+   ```bash
+   php artisan serve
+   ```
 
-## License
+Visit `http://localhost:8000` to access the application.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 🏗️ Project Structure
+
+```
+waste2worth/
+├── app/
+│   ├── Http/Controllers/     # Application controllers
+│   ├── Models/              # Eloquent models
+│   └── Providers/           # Service providers
+├── database/
+│   ├── factories/           # Model factories
+│   ├── migrations/          # Database migrations
+│   └── seeders/            # Database seeders
+├── public/
+│   ├── css/                # Stylesheets
+│   │   ├── home.css        # Dashboard styles
+│   │   ├── dashboard.css   # Dashboard components
+│   │   ├── appbar.css      # Navigation styles
+│   │   ├── reward.css      # Rewards system styles
+│   │   └── welcome.css     # Landing page styles
+│   └── js/                 # JavaScript files
+│       ├── appbar.js       # Navigation functionality
+│       └── leaderboard.js  # Leaderboard interactions
+├── resources/
+│   └── views/              # Blade templates
+│       ├── home.blade.php  # Main dashboard
+│       └── layouts/        # Layout templates
+└── routes/
+    └── web.php             # Web routes
+```
+
+## 🎮 Usage
+
+### For Regular Users
+
+1. **Register/Login**: Create an account or sign in
+2. **Report Waste**: Use the "Report Waste" button to submit new waste locations
+3. **Collect Waste**: Browse available collections and claim them
+4. **Earn Rewards**: Complete collections to earn Eco Coins
+5. **Track Progress**: Monitor your environmental impact on the dashboard
+
+### For Collectors
+
+1. **Browse Available Collections**: View waste reports available for collection
+2. **Request Collection**: Click "Collect" on available waste reports
+3. **Submit Collection**: Once collected, submit proof with photos and actual weight
+4. **Earn Eco Coins**: Receive rewards based on waste collected
+
+### Admin Features
+
+- Verify submitted collections
+- Manage user accounts and reports
+- Monitor community statistics
+- Organize environmental events
+
+## 🛠️ Technologies Used
+
+- **Backend**: Laravel 10.x (PHP)
+- **Frontend**: Bootstrap 5.3, Vanilla JavaScript
+- **Database**: MySQL/PostgreSQL
+- **Authentication**: Laravel Breeze/Sanctum
+- **File Storage**: Laravel Storage
+- **Real-time Updates**: AJAX polling
+- **Icons**: Font Awesome
+- **Styling**: Custom CSS with Bootstrap
+
+## 📱 Features in Detail
+
+### Dashboard Components
+
+- **User Overview Card**: Profile information, status, and quick actions
+- **Statistics Cards**: Eco coins, waste reports, community ranking
+- **Available Collections**: Browse and claim waste collection opportunities
+- **My Collection Tasks**: Track assigned collections and submit completions
+- **My Waste Reports**: Monitor status of reported waste
+- **Community Activity Feed**: Real-time updates of community actions
+- **Global Impact Metrics**: Platform-wide environmental impact statistics
+
+### Responsive Design
+
+The application is fully responsive and optimized for:
+- Desktop browsers
+- Tablet devices
+- Mobile phones
+
+## 🤝 Contributing
+
+We welcome contributions to make Waste2Worth even better! Here's how you can help:
+
+1. **Fork the repository**
+2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
+3. **Commit your changes** (`git commit -m 'Add some amazing feature'`)
+4. **Push to the branch** (`git push origin feature/amazing-feature`)
+5. **Open a Pull Request**
+
+### Contribution Guidelines
+
+- Follow PSR-12 coding standards
+- Write clear commit messages
+- Add tests for new features
+- Update documentation as needed
+- Ensure responsive design compatibility
+
+## 🐛 Issues
+
+Found a bug or have a feature request? Please open an issue on our [GitHub Issues](https://github.com/yourusername/waste2worth/issues) page.
+
+
+## 🌍 Environmental Impact
+
+Waste2Worth is more than just an application - it's a movement towards sustainable waste management and community engagement. Every report, every collection, and every user action contributes to a cleaner, healthier environment.
+
+### Our Mission
+- Reduce environmental waste through community action
+- Gamify environmental responsibility
+- Create awareness about waste management
+- Build stronger, more environmentally conscious communities
+
+## 🙏 Acknowledgments
+
+- Laravel community for the amazing framework
+- Bootstrap team for the UI components
+- Font Awesome for the iconography
+- All contributors and community members making our environment better
+
+---
+
+**Made with ❤️ for a cleaner planet**
+
+*Together, we're making a difference! Every report counts towards a cleaner environment.*
